@@ -1,0 +1,5 @@
+streamlit
+pyarrow
+pandas
+requests
+Pillow
