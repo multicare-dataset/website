@@ -176,7 +176,7 @@ def main():
             orientation="vertical",
             styles={
                 "container": {"padding": "0!important", "background-color": "transparent"},
-                "nav-link-selected": {"background-color": "#12588E80", "font-weight": 700},
+                "nav-link-selected": {"background-color": "#12588E40", "font-weight": 700},
             },
         )
 
@@ -321,7 +321,10 @@ def display_case_text(cch, index, case_search):
     # Highlight search term in case_text
     if case_search:
         pattern = re.compile(re.escape(case_search), re.IGNORECASE)
-        highlighted_text = pattern.sub(lambda match: f'<mark>{match.group(0)}</mark>', case_text)
+        highlighted_text = pattern.sub(
+            lambda match: f'<span style="background-color: yellow; font-weight: bold;">{match.group(0)}</span>',
+            case_text
+        )
     else:
         highlighted_text = case_text
 
@@ -383,7 +386,10 @@ def display_case_both(cch, index, case_search):
     # Highlight search term in case_text
     if case_search:
         pattern = re.compile(re.escape(case_search), re.IGNORECASE)
-        highlighted_text = pattern.sub(lambda match: f'<mark>{match.group(0)}</mark>', case_text)
+        highlighted_text = pattern.sub(
+            lambda match: f'<span style="background-color: yellow; font-weight: bold;">{match.group(0)}</span>',
+            case_text
+        )
     else:
         highlighted_text = case_text
 
