@@ -186,58 +186,64 @@ def main():
                 "nav-link-selected": {"background-color": "#12588ECC", "font-weight": 700},
             },
         )
+        st.divider()
+        image_path = os.path.join('.', 'medical_doctor_desktop.webp')
+        st.image(Image.open(image_path))
 
     if selected == "Home":
         st.title("Clinical Case Hub")
-        image_path = os.path.join('.', 'medical_doctor_desktop.webp')
-        col1, col2, col3 = st.columns([1, 2, 1])
-        with col2:
-            st.image(Image.open(image_path))
+        st.write("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
 
-    elif selected == "Search":
-        # Sidebar with filters
-        st.sidebar.divider()
-        
-        st.sidebar.header("Filters")
+
+    elif selected == "Search":      
 
         with st.form("filter_form"):
+            st.header("Filters")
 
-            # Year slider: double-sided slider
-            min_year, max_year = st.slider("Year", 1990, 2024, (2023, 2024))
-    
-            # Age slider: double-sided slider
-            min_age, max_age = st.slider("Age", 0, 100, (15, 45))
-    
-            # Gender
-            gender = st.selectbox("Gender", options=['Any', 'Female', 'Male'])
-    
-            # Case Text Search
-            case_search = st.text_input("Case Text Search", value='')
-    
-            # Image Type Label
-            image_type_options = ['ct', 'mri', 'x_ray', 'ultrasound', 'angiography', 'mammography', 'echocardiogram', 'cholangiogram',
-                                  'cta', 'cmr', 'mra', 'mrcp', 'spect', 'pet', 'scintigraphy', 'tractography',
-                                  'skin_photograph', 'oral_photograph', 'other_medical_photograph', 'fundus_photograph', 'ophtalmic_angiography', 'oct',
-                                  'pathology', 'h&e', 'immunostaining', 'immunofluorescence', 'acid_fast', 'masson_trichrome', 'giemsa', 'papanicolaou', 'gram', 'fish',
-                                  'endoscopy', 'colonoscopy', 'bronchoscopy', 'ekg', 'eeg', 'chart']
-            image_type_label = st.selectbox("Image Type Label", options=[''] + image_type_options)
-            image_type_label = image_type_label if image_type_label != '' else None
-    
-            # Anatomical Region Label
-            anatomical_region_options = ['head', 'neck', 'thorax', 'abdomen', 'pelvis', 'upper_limb', 'lower_limb', 'dental_view']
-            anatomical_region_label = st.selectbox("Anatomical Region Label", options=[''] + anatomical_region_options)
-            anatomical_region_label = anatomical_region_label if anatomical_region_label != '' else None
-    
-            # Caption Text Search
-            caption_search = st.text_input("Caption Text Search", value='')
-    
-            # Resource Type, adding 'both' option
-            resource = st.selectbox("Resource Type", options=['text', 'image', 'both'], index=0)
-    
-            # License as horizontal radio buttons
-            license = st.radio("License", options=['all', 'commercial'], horizontal=True)
+            col1, col2, col3 = st.columns(3)
+            
+            with col1:
+                # Year slider: double-sided slider
+                min_year, max_year = st.slider("Year", 1990, 2024, (2023, 2024))
+            
+                # Gender
+                gender = st.selectbox("Gender", options=['Any', 'Female', 'Male'])
+            
+                # Image Type Label
+                image_type_options = ['ct', 'mri', 'x_ray', 'ultrasound', 'angiography', 'mammography', 'echocardiogram', 'cholangiogram',
+                                      'cta', 'cmr', 'mra', 'mrcp', 'spect', 'pet', 'scintigraphy', 'tractography',
+                                      'skin_photograph', 'oral_photograph', 'other_medical_photograph', 'fundus_photograph', 'ophtalmic_angiography', 'oct',
+                                      'pathology', 'h&e', 'immunostaining', 'immunofluorescence', 'acid_fast', 'masson_trichrome', 'giemsa', 'papanicolaou', 'gram', 'fish',
+                                      'endoscopy', 'colonoscopy', 'bronchoscopy', 'ekg', 'eeg', 'chart']
+                image_type_label = st.selectbox("Image Type Label", options=[''] + image_type_options)
+                image_type_label = image_type_label if image_type_label != '' else None
+            
+            with col2:
+                # Age slider: double-sided slider
+                min_age, max_age = st.slider("Age", 0, 100, (15, 45))
+            
+                # Case Text Search
+                case_search = st.text_input("Case Text Search", value='')
+            
+                # Anatomical Region Label
+                anatomical_region_options = ['head', 'neck', 'thorax', 'abdomen', 'pelvis', 'upper_limb', 'lower_limb', 'dental_view']
+                anatomical_region_label = st.selectbox("Anatomical Region Label", options=[''] + anatomical_region_options)
+                anatomical_region_label = anatomical_region_label if anatomical_region_label != '' else None
 
-            submitted = st.form_submit_button("Apply Filters")
+                submitted = st.form_submit_button("Apply Filters")
+
+            with col3:
+                # Caption Text Search
+                caption_search = st.text_input("Caption Text Search", value='')
+            
+                # Resource Type, adding 'both' option
+                resource = st.selectbox("Resource Type", options=['text', 'image', 'both'], index=0)
+            
+                # License as horizontal radio buttons
+                license = st.radio("License", options=['all', 'commercial'], horizontal=True)
+    
+            
+            st.sidebar.divider()
         
             if submitted: 
             
@@ -313,9 +319,6 @@ def main():
             
                         for index in range(start_idx, end_idx):
                             display_case_both(cch, index)
-            else:
-                st.write("Please perform a search to display results.")
-
 
                 
     elif selected == "About":
