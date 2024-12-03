@@ -164,7 +164,7 @@ st.markdown(
 
 def main():
     with st.sidebar:
-        st.logo("multicare-logo.svg", size="medium")
+        st.logo("multicare-logo.webp", size="medium")
     
         # Define the menu options
         selected = option_menu(
