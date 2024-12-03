@@ -164,7 +164,7 @@ st.markdown(
 
 def main():
     with st.sidebar:
-        st.logo("multicare-logo.webp", size="medium")
+        st.logo("multicare-logo.webp", size="large")
     
         # Define the menu options
         selected = option_menu(
@@ -183,7 +183,7 @@ def main():
     if selected == "Home":
         st.title("Clinical Case Hub")
         image_path = os.path.join('.', 'medical_doctor_desktop.webp')
-        col1, col2, col3 = st.columns([1, 1, 1])
+        col1, col2, col3 = st.columns([1, 2, 1])
         with col2:
             st.image(Image.open(image_path))
 
