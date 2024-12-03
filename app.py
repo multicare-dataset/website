@@ -331,7 +331,7 @@ def display_case_text(cch, index):
         
         with st.expander("Case Description"):
             st.markdown(
-                f"<div style='text-align: justify; padding:2rem;'>{case_search}</div>",
+                f"<div style='text-align: justify; padding:2rem;'>{case_text}</div>",
                 unsafe_allow_html=True
             )
             
@@ -387,7 +387,7 @@ def display_case_both(cch, index):
         st.write(f"Age: {patient_age}")
         with st.expander("Case Description"):
             st.markdown(
-                f"<div style='text-align: justify; padding:2rem;'>{case_search}</div>",
+                f"<div style='text-align: justify; padding:2rem;'>{case_text}</div>",
                 unsafe_allow_html=True
             )
 
