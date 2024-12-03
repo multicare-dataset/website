@@ -4,6 +4,7 @@ import ast
 import os
 import re
 from PIL import Image
+from streamlit_option_menu import option_menu
 
 # Functions to load data with caching to improve performance
 @st.cache_data
@@ -145,74 +146,138 @@ class ClinicalCaseHub():
         return re.search(rf'\b{re.escape(word.lower())}\b', text) is not None
 
 def main():
-    st.title("Clinical Case Hub")
+    # Define the menu options
+    selected = option_menu(
+        menu_title=None,
+        options=["Home", "Search", "About"],
+        icons=["house", "search", "info-circle"],
+        menu_icon="cast",
+        default_index=0,
+        orientation="horizontal"
+    )
 
-    # Sidebar with filters
-    st.sidebar.header("Filters")
+    if selected == "Home":
+        st.title("Clinical Case Hub")
+        image_path = os.path.join('.', 'medical_doctor_desktop.webp')
+        st.image(Image.open(image_path))
 
-    min_year = st.sidebar.slider("Minimum Year", min_value=1990, max_value=2024, value=1990)
-    max_year = st.sidebar.slider("Maximum Year", min_value=1990, max_value=2024, value=2024)
+    elif selected == "Search":
+        # Sidebar with filters
+        st.sidebar.header("Filters")
 
-    # Load data
-    file_folder = '.'
-    article_metadata_df = load_article_metadata(file_folder)
-    image_metadata_df = load_image_metadata(file_folder)
-    cases_df = load_cases(file_folder, min_year, max_year)
+        # Year slider: double-sided slider
+        min_year, max_year = st.sidebar.slider("Year", 1990, 2024, (1990, 2024))
 
-    min_age = st.sidebar.slider("Minimum Age", min_value=0, max_value=100, value=0)
-    max_age = st.sidebar.slider("Maximum Age", min_value=0, max_value=100, value=100)
-    gender = st.sidebar.selectbox("Gender", options=['Any', 'Female', 'Male'])
-    case_search = st.sidebar.text_input("Case Text Search", value='')
-    image_type_label = st.sidebar.selectbox("Image Type Label", options=[''] + ['ct', 'mri', 'x_ray', 'ultrasound', 'angiography', 'mammography', 'echocardiogram', 'cholangiogram',
-                                      'cta', 'cmr', 'mra', 'mrcp', 'spect', 'pet', 'scintigraphy', 'tractography',
-                                      'skin_photograph', 'oral_photograph', 'other_medical_photograph', 'fundus_photograph', 'ophtalmic_angiography', 'oct',
-                                      'pathology', 'h&e', 'immunostaining', 'immunofluorescence', 'acid_fast', 'masson_trichrome', 'giemsa', 'papanicolaou', 'gram', 'fish',
-                                      'endoscopy', 'colonoscopy', 'bronchoscopy', 'ekg', 'eeg', 'chart'])
-    anatomical_region_label = st.sidebar.selectbox("Anatomical Region Label", options=[''] + ['head', 'neck', 'thorax', 'abdomen', 'pelvis', 'upper_limb', 'lower_limb', 'dental_view'])
-    caption_search = st.sidebar.text_input("Caption Text Search", value='')
-    resource = st.sidebar.selectbox("Resource Type", options=['text', 'image'])
-    license = st.sidebar.selectbox("License", options=['all', 'commercial'])
+        # Age slider: double-sided slider
+        min_age, max_age = st.sidebar.slider("Age", 0, 100, (0, 100))
 
-    # Create filter dictionary
-    filter_dict = {
-        'min_age': min_age,
-        'max_age': max_age,
-        'gender': gender,
-        'case_search': case_search,
-        'image_type_label': image_type_label if image_type_label != '' else None,
-        'anatomical_region_label': anatomical_region_label if anatomical_region_label != '' else None,
-        'caption_search': caption_search,
-        'min_year': min_year,
-        'max_year': max_year,
-        'resource': resource,
-        'license': license
-    }
+        # Gender
+        gender = st.sidebar.selectbox("Gender", options=['Any', 'Female', 'Male'])
 
-    # Instantiate the class
-    cch = ClinicalCaseHub(article_metadata_df, image_metadata_df, cases_df, image_folder='img')
+        # Case Text Search
+        case_search = st.sidebar.text_input("Case Text Search", value='')
 
-    # Apply filters
-    cch.apply_filters(filter_dict)
+        # Image Type Label
+        image_type_options = ['ct', 'mri', 'x_ray', 'ultrasound', 'angiography', 'mammography', 'echocardiogram', 'cholangiogram',
+                              'cta', 'cmr', 'mra', 'mrcp', 'spect', 'pet', 'scintigraphy', 'tractography',
+                              'skin_photograph', 'oral_photograph', 'other_medical_photograph', 'fundus_photograph', 'ophtalmic_angiography', 'oct',
+                              'pathology', 'h&e', 'immunostaining', 'immunofluorescence', 'acid_fast', 'masson_trichrome', 'giemsa', 'papanicolaou', 'gram', 'fish',
+                              'endoscopy', 'colonoscopy', 'bronchoscopy', 'ekg', 'eeg', 'chart']
+        image_type_label = st.sidebar.selectbox("Image Type Label", options=[''] + image_type_options)
+        image_type_label = image_type_label if image_type_label != '' else None
 
-    # Display results
-    if filter_dict['resource'] == 'text':
-        num_results = len(cch.cases_df)
-        st.write(f"Number of results: {num_results}")
-        if num_results == 0:
-            st.write("No results found.")
-        else:
-            for index in range(min(num_results, 10)):
-                display_case_text(cch, index)
-    elif filter_dict['resource'] == 'image':
-        num_results = len(cch.image_metadata_df)
-        st.write(f"Number of results: {num_results}")
-        if num_results == 0:
-            st.write("No results found.")
-        else:
-            for index in range(min(num_results, 10)):
-                display_image(cch, index)
+        # Anatomical Region Label
+        anatomical_region_options = ['head', 'neck', 'thorax', 'abdomen', 'pelvis', 'upper_limb', 'lower_limb', 'dental_view']
+        anatomical_region_label = st.sidebar.selectbox("Anatomical Region Label", options=[''] + anatomical_region_options)
+        anatomical_region_label = anatomical_region_label if anatomical_region_label != '' else None
 
-def display_case_text(cch, index):
+        # Caption Text Search
+        caption_search = st.sidebar.text_input("Caption Text Search", value='')
+
+        # Resource Type, adding 'both' option
+        resource = st.sidebar.selectbox("Resource Type", options=['text', 'image', 'both'])
+
+        # License as horizontal radio buttons
+        license = st.sidebar.radio("License", options=['all', 'commercial'], horizontal=True)
+
+        # Create filter dictionary
+        filter_dict = {
+            'min_age': min_age,
+            'max_age': max_age,
+            'gender': gender,
+            'case_search': case_search,
+            'image_type_label': image_type_label,
+            'anatomical_region_label': anatomical_region_label,
+            'caption_search': caption_search,
+            'min_year': min_year,
+            'max_year': max_year,
+            'resource': resource,
+            'license': license
+        }
+
+        # Load data
+        file_folder = '.'
+        article_metadata_df = load_article_metadata(file_folder)
+        image_metadata_df = load_image_metadata(file_folder)
+        cases_df = load_cases(file_folder, min_year, max_year)
+
+        # Instantiate the class
+        cch = ClinicalCaseHub(article_metadata_df, image_metadata_df, cases_df, image_folder='img')
+
+        # Apply filters
+        cch.apply_filters(filter_dict)
+
+        # Pagination setup
+        results_per_page = 5
+
+        if filter_dict['resource'] == 'text':
+            num_results = len(cch.cases_df)
+            st.write(f"Number of results: {num_results}")
+            if num_results == 0:
+                st.write("No results found.")
+            else:
+                # Pagination
+                total_pages = (num_results + results_per_page - 1) // results_per_page
+                page_number = st.number_input("Page", min_value=1, max_value=total_pages, value=1, step=1)
+                start_idx = (page_number - 1) * results_per_page
+                end_idx = min(start_idx + results_per_page, num_results)
+
+                for index in range(start_idx, end_idx):
+                    display_case_text(cch, index, case_search)
+        elif filter_dict['resource'] == 'image':
+            num_results = len(cch.image_metadata_df)
+            st.write(f"Number of results: {num_results}")
+            if num_results == 0:
+                st.write("No results found.")
+            else:
+                # Pagination
+                total_pages = (num_results + results_per_page - 1) // results_per_page
+                page_number = st.number_input("Page", min_value=1, max_value=total_pages, value=1, step=1)
+                start_idx = (page_number - 1) * results_per_page
+                end_idx = min(start_idx + results_per_page, num_results)
+
+                for index in range(start_idx, end_idx):
+                    display_image(cch, index)
+        elif filter_dict['resource'] == 'both':
+            num_results = len(cch.cases_df)
+            st.write(f"Number of results: {num_results}")
+            if num_results == 0:
+                st.write("No results found.")
+            else:
+                # Pagination
+                total_pages = (num_results + results_per_page - 1) // results_per_page
+                page_number = st.number_input("Page", min_value=1, max_value=total_pages, value=1, step=1)
+                start_idx = (page_number - 1) * results_per_page
+                end_idx = min(start_idx + results_per_page, num_results)
+
+                for index in range(start_idx, end_idx):
+                    display_case_both(cch, index, case_search)
+
+    elif selected == "About":
+        st.title("About")
+        st.write("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
+
+def display_case_text(cch, index, case_search):
     """
     Display text case information.
     """
@@ -225,13 +290,31 @@ def display_case_text(cch, index):
     article_citation = cch.metadata_df[cch.metadata_df.article_id == article_id].citation.iloc[0]
     article_link = cch.metadata_df[cch.metadata_df.article_id == article_id].link.iloc[0]
 
-    # Display data
-    st.subheader(f"Case ID: {case_id}")
-    st.write(f"Gender: {patient_gender}")
-    st.write(f"Age: {patient_age}")
-    st.write(case_text)
-    st.write(f"Article Link: [Link]({article_link})")
-    st.write(f"Citation: {article_citation}")
+    # Highlight search term in case_text
+    if case_search:
+        pattern = re.compile(re.escape(case_search), re.IGNORECASE)
+        highlighted_text = pattern.sub(f'<mark>{case_search}</mark>', case_text)
+    else:
+        highlighted_text = case_text
+
+    with st.container():
+        st.markdown(
+            """
+            <div style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
+            """,
+            unsafe_allow_html=True
+        )
+        st.subheader(f"Case ID: {case_id}")
+        st.write(f"Gender: {patient_gender}")
+        st.write(f"Age: {patient_age}")
+        with st.expander("Case Description"):
+            st.markdown(
+                f"<div style='text-align: justify;'>{highlighted_text}</div>",
+                unsafe_allow_html=True
+            )
+        st.write(f"Article Link: [Link]({article_link})")
+        st.write(f"Citation: {article_citation}")
+        st.markdown("</div>", unsafe_allow_html=True)
 
 def display_image(cch, index):
     """
@@ -250,16 +333,74 @@ def display_image(cch, index):
     article_citation = cch.metadata_df[cch.metadata_df.article_id == article_id].citation.iloc[0]
     article_link = cch.metadata_df[cch.metadata_df.article_id == article_id].link.iloc[0]
 
-    st.subheader(f"Case ID: {case_id}")
-    st.write(f"Gender: {patient_gender}")
-    st.write(f"Age: {patient_age}")
+    with st.container():
+        st.markdown(
+            """
+            <div style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
+            """,
+            unsafe_allow_html=True
+        )
+        st.subheader(f"Case ID: {case_id}")
+        st.write(f"Gender: {patient_gender}")
+        st.write(f"Age: {patient_age}")
 
-    # Display image
-    st.image(Image.open(image_path), caption=image_caption)
+        # Display image
+        st.image(Image.open(image_path), caption=image_caption)
 
-    st.write(f"Image Labels: {', '.join(image_labels)}")
-    st.write(f"Article Link: [Link]({article_link})")
-    st.write(f"Citation: {article_citation}")
+        st.write(f"Image Labels: {', '.join(image_labels)}")
+        st.write(f"Article Link: [Link]({article_link})")
+        st.write(f"Citation: {article_citation}")
+        st.markdown("</div>", unsafe_allow_html=True)
+
+def display_case_both(cch, index, case_search):
+    """
+    Display both text and images for a case.
+    """
+    # Get data
+    patient_age = cch.cases_df.age.iloc[index]
+    patient_gender = cch.cases_df.gender.iloc[index]
+    case_id = cch.cases_df.case_id.iloc[index]
+    case_text = cch.cases_df.case_text.iloc[index]
+    article_id = cch.cases_df.article_id.iloc[index]
+    article_citation = cch.metadata_df[cch.metadata_df.article_id == article_id].citation.iloc[0]
+    article_link = cch.metadata_df[cch.metadata_df.article_id == article_id].link.iloc[0]
+
+    # Highlight search term in case_text
+    if case_search:
+        pattern = re.compile(re.escape(case_search), re.IGNORECASE)
+        highlighted_text = pattern.sub(f'<mark>{case_search}</mark>', case_text)
+    else:
+        highlighted_text = case_text
+
+    with st.container():
+        st.markdown(
+            """
+            <div style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
+            """,
+            unsafe_allow_html=True
+        )
+        st.subheader(f"Case ID: {case_id}")
+        st.write(f"Gender: {patient_gender}")
+        st.write(f"Age: {patient_age}")
+
+        with st.expander("Case Description"):
+            st.markdown(
+                f"<div style='text-align: justify;'>{highlighted_text}</div>",
+                unsafe_allow_html=True
+            )
+
+        # Display images associated with this case
+        images = cch.image_metadata_df[cch.image_metadata_df.case_id == case_id]
+        if not images.empty:
+            for idx in images.index:
+                image_file = images.at[idx, 'file']
+                image_path = os.path.join(cch.image_folder, image_file)
+                image_caption = images.at[idx, 'caption']
+                st.image(Image.open(image_path), caption=image_caption)
+
+        st.write(f"Article Link: [Link]({article_link})")
+        st.write(f"Citation: {article_citation}")
+        st.markdown("</div>", unsafe_allow_html=True)
 
 if __name__ == '__main__':
     main()
