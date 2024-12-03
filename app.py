@@ -163,6 +163,12 @@ st.markdown(
         margin: auto;
         height: 45px;
     }
+
+    . stFormSubmitButton .stButton, .stDownloadButton {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
     </style>
     """,
     unsafe_allow_html=True,
@@ -233,14 +239,16 @@ def main():
                 submitted = st.form_submit_button("Apply Filters")
 
             with col3:
+                            
+                # License as horizontal radio buttons
+                license = st.radio("License", options=['all', 'commercial'], horizontal=True)
+                
                 # Caption Text Search
                 caption_search = st.text_input("Caption Text Search", value='')
             
                 # Resource Type, adding 'both' option
                 resource = st.selectbox("Resource Type", options=['text', 'image', 'both'], index=0)
-            
-                # License as horizontal radio buttons
-                license = st.radio("License", options=['all', 'commercial'], horizontal=True)
+
     
             
             st.sidebar.divider()
