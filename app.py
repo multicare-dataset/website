@@ -1,0 +1,264 @@
+import streamlit as st
+import pandas as pd
+import ast
+import os
+import re
+from PIL import Image
+
+# Functions to load data with caching to improve performance
+@st.cache_data
+def load_article_metadata(file_folder):
+    """
+    Load article metadata from a parquet file.
+    """
+    df = pd.read_parquet(os.path.join(file_folder, 'article_metadata_website_version.parquet'))
+    df['year'] = df['year'].astype(int)
+    return df
+
+@st.cache_data
+def load_image_metadata(file_folder):
+    """
+    Load image metadata from a parquet file.
+    """
+    df = pd.read_parquet(os.path.join(file_folder, 'image_metadata_website_version.parquet'))
+    df['labels'] = df.labels.apply(ast.literal_eval)
+    return df
+
+@st.cache_data
+def load_cases(file_folder, min_year, max_year):
+    """
+    Load case data from multiple parquet files based on the year range.
+    """
+    df = pd.DataFrame()
+    for file_ in ['cases_1990_2012.parquet', 'cases_2013_2017.parquet', 'cases_2018_2021.parquet', 'cases_2022_2024.parquet']:
+        years = file_.split('.')[0].split('_')[1:]
+        if (max_year >= int(years[0])) and (min_year <= int(years[1])):
+            df = pd.concat([df, pd.read_parquet(os.path.join(file_folder, file_))], ignore_index=True)
+    return df
+
+class ClinicalCaseHub():
+
+    def __init__(self, article_metadata_df, image_metadata_df, cases_df, image_folder='img'):
+        """
+        Class initialization.
+        article_metadata_df (DataFrame): DataFrame containing article metadata.
+        image_metadata_df (DataFrame): DataFrame containing image metadata.
+        cases_df (DataFrame): DataFrame containing case data.
+        image_folder (str): Folder where images are stored.
+        """
+        self.image_folder = image_folder
+
+        self.full_metadata_df = article_metadata_df.copy()
+        self.full_image_metadata_df = image_metadata_df.copy()
+        self.full_image_metadata_df['labels'] = self.full_image_metadata_df.labels.apply(ast.literal_eval)
+        self.full_cases_df = cases_df.copy()
+        self.full_cases_df['age'] = self.full_cases_df['age'].astype(int, errors='ignore')
+
+    def apply_filters(self, filter_dict):
+        """
+        Apply filters to the data based on the filter dictionary.
+        filter_dict (dict): Dictionary containing filter parameters.
+        """
+        self.filter_dict = filter_dict
+
+        # Filter article metadata
+        self.metadata_df = self.full_metadata_df[
+            (self.full_metadata_df.year >= self.filter_dict['min_year']) &
+            (self.full_metadata_df.year <= self.filter_dict['max_year'])
+        ].copy()
+        if self.filter_dict['license'] == 'commercial':
+            self.metadata_df = self.metadata_df[self.metadata_df.commercial_use_license == True]
+
+        # Filter cases
+        self.cases_df = self.full_cases_df[self.full_cases_df['article_id'].isin(self.metadata_df['article_id'])]
+        if self.filter_dict['min_age'] != 0:
+            self.cases_df = self.cases_df[self.cases_df.age >= self.filter_dict['min_age']]
+        if self.filter_dict['max_age'] != 100:
+            self.cases_df = self.cases_df[self.cases_df.age <= self.filter_dict['max_age']]
+        if self.filter_dict['gender'] != 'Any':
+            self.cases_df = self.cases_df[self.cases_df.gender == self.filter_dict['gender']]
+        if self.filter_dict['case_search']:
+            self.cases_df = self.cases_df[self.cases_df.case_text.apply(lambda x: self._text_matches_conditions(x, self.filter_dict['case_search']))]
+
+        # Filter image metadata
+        self.image_metadata_df = self.full_image_metadata_df.copy()
+        self.image_metadata_df = self.image_metadata_df[self.image_metadata_df['article_id'].isin(self.metadata_df['article_id'])]
+        if self.filter_dict['image_type_label']:
+            self.image_metadata_df = self.image_metadata_df[self.image_metadata_df.labels.apply(lambda x: self.filter_dict['image_type_label'] in x)]
+        if self.filter_dict['anatomical_region_label']:
+            self.image_metadata_df = self.image_metadata_df[self.image_metadata_df.labels.apply(lambda x: self.filter_dict['anatomical_region_label'] in x)]
+        if filter_dict['caption_search']:
+            self.image_metadata_df = self.image_metadata_df[self.image_metadata_df.caption.apply(lambda x: self._text_matches_conditions(x, self.filter_dict['caption_search']))]
+
+        # Harmonize data
+        self.filtered_article_ids = set(self.metadata_df['article_id'].unique()) & set(self.cases_df['article_id'].unique()) & set(self.image_metadata_df['article_id'].unique())
+        self.filtered_case_ids = set(self.cases_df['case_id'].unique()) & set(self.image_metadata_df['case_id'].unique())
+
+        self.metadata_df = self.metadata_df[self.metadata_df['article_id'].isin(self.filtered_article_ids)]
+        self.cases_df = self.cases_df[(self.cases_df['case_id'].isin(self.filtered_case_ids)) & (self.cases_df['article_id'].isin(self.filtered_article_ids))]
+        self.image_metadata_df = self.image_metadata_df[(self.image_metadata_df['case_id'].isin(self.filtered_case_ids)) & (self.image_metadata_df['article_id'].isin(self.filtered_article_ids))]
+
+    def _text_matches_conditions(self, text, query):
+        """
+        Checks if a given text meets all conditions defined in the parsed list.
+        """
+        parsed_list = self._parse_search_string(query)
+        text = text.lower()  # Make text lowercase for case-insensitivity
+        for condition in parsed_list:
+            operator = condition['operator']
+            substrings = condition['substring']
+            if operator == "AND":
+                # True if the text contains any of the substrings as full words
+                if not any(self._full_word_match(text, sub) for sub in substrings):
+                    return False
+            elif operator == "NOT":
+                # False if the text contains any of the substrings as full words
+                if any(self._full_word_match(text, sub) for sub in substrings):
+                    return False
+        return True
+
+    def _parse_search_string(self, query):
+        """
+        Parses a search string into a list of dictionaries with operators and substrings.
+        """
+        # Split by AND and NOT while keeping the delimiters
+        tokens = re.split(r'(?<=\b)(AND|NOT)(?=\b)', query, flags=re.IGNORECASE)
+        parsed_list = []
+        current_operator = "AND"  # Default operator
+        for token in tokens:
+            token = token.strip()
+            if token.upper() in ["AND", "NOT"]:
+                current_operator = token.upper()
+            elif token:
+                # Split the substring by OR and clean it
+                substrings = [sub.strip(' "').strip() for sub in token.lower().split(" or ")]
+                substrings = [re.sub(r'^[^a-zA-Z0-9\s]+|[^a-zA-Z0-9\s]+$', '', substring) for substring in substrings]
+                parsed_list.append({'operator': current_operator, 'substring': substrings})
+        return parsed_list
+
+    def _full_word_match(self, text, word):
+        """
+        Checks if a word matches as a full word in the text, ignoring case and boundaries.
+        """
+        # Use regex with word boundaries for full-word match
+        return re.search(rf'\b{re.escape(word.lower())}\b', text) is not None
+
+def main():
+    st.title("Clinical Case Hub")
+
+    # Sidebar with filters
+    st.sidebar.header("Filters")
+
+    min_year = st.sidebar.slider("Minimum Year", min_value=1990, max_value=2024, value=1990)
+    max_year = st.sidebar.slider("Maximum Year", min_value=1990, max_value=2024, value=2024)
+
+    # Load data
+    file_folder = '.'
+    article_metadata_df = load_article_metadata(file_folder)
+    image_metadata_df = load_image_metadata(file_folder)
+    cases_df = load_cases(file_folder, min_year, max_year)
+
+    min_age = st.sidebar.slider("Minimum Age", min_value=0, max_value=100, value=0)
+    max_age = st.sidebar.slider("Maximum Age", min_value=0, max_value=100, value=100)
+    gender = st.sidebar.selectbox("Gender", options=['Any', 'Female', 'Male'])
+    case_search = st.sidebar.text_input("Case Text Search", value='')
+    image_type_label = st.sidebar.selectbox("Image Type Label", options=[''] + ['ct', 'mri', 'x_ray', 'ultrasound', 'angiography', 'mammography', 'echocardiogram', 'cholangiogram',
+                                      'cta', 'cmr', 'mra', 'mrcp', 'spect', 'pet', 'scintigraphy', 'tractography',
+                                      'skin_photograph', 'oral_photograph', 'other_medical_photograph', 'fundus_photograph', 'ophtalmic_angiography', 'oct',
+                                      'pathology', 'h&e', 'immunostaining', 'immunofluorescence', 'acid_fast', 'masson_trichrome', 'giemsa', 'papanicolaou', 'gram', 'fish',
+                                      'endoscopy', 'colonoscopy', 'bronchoscopy', 'ekg', 'eeg', 'chart'])
+    anatomical_region_label = st.sidebar.selectbox("Anatomical Region Label", options=[''] + ['head', 'neck', 'thorax', 'abdomen', 'pelvis', 'upper_limb', 'lower_limb', 'dental_view'])
+    caption_search = st.sidebar.text_input("Caption Text Search", value='')
+    resource = st.sidebar.selectbox("Resource Type", options=['text', 'image'])
+    license = st.sidebar.selectbox("License", options=['all', 'commercial'])
+
+    # Create filter dictionary
+    filter_dict = {
+        'min_age': min_age,
+        'max_age': max_age,
+        'gender': gender,
+        'case_search': case_search,
+        'image_type_label': image_type_label if image_type_label != '' else None,
+        'anatomical_region_label': anatomical_region_label if anatomical_region_label != '' else None,
+        'caption_search': caption_search,
+        'min_year': min_year,
+        'max_year': max_year,
+        'resource': resource,
+        'license': license
+    }
+
+    # Instantiate the class
+    cch = ClinicalCaseHub(article_metadata_df, image_metadata_df, cases_df, image_folder='img')
+
+    # Apply filters
+    cch.apply_filters(filter_dict)
+
+    # Display results
+    if filter_dict['resource'] == 'text':
+        num_results = len(cch.cases_df)
+        st.write(f"Number of results: {num_results}")
+        if num_results == 0:
+            st.write("No results found.")
+        else:
+            for index in range(min(num_results, 10)):
+                display_case_text(cch, index)
+    elif filter_dict['resource'] == 'image':
+        num_results = len(cch.image_metadata_df)
+        st.write(f"Number of results: {num_results}")
+        if num_results == 0:
+            st.write("No results found.")
+        else:
+            for index in range(min(num_results, 10)):
+                display_image(cch, index)
+
+def display_case_text(cch, index):
+    """
+    Display text case information.
+    """
+    # Get data
+    patient_age = cch.cases_df.age.iloc[index]
+    patient_gender = cch.cases_df.gender.iloc[index]
+    case_id = cch.cases_df.case_id.iloc[index]
+    case_text = cch.cases_df.case_text.iloc[index]
+    article_id = cch.cases_df.article_id.iloc[index]
+    article_citation = cch.metadata_df[cch.metadata_df.article_id == article_id].citation.iloc[0]
+    article_link = cch.metadata_df[cch.metadata_df.article_id == article_id].link.iloc[0]
+
+    # Display data
+    st.subheader(f"Case ID: {case_id}")
+    st.write(f"Gender: {patient_gender}")
+    st.write(f"Age: {patient_age}")
+    st.write(case_text)
+    st.write(f"Article Link: [Link]({article_link})")
+    st.write(f"Citation: {article_citation}")
+
+def display_image(cch, index):
+    """
+    Display image and related information.
+    """
+    image_file = cch.image_metadata_df.file.iloc[index]
+    image_path = os.path.join(cch.image_folder, image_file)
+    image_caption = cch.image_metadata_df.caption.iloc[index]
+    image_labels = cch.image_metadata_df.labels.iloc[index]
+    case_id = cch.image_metadata_df.case_id.iloc[index]
+    article_id = cch.image_metadata_df.article_id.iloc[index]
+
+    patient_age = cch.cases_df[cch.cases_df.case_id == case_id].age.iloc[0]
+    patient_gender = cch.cases_df[cch.cases_df.case_id == case_id].gender.iloc[0]
+
+    article_citation = cch.metadata_df[cch.metadata_df.article_id == article_id].citation.iloc[0]
+    article_link = cch.metadata_df[cch.metadata_df.article_id == article_id].link.iloc[0]
+
+    st.subheader(f"Case ID: {case_id}")
+    st.write(f"Gender: {patient_gender}")
+    st.write(f"Age: {patient_age}")
+
+    # Display image
+    st.image(Image.open(image_path), caption=image_caption)
+
+    st.write(f"Image Labels: {', '.join(image_labels)}")
+    st.write(f"Article Link: [Link]({article_link})")
+    st.write(f"Citation: {article_citation}")
+
+if __name__ == '__main__':
+    main()
