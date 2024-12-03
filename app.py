@@ -21,6 +21,7 @@ def load_image_metadata(file_folder):
     Load image metadata from a parquet file.
     """
     df = pd.read_parquet(os.path.join(file_folder, 'image_metadata_website_version.parquet'))
+    df.rename({'postprocessed_label_list': 'labels'}, axis = 1, inplace = True)
     df['labels'] = df.labels.apply(ast.literal_eval)
     return df
 
