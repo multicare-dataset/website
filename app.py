@@ -272,7 +272,7 @@ def main():
                 end_idx = min(start_idx + results_per_page, num_results)
 
                 for index in range(start_idx, end_idx):
-                    display_case_text(cch, index, case_search)
+                    display_case_text(cch, index)
         elif filter_dict['resource'] == 'image':
             num_results = len(cch.image_metadata_df)
             st.write(f"Number of results: {num_results}")
@@ -300,45 +300,14 @@ def main():
                 end_idx = min(start_idx + results_per_page, num_results)
 
                 for index in range(start_idx, end_idx):
-                    display_case_both(cch, index, case_search)
+                    display_case_both(cch, index)
 
     elif selected == "About":
         st.title("About")
         st.write("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
 
-def highlight_with_annotated_text(case_text, search_term):
-    """
-    Highlights the search term in the provided case text using st-annotated-text.
-    """
-    if not search_term.strip():
-        # If no search term or it's empty, return plain text as a single part
-        return [case_text]
-
-    # Compile regex pattern to find matches for the search term
-    pattern = re.compile(re.escape(search_term), re.IGNORECASE)
-
-    # Split the text into parts with and without highlights
-    highlighted_parts = []
-    last_end = 0  # Tracks the end of the last processed section
-
-    for match in pattern.finditer(case_text):
-        # Append the text before the match (if any)
-        if match.start() > last_end:
-            highlighted_parts.append(case_text[last_end:match.start()])
-        
-        # Append the matched text with highlight
-        highlighted_parts.append((match.group(0), "match", "#00A2E8"))  # Highlight in yellow
-        
-        # Update last_end to after the current match
-        last_end = match.end()
-
-    # Append any remaining text after the last match
-    if last_end < len(case_text):
-        highlighted_parts.append(case_text[last_end:])
-
-    return highlighted_parts
-    
-def display_case_text(cch, index, search_term):
+   
+def display_case_text(cch, index):
     """
     Display text case information.
     """
@@ -351,20 +320,20 @@ def display_case_text(cch, index, search_term):
     article_citation = cch.metadata_df[cch.metadata_df.article_id == article_id].citation.iloc[0]
     # article_link = cch.metadata_df[cch.metadata_df.article_id == article_id].link.iloc[0]
 
-    # Highlight search term
-    highlighted_text = highlight_with_annotated_text(case_text, search_term)
-
     with st.container(border=True):
         st.subheader(f"Case ID: {case_id}")
         st.write(f"Gender: {patient_gender}")
         st.write(f"Age: {patient_age}")
         
-        #with st.expander("Case Description"):
-        # Render highlighted text using annotated_text
-        annotated_text(*highlighted_text)
+        with st.expander("Case Description"):
+            st.markdown(
+                f"<div style='text-align: justify; padding:2rem;'>{highlighted_text}</div>",
+                unsafe_allow_html=True
+            )
             
         #  st.write(f"Article Link: [Link]({article_link})")
         st.write(f"Citation: {article_citation}")
+
 
 def display_image(cch, index):
     """
@@ -381,7 +350,7 @@ def display_image(cch, index):
     patient_gender = cch.cases_df[cch.cases_df.case_id == case_id].gender.iloc[0]
 
     article_citation = cch.metadata_df[cch.metadata_df.article_id == article_id].citation.iloc[0]
-    # article_link = cch.metadata_df[cch.metadata_df.article_id == article_id].link.iloc[0]
+    article_link = cch.metadata_df[cch.metadata_df.article_id == article_id].link.iloc[0]
 
     with st.container(border=True):
         st.subheader(f"Case ID: {case_id}")
@@ -395,7 +364,7 @@ def display_image(cch, index):
         # st.write(f"Article Link: [Link]({article_link})")
         st.write(f"Citation: {article_citation}")
 
-def display_case_both(cch, index, case_search):
+def display_case_both(cch, index):
     """
     Display both text and images for a case.
     """
@@ -408,16 +377,15 @@ def display_case_both(cch, index, case_search):
     article_citation = cch.metadata_df[cch.metadata_df.article_id == article_id].citation.iloc[0]
     article_link = cch.metadata_df[cch.metadata_df.article_id == article_id].link.iloc[0]
 
-    # Highlight search term
-    highlighted_text = highlight_with_annotated_text(case_text, search_term)
-
     with st.container(border=True):
         st.subheader(f"Case ID: {case_id}")
         st.write(f"Gender: {patient_gender}")
         st.write(f"Age: {patient_age}")
         with st.expander("Case Description"):
-            # Render highlighted text using annotated_text
-            annotated_text(*highlighted_text)
+            st.markdown(
+                f"<div style='text-align: justify; padding:2rem;'>{highlighted_text}</div>",
+                unsafe_allow_html=True
+            )
 
         # Display images associated with this case
         images = cch.image_metadata_df[cch.image_metadata_df.case_id == case_id]
