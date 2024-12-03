@@ -261,57 +261,57 @@ def main():
         # Instantiate the class
         cch = ClinicalCaseHub(article_metadata_df, image_metadata_df, cases_df, image_folder='img')
 
+        #cch.apply_filters(filter_dict)
         # Sidebar filters
         if st.sidebar.button("Search"):
             cch.apply_filters(filter_dict)
         
-        #cch.apply_filters(filter_dict)
 
-        # Pagination setup
-        results_per_page = 5
-
-        if filter_dict['resource'] == 'text':
-            num_results = len(cch.cases_df)
-            st.write(f"Number of results: {num_results}")
-            if num_results == 0:
-                st.write("No results found.")
-            else:
-                # Pagination
-                total_pages = (num_results + results_per_page - 1) // results_per_page
-                page_number = st.number_input("Page", min_value=1, max_value=total_pages, value=1, step=1)
-                start_idx = (page_number - 1) * results_per_page
-                end_idx = min(start_idx + results_per_page, num_results)                  
-                for index in range(start_idx, end_idx):
-                    display_case_text(cch, index)
-                    
-        elif filter_dict['resource'] == 'image':
-            num_results = len(cch.image_metadata_df)
-            st.write(f"Number of results: {num_results}")
-            if num_results == 0:
-                st.write("No results found.")
-            else:
-                # Pagination
-                total_pages = (num_results + results_per_page - 1) // results_per_page
-                page_number = st.number_input("Page", min_value=1, max_value=total_pages, value=1, step=1)
-                start_idx = (page_number - 1) * results_per_page
-                end_idx = min(start_idx + results_per_page, num_results)
-                for index in range(start_idx, end_idx):
-                    display_image(cch, index)
-        
-        elif filter_dict['resource'] == 'both':
-            num_results = len(cch.cases_df)
-            st.write(f"Number of results: {num_results}")
-            if num_results == 0:
-                st.write("No results found.")
-            else:
-                # Pagination
-                total_pages = (num_results + results_per_page - 1) // results_per_page
-                page_number = st.number_input("Page", min_value=1, max_value=total_pages, value=1, step=1)
-                start_idx = (page_number - 1) * results_per_page
-                end_idx = min(start_idx + results_per_page, num_results)
-
-                for index in range(start_idx, end_idx):
-                    display_case_both(cch, index)
+            # Pagination setup
+            results_per_page = 5
+    
+            if filter_dict['resource'] == 'text':
+                num_results = len(cch.cases_df)
+                st.write(f"Number of results: {num_results}")
+                if num_results == 0:
+                    st.write("No results found.")
+                else:
+                    # Pagination
+                    total_pages = (num_results + results_per_page - 1) // results_per_page
+                    page_number = st.number_input("Page", min_value=1, max_value=total_pages, value=1, step=1)
+                    start_idx = (page_number - 1) * results_per_page
+                    end_idx = min(start_idx + results_per_page, num_results)                  
+                    for index in range(start_idx, end_idx):
+                        display_case_text(cch, index)
+                        
+            elif filter_dict['resource'] == 'image':
+                num_results = len(cch.image_metadata_df)
+                st.write(f"Number of results: {num_results}")
+                if num_results == 0:
+                    st.write("No results found.")
+                else:
+                    # Pagination
+                    total_pages = (num_results + results_per_page - 1) // results_per_page
+                    page_number = st.number_input("Page", min_value=1, max_value=total_pages, value=1, step=1)
+                    start_idx = (page_number - 1) * results_per_page
+                    end_idx = min(start_idx + results_per_page, num_results)
+                    for index in range(start_idx, end_idx):
+                        display_image(cch, index)
+            
+            elif filter_dict['resource'] == 'both':
+                num_results = len(cch.cases_df)
+                st.write(f"Number of results: {num_results}")
+                if num_results == 0:
+                    st.write("No results found.")
+                else:
+                    # Pagination
+                    total_pages = (num_results + results_per_page - 1) // results_per_page
+                    page_number = st.number_input("Page", min_value=1, max_value=total_pages, value=1, step=1)
+                    start_idx = (page_number - 1) * results_per_page
+                    end_idx = min(start_idx + results_per_page, num_results)
+    
+                    for index in range(start_idx, end_idx):
+                        display_case_both(cch, index)
 
     elif selected == "About":
         st.title("About")
