@@ -5,7 +5,7 @@ import os
 import re
 from PIL import Image
 from streamlit_option_menu import option_menu
-from annotated_text import annotated_text
+
 
 # Functions to load data with caching to improve performance
 @st.cache_data
@@ -155,12 +155,13 @@ st.markdown(
     """
     <style>
     .stMainBlockContainer {
-        padding-top: 2.2rem;
+        padding-top: 3rem;
     }
 
     .stLogo {
         margin: auto;
         height: 45px;
+    }
     </style>
     """,
     unsafe_allow_html=True,
