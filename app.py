@@ -5,6 +5,7 @@ import os
 import re
 from PIL import Image
 from streamlit_option_menu import option_menu
+from annotated_text import annotated_text
 
 # Functions to load data with caching to improve performance
 @st.cache_data
@@ -305,7 +306,36 @@ def main():
         st.title("About")
         st.write("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
 
-def display_case_text(cch, index, case_search):
+def highlight_with_annotated_text(case_text, search_term):
+    """
+    Highlights the search term in the provided case text using st-annotated-text.
+    """
+    if not search_term:
+        return [(case_text,)]
+
+    # Compile regex pattern to find all matches for the search term
+    pattern = re.compile(re.escape(search_term), re.IGNORECASE)
+    matches = list(pattern.finditer(case_text))
+    
+    # Build the annotated text
+    highlighted_parts = []
+    last_end = 0
+    for match in matches:
+        # Text before the match
+        if match.start() > last_end:
+            highlighted_parts.append(case_text[last_end:match.start()])
+        
+        # Highlighted match
+        highlighted_parts.append((match.group(0), "match", "#ffff00"))
+        last_end = match.end()
+    
+    # Remaining text after the last match
+    if last_end < len(case_text):
+        highlighted_parts.append(case_text[last_end:])
+    
+    return highlighted_parts
+
+def display_case_text(cch, index, search_term):
     """
     Display text case information.
     """
@@ -316,29 +346,21 @@ def display_case_text(cch, index, case_search):
     case_text = cch.cases_df.case_text.iloc[index]
     article_id = cch.cases_df.article_id.iloc[index]
     article_citation = cch.metadata_df[cch.metadata_df.article_id == article_id].citation.iloc[0]
-    article_link = cch.metadata_df[cch.metadata_df.article_id == article_id].link.iloc[0]
+    # article_link = cch.metadata_df[cch.metadata_df.article_id == article_id].link.iloc[0]
 
-    # Highlight search term in case_text
-    if case_search:
-        pattern = re.compile(re.escape(case_search), re.IGNORECASE)
-        highlighted_text = pattern.sub(
-            lambda match: f'<span style="background-color: yellow; font-weight: bold;">{match.group(0)}</span>',
-            case_text
-        )
-    else:
-        highlighted_text = case_text
+    # Highlight search term
+    highlighted_text = highlight_with_annotated_text(case_text, search_term)
 
     with st.container(border=True):
         st.subheader(f"Case ID: {case_id}")
         st.write(f"Gender: {patient_gender}")
         st.write(f"Age: {patient_age}")
         with st.expander("Case Description"):
-            # Render highlighted text with HTML
-            st.write(f"<div style='text-align: justify; padding: 2rem;'>{highlighted_text}</div>", unsafe_allow_html=True)
+            # Render highlighted text using annotated_text
+            annotated_text(*highlighted_text)
             
         st.write(f"Article Link: [Link]({article_link})")
         st.write(f"Citation: {article_citation}")
-        st.markdown("</div>", unsafe_allow_html=True)
 
 def display_image(cch, index):
     """
@@ -355,7 +377,7 @@ def display_image(cch, index):
     patient_gender = cch.cases_df[cch.cases_df.case_id == case_id].gender.iloc[0]
 
     article_citation = cch.metadata_df[cch.metadata_df.article_id == article_id].citation.iloc[0]
-    article_link = cch.metadata_df[cch.metadata_df.article_id == article_id].link.iloc[0]
+    # article_link = cch.metadata_df[cch.metadata_df.article_id == article_id].link.iloc[0]
 
     with st.container(border=True):
         st.subheader(f"Case ID: {case_id}")
@@ -368,7 +390,6 @@ def display_image(cch, index):
         st.write(f"Image Labels: {', '.join(image_labels)}")
         # st.write(f"Article Link: [Link]({article_link})")
         st.write(f"Citation: {article_citation}")
-        st.markdown("</div>", unsafe_allow_html=True)
 
 def display_case_both(cch, index, case_search):
     """
@@ -383,23 +404,16 @@ def display_case_both(cch, index, case_search):
     article_citation = cch.metadata_df[cch.metadata_df.article_id == article_id].citation.iloc[0]
     article_link = cch.metadata_df[cch.metadata_df.article_id == article_id].link.iloc[0]
 
-    # Highlight search term in case_text
-    if case_search:
-        pattern = re.compile(re.escape(case_search), re.IGNORECASE)
-        highlighted_text = pattern.sub(
-            lambda match: f'<span style="background-color: yellow; font-weight: bold;">{match.group(0)}</span>',
-            case_text
-        )
-    else:
-        highlighted_text = case_text
+    # Highlight search term
+    highlighted_text = highlight_with_annotated_text(case_text, search_term)
 
     with st.container(border=True):
         st.subheader(f"Case ID: {case_id}")
         st.write(f"Gender: {patient_gender}")
         st.write(f"Age: {patient_age}")
         with st.expander("Case Description"):
-            # Render highlighted text with HTML
-            st.write(f"<div style='text-align: justify; padding: 2rem;'>{highlighted_text}</div>", unsafe_allow_html=True)
+            # Render highlighted text using annotated_text
+            annotated_text(*highlighted_text)
 
         # Display images associated with this case
         images = cch.image_metadata_df[cch.image_metadata_df.case_id == case_id]
@@ -412,7 +426,7 @@ def display_case_both(cch, index, case_search):
 
         # st.write(f"Article Link: [Link]({article_link})")
         st.write(f"Citation: {article_citation}")
-        st.markdown("</div>", unsafe_allow_html=True)
+
 
 if __name__ == '__main__':
     main()
