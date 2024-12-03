@@ -164,7 +164,9 @@ st.markdown(
 
 def main():
     with st.sidebar:
-    # Define the menu options
+        st.logo("multicare-logo.svg", size="medium")
+    
+        # Define the menu options
         selected = option_menu(
             menu_title=None,
             options=["Home", "Search", "About"],
@@ -174,17 +176,21 @@ def main():
             orientation="vertical",
             styles={
                 "container": {"padding": "0!important", "background-color": "transparent"},
-                "nav-link-selected": {"background-color": "#0F376A80", "font-weight": 700},
+                "nav-link-selected": {"background-color": "#12588E80", "font-weight": 700},
             },
         )
 
     if selected == "Home":
         st.title("Clinical Case Hub")
         image_path = os.path.join('.', 'medical_doctor_desktop.webp')
-        st.image(Image.open(image_path))
+        col1, col2, col3 = st.columns([1, 1, 1])
+        with col2:
+            st.image(Image.open(image_path))
 
     elif selected == "Search":
         # Sidebar with filters
+        st.sidebar.divider()
+        
         st.sidebar.header("Filters")
 
         # Year slider: double-sided slider
