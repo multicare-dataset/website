@@ -192,7 +192,6 @@ def main():
                 "nav-link-selected": {"background-color": "#12588ECC", "font-weight": 700},
             },
         )
-        st.markdown('#')
         
         image_path = os.path.join('.', 'medical_doctor_desktop.webp')
         st.image(Image.open(image_path))
