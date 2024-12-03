@@ -192,6 +192,8 @@ def main():
                 "nav-link-selected": {"background-color": "#12588ECC", "font-weight": 700},
             },
         )
+        st.markdown('#')
+        
         image_path = os.path.join('.', 'medical_doctor_desktop.webp')
         st.image(Image.open(image_path))
 
@@ -203,7 +205,7 @@ def main():
     elif selected == "Search":      
 
         with st.form("filter_form"):
-            st.header("Filters")
+            st.subheader("Filters")
 
             col1, col2, col3 = st.columns(3)
             
