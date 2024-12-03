@@ -307,8 +307,8 @@ def main():
                     end_idx = min(start_idx + results_per_page, num_results)
                     for index in start_idx:end_idx:
                         display_case_both(cch, index)
-        else:
-            st.write("Please perform a search to display results.")
+    else:
+        st.write("Please perform a search to display results.")
        
 def display_case_text(cch, index):
     """
