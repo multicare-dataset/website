@@ -6,6 +6,8 @@ import re
 from PIL import Image
 from streamlit_option_menu import option_menu
 
+# Streamlit page configuration
+st.set_page_config(page_title="Multicare Dataset", page_icon=":stethoscope:", layout="wide")
 
 # Functions to load data with caching to improve performance
 @st.cache_data
