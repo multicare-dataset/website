@@ -359,7 +359,7 @@ def display_case_text(cch, index, search_term):
             # Render highlighted text using annotated_text
             annotated_text(*highlighted_text)
             
-        st.write(f"Article Link: [Link]({article_link})")
+        #  st.write(f"Article Link: [Link]({article_link})")
         st.write(f"Citation: {article_citation}")
 
 def display_image(cch, index):
