@@ -51,9 +51,13 @@ class ClinicalCaseHub():
 
         self.full_metadata_df = article_metadata_df.copy()
         self.full_image_metadata_df = image_metadata_df.copy()
-        self.full_image_metadata_df['labels'] = self.full_image_metadata_df.labels.apply(ast.literal_eval)
+        #self.full_image_metadata_df['labels'] = self.full_image_metadata_df.labels.apply(ast.literal_eval)
         self.full_cases_df = cases_df.copy()
         self.full_cases_df['age'] = self.full_cases_df['age'].astype(int, errors='ignore')
+
+        # Inspect the 'labels' column
+        st.write("First few entries of 'labels' column:", self.full_image_metadata_df['labels'].head())
+        st.write("Data types in 'labels' column:", self.full_image_metadata_df['labels'].apply(type).unique())
 
     def apply_filters(self, filter_dict):
         """
