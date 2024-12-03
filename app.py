@@ -177,7 +177,7 @@ def main():
             orientation="vertical",
             styles={
                 "container": {"padding": "0!important", "background-color": "transparent"},
-                "nav-link-selected": {"background-color": "#12588E40", "font-weight": 700},
+                "nav-link-selected": {"background-color": "#12588E95", "font-weight": 700},
             },
         )
 
