@@ -311,30 +311,34 @@ def highlight_with_annotated_text(case_text, search_term):
     Highlights the search term in the provided case text using st-annotated-text.
     """
     if not search_term:
-        return [(case_text,)]
+        # If no search term, return the whole text without highlights
+        return [case_text]
 
     # Compile regex pattern to find all matches for the search term
     pattern = re.compile(re.escape(search_term), re.IGNORECASE)
     matches = list(pattern.finditer(case_text))
-    
-    # Build the annotated text
+
+    # Build the annotated text dynamically
     highlighted_parts = []
-    last_end = 0
+    last_end = 0  # Tracks the end of the last match
+
     for match in matches:
-        # Text before the match
+        # Add text before the match (if any)
         if match.start() > last_end:
             highlighted_parts.append(case_text[last_end:match.start()])
         
-        # Highlighted match
-        highlighted_parts.append((match.group(0), "match", "#ffff00"))
+        # Add the matched text with highlight
+        highlighted_parts.append((match.group(0), "", "#ffff00"))  # Yellow background
+        
+        # Update last_end to the end of the current match
         last_end = match.end()
-    
-    # Remaining text after the last match
+
+    # Add any remaining text after the last match
     if last_end < len(case_text):
         highlighted_parts.append(case_text[last_end:])
-    
-    return highlighted_parts
 
+    return highlighted_parts
+    
 def display_case_text(cch, index, search_term):
     """
     Display text case information.
