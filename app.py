@@ -201,10 +201,10 @@ def main():
         st.sidebar.header("Filters")
 
         # Year slider: double-sided slider
-        min_year, max_year = st.sidebar.slider("Year", 1990, 2024, (1990, 2024))
+        min_year, max_year = st.sidebar.slider("Year", 1990, 2024, (2023, 2024))
 
         # Age slider: double-sided slider
-        min_age, max_age = st.sidebar.slider("Age", 0, 100, (0, 100))
+        min_age, max_age = st.sidebar.slider("Age", 0, 100, (15, 45))
 
         # Gender
         gender = st.sidebar.selectbox("Gender", options=['Any', 'Female', 'Male'])
@@ -230,7 +230,7 @@ def main():
         caption_search = st.sidebar.text_input("Caption Text Search", value='')
 
         # Resource Type, adding 'both' option
-        resource = st.sidebar.selectbox("Resource Type", options=['text', 'image', 'both'])
+        resource = st.sidebar.selectbox("Resource Type", options=['text', 'image', 'both'], index=0)
 
         # License as horizontal radio buttons
         license = st.sidebar.radio("License", options=['all', 'commercial'], horizontal=True)
@@ -280,14 +280,10 @@ def main():
                 total_pages = (num_results + results_per_page - 1) // results_per_page
                 page_number = st.number_input("Page", min_value=1, max_value=total_pages, value=1, step=1)
                 start_idx = (page_number - 1) * results_per_page
-                end_idx = min(start_idx + results_per_page, num_results)
-                
-                display_data = cch.cases_df.iloc[start_idx:end_idx]
-                for index, row in display_data.iterrows():
+                end_idx = min(start_idx + results_per_page, num_results)                  
+                for index in range(start_idx, end_idx):
                     display_case_text(cch, index)
                     
-                #for index in range(start_idx, end_idx):
-                    #display_case_text(cch, index)
         elif filter_dict['resource'] == 'image':
             num_results = len(cch.image_metadata_df)
             st.write(f"Number of results: {num_results}")
@@ -299,13 +295,8 @@ def main():
                 page_number = st.number_input("Page", min_value=1, max_value=total_pages, value=1, step=1)
                 start_idx = (page_number - 1) * results_per_page
                 end_idx = min(start_idx + results_per_page, num_results)
-
-                display_data = cch.image_metadata_df.iloc[start_idx:end_idx]
-                for index, row in display_data.iterrows():
+                for index in range(start_idx, end_idx):
                     display_image(cch, index)
-                
-                #for index in range(start_idx, end_idx):
-                    #display_image(cch, index)
         
         elif filter_dict['resource'] == 'both':
             num_results = len(cch.cases_df)
