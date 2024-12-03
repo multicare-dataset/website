@@ -164,7 +164,7 @@ st.markdown(
         height: 45px;
     }
 
-    . stFormSubmitButton, .stButton, .stDownloadButton {
+    .stFormSubmitButton, .stButton, .stDownloadButton {
         display: flex;
         justify-content: center;
         align-items: center;
