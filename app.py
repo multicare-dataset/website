@@ -34,25 +34,12 @@ def load_cases(file_folder, min_year, max_year):
     """
     Load case data from multiple parquet files based on the year range.
     """
-    files_to_load = [
-        'cases_1990_2012.parquet',
-        'cases_2013_2017.parquet',
-        'cases_2018_2021.parquet',
-        'cases_2022_2024.parquet'
-    ]
-    dfs = []
-    for file_ in files_to_load:
-        year_range = map(int, file_.split('_')[1:3])
-        if max_year >= min(year_range) and min_year <= max(year_range):
-            dfs.append(pd.read_parquet(os.path.join(file_folder, file_)))
-    return pd.concat(dfs, ignore_index=True)
-    
-    # df = pd.DataFrame()
-    # for file_ in ['cases_1990_2012.parquet', 'cases_2013_2017.parquet', 'cases_2018_2021.parquet', 'cases_2022_2024.parquet']:
-    #     years = file_.split('.')[0].split('_')[1:]
-    #     if (max_year >= int(years[0])) and (min_year <= int(years[1])):
-    #         df = pd.concat([df, pd.read_parquet(os.path.join(file_folder, file_))], ignore_index=True)
-    # return df
+    df = pd.DataFrame()
+    for file_ in ['cases_1990_2012.parquet', 'cases_2013_2017.parquet', 'cases_2018_2021.parquet', 'cases_2022_2024.parquet']:
+        years = file_.split('.')[0].split('_')[1:]
+        if (max_year >= int(years[0])) and (min_year <= int(years[1])):
+            df = pd.concat([df, pd.read_parquet(os.path.join(file_folder, file_))], ignore_index=True)
+    return df
 
 class ClinicalCaseHub():
 
