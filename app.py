@@ -309,6 +309,9 @@ def main():
                         display_case_both(cch, index)
         else:
             st.write("Please perform a search to display results.")
+    elif selected == "About":
+        st.title("About")
+        st.write("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
        
 def display_case_text(cch, index):
     """
