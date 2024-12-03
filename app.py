@@ -263,13 +263,20 @@ def main():
 
         #cch.apply_filters(filter_dict)
         # Sidebar filters
+        if 'search_clicked' not in st.session_state:
+            st.session_state['search_clicked'] = False
+        
         if st.sidebar.button("Search"):
+            # Set the search flag to True
+            st.session_state['search_clicked'] = True
+            # Apply filters
             cch.apply_filters(filter_dict)
         
-
+        # Check if search has been performed
+        if st.session_state['search_clicked']:
             # Pagination setup
             results_per_page = 5
-    
+        
             if filter_dict['resource'] == 'text':
                 num_results = len(cch.cases_df)
                 st.write(f"Number of results: {num_results}")
@@ -280,10 +287,10 @@ def main():
                     total_pages = (num_results + results_per_page - 1) // results_per_page
                     page_number = st.number_input("Page", min_value=1, max_value=total_pages, value=1, step=1)
                     start_idx = (page_number - 1) * results_per_page
-                    end_idx = min(start_idx + results_per_page, num_results)                  
+                    end_idx = min(start_idx + results_per_page, num_results)
                     for index in range(start_idx, end_idx):
                         display_case_text(cch, index)
-                        
+        
             elif filter_dict['resource'] == 'image':
                 num_results = len(cch.image_metadata_df)
                 st.write(f"Number of results: {num_results}")
@@ -297,7 +304,7 @@ def main():
                     end_idx = min(start_idx + results_per_page, num_results)
                     for index in range(start_idx, end_idx):
                         display_image(cch, index)
-            
+        
             elif filter_dict['resource'] == 'both':
                 num_results = len(cch.cases_df)
                 st.write(f"Number of results: {num_results}")
@@ -309,10 +316,11 @@ def main():
                     page_number = st.number_input("Page", min_value=1, max_value=total_pages, value=1, step=1)
                     start_idx = (page_number - 1) * results_per_page
                     end_idx = min(start_idx + results_per_page, num_results)
-    
+        
                     for index in range(start_idx, end_idx):
                         display_case_both(cch, index)
-
+        else:
+            st.write("Please perform a search to display results.")
     elif selected == "About":
         st.title("About")
         st.write("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
