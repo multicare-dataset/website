@@ -310,30 +310,29 @@ def highlight_with_annotated_text(case_text, search_term):
     """
     Highlights the search term in the provided case text using st-annotated-text.
     """
-    if not search_term:
-        # If no search term, return the whole text without highlights
+    if not search_term.strip():
+        # If no search term or it's empty, return plain text as a single part
         return [case_text]
 
-    # Compile regex pattern to find all matches for the search term
+    # Compile regex pattern to find matches for the search term
     pattern = re.compile(re.escape(search_term), re.IGNORECASE)
-    matches = list(pattern.finditer(case_text))
 
-    # Build the annotated text dynamically
+    # Split the text into parts with and without highlights
     highlighted_parts = []
-    last_end = 0  # Tracks the end of the last match
+    last_end = 0  # Tracks the end of the last processed section
 
-    for match in matches:
-        # Add text before the match (if any)
+    for match in pattern.finditer(case_text):
+        # Append the text before the match (if any)
         if match.start() > last_end:
             highlighted_parts.append(case_text[last_end:match.start()])
         
-        # Add the matched text with highlight
-        highlighted_parts.append((match.group(0), "", "#ffff00"))  # Yellow background
+        # Append the matched text with highlight
+        highlighted_parts.append((match.group(0), "match", "#00A2E8"))  # Highlight in yellow
         
-        # Update last_end to the end of the current match
+        # Update last_end to after the current match
         last_end = match.end()
 
-    # Add any remaining text after the last match
+    # Append any remaining text after the last match
     if last_end < len(case_text):
         highlighted_parts.append(case_text[last_end:])
 
@@ -359,9 +358,10 @@ def display_case_text(cch, index, search_term):
         st.subheader(f"Case ID: {case_id}")
         st.write(f"Gender: {patient_gender}")
         st.write(f"Age: {patient_age}")
-        with st.expander("Case Description"):
-            # Render highlighted text using annotated_text
-            annotated_text(*highlighted_text)
+        
+        #with st.expander("Case Description"):
+        # Render highlighted text using annotated_text
+        annotated_text(*highlighted_text)
             
         #  st.write(f"Article Link: [Link]({article_link})")
         st.write(f"Citation: {article_citation}")
