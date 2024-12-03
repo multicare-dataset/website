@@ -157,6 +157,10 @@ st.markdown(
     .stMainBlockContainer {
         padding-top: 2.2rem;
     }
+
+    .stLogo {
+        margin: auto;
+        height: 45px;
     </style>
     """,
     unsafe_allow_html=True,
@@ -177,7 +181,7 @@ def main():
             orientation="vertical",
             styles={
                 "container": {"padding": "0!important", "background-color": "transparent"},
-                "nav-link-selected": {"background-color": "#12588E95", "font-weight": 700},
+                "nav-link-selected": {"background-color": "#12588ECC", "font-weight": 700},
             },
         )
 
@@ -327,7 +331,7 @@ def display_case_text(cch, index):
         
         with st.expander("Case Description"):
             st.markdown(
-                f"<div style='text-align: justify; padding:2rem;'>{highlighted_text}</div>",
+                f"<div style='text-align: justify; padding:2rem;'>{case_search}</div>",
                 unsafe_allow_html=True
             )
             
@@ -383,7 +387,7 @@ def display_case_both(cch, index):
         st.write(f"Age: {patient_age}")
         with st.expander("Case Description"):
             st.markdown(
-                f"<div style='text-align: justify; padding:2rem;'>{highlighted_text}</div>",
+                f"<div style='text-align: justify; padding:2rem;'>{case_search}</div>",
                 unsafe_allow_html=True
             )
 
