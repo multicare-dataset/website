@@ -244,7 +244,10 @@ def main():
         if st.sidebar.button("Search"):
             # Set the search flag to True
             st.session_state['search_clicked'] = True
-
+        
+        # Check if search has been performed
+        if st.session_state['search_clicked']:
+            
             # Create filter dictionary
             filter_dict = {
                 'min_age': min_age,
@@ -271,9 +274,7 @@ def main():
             
             # Apply filters
             cch.apply_filters(filter_dict)
-        
-        # Check if search has been performed
-        if st.session_state['search_clicked']:
+            
             # Pagination setup
             results_per_page = 5
         
