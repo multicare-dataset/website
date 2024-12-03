@@ -237,7 +237,8 @@ def main():
             # License as horizontal radio buttons
             license = st.radio("License", options=['all', 'commercial'], horizontal=True)
 
-        submitted = st.form_submit_button("Apply Filters")
+            submitted = st.form_submit_button("Apply Filters")
+        
         if submitted: 
         
             # Create filter dictionary
