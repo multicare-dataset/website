@@ -235,6 +235,26 @@ def main():
         # License as horizontal radio buttons
         license = st.sidebar.radio("License", options=['all', 'commercial'], horizontal=True)
 
+        # Create filter dictionary
+        filter_dict = {
+            'min_age': min_age,
+            'max_age': max_age,
+            'gender': gender,
+            'case_search': case_search,
+            'image_type_label': image_type_label,
+            'anatomical_region_label': anatomical_region_label,
+            'caption_search': caption_search,
+            'min_year': min_year,
+            'max_year': max_year,
+            'resource': resource,
+            'license': license
+        }
+
+        # Load data
+        file_folder = '.'
+        article_metadata_df = load_article_metadata(file_folder)
+        image_metadata_df = load_image_metadata(file_folder)
+        cases_df = load_cases(file_folder, min_year, max_year)
 
         #cch.apply_filters(filter_dict)
         # Sidebar filters
@@ -248,30 +268,8 @@ def main():
         # Check if search has been performed
         if st.session_state['search_clicked']:
             
-            # Create filter dictionary
-            filter_dict = {
-                'min_age': min_age,
-                'max_age': max_age,
-                'gender': gender,
-                'case_search': case_search,
-                'image_type_label': image_type_label,
-                'anatomical_region_label': anatomical_region_label,
-                'caption_search': caption_search,
-                'min_year': min_year,
-                'max_year': max_year,
-                'resource': resource,
-                'license': license
-            }
-    
-            # Load data
-            file_folder = '.'
-            article_metadata_df = load_article_metadata(file_folder)
-            image_metadata_df = load_image_metadata(file_folder)
-            cases_df = load_cases(file_folder, min_year, max_year)
-    
             # Instantiate the class
             cch = ClinicalCaseHub(article_metadata_df, image_metadata_df, cases_df, image_folder='img')
-            
             # Apply filters
             cch.apply_filters(filter_dict)
             
