@@ -197,118 +197,126 @@ def main():
     elif selected == "Search":
         # Sidebar with filters
         st.sidebar.divider()
+        
         st.sidebar.header("Filters")
+
+        with st.sidebar.form("filter_form"):
+
+            # Year slider: double-sided slider
+            min_year, max_year = st.slider("Year", 1990, 2024, (2023, 2024))
     
-        # Initialize session state for search and filters
-        if 'search_clicked' not in st.session_state:
-            st.session_state['search_clicked'] = False
-        if 'filters' not in st.session_state:
-            st.session_state['filters'] = {
-                'min_year': 2023,
-                'max_year': 2024,
-                'min_age': 15,
-                'max_age': 45,
-                'gender': 'Any',
-                'case_search': '',
-                'image_type_label': None,
-                'anatomical_region_label': None,
-                'caption_search': '',
-                'resource': 'text',
-                'license': 'all'
-            }
+            # Age slider: double-sided slider
+            min_age, max_age = st.slider("Age", 0, 100, (15, 45))
     
-        # Define filters
-        st.session_state['filters']['min_year'], st.session_state['filters']['max_year'] = st.sidebar.slider(
-            "Year", 1990, 2024, (st.session_state['filters']['min_year'], st.session_state['filters']['max_year'])
-        )
-        st.session_state['filters']['min_age'], st.session_state['filters']['max_age'] = st.sidebar.slider(
-            "Age", 0, 100, (st.session_state['filters']['min_age'], st.session_state['filters']['max_age'])
-        )
-        st.session_state['filters']['gender'] = st.sidebar.selectbox(
-            "Gender", options=['Any', 'Female', 'Male'], index=['Any', 'Female', 'Male'].index(st.session_state['filters']['gender'])
-        )
-        st.session_state['filters']['case_search'] = st.sidebar.text_input(
-            "Case Text Search", value=st.session_state['filters']['case_search']
-        )
-        image_type_options = ['ct', 'mri', 'x_ray', 'ultrasound', 'angiography', 'mammography', 'echocardiogram', 'cholangiogram']
-        st.session_state['filters']['image_type_label'] = st.sidebar.selectbox(
-            "Image Type Label", options=[''] + image_type_options,
-            index=image_type_options.index(st.session_state['filters']['image_type_label']) + 1 if st.session_state['filters']['image_type_label'] else 0
-        ) or None
-        anatomical_region_options = ['head', 'neck', 'thorax', 'abdomen', 'pelvis']
-        st.session_state['filters']['anatomical_region_label'] = st.sidebar.selectbox(
-            "Anatomical Region Label", options=[''] + anatomical_region_options,
-            index=anatomical_region_options.index(st.session_state['filters']['anatomical_region_label']) + 1 if st.session_state['filters']['anatomical_region_label'] else 0
-        ) or None
-        st.session_state['filters']['caption_search'] = st.sidebar.text_input(
-            "Caption Text Search", value=st.session_state['filters']['caption_search']
-        )
-        st.session_state['filters']['resource'] = st.sidebar.selectbox(
-            "Resource Type", options=['text', 'image', 'both'], index=['text', 'image', 'both'].index(st.session_state['filters']['resource'])
-        )
-        st.session_state['filters']['license'] = st.sidebar.radio(
-            "License", options=['all', 'commercial'], index=['all', 'commercial'].index(st.session_state['filters']['license']), horizontal=True
-        )
+            # Gender
+            gender = st.selectbox("Gender", options=['Any', 'Female', 'Male'])
     
-        # Search button
-        if st.sidebar.button("Search"):
-            st.session_state['search_clicked'] = True
+            # Case Text Search
+            case_search = st.text_input("Case Text Search", value='')
     
-        # Check if search has been performed
-        if st.session_state['search_clicked']:
-            # Load data and apply filters
-            file_folder = '.'
-            article_metadata_df = load_article_metadata(file_folder)
-            image_metadata_df = load_image_metadata(file_folder)
-            cases_df = load_cases(file_folder, st.session_state['filters']['min_year'], st.session_state['filters']['max_year'])
+            # Image Type Label
+            image_type_options = ['ct', 'mri', 'x_ray', 'ultrasound', 'angiography', 'mammography', 'echocardiogram', 'cholangiogram',
+                                  'cta', 'cmr', 'mra', 'mrcp', 'spect', 'pet', 'scintigraphy', 'tractography',
+                                  'skin_photograph', 'oral_photograph', 'other_medical_photograph', 'fundus_photograph', 'ophtalmic_angiography', 'oct',
+                                  'pathology', 'h&e', 'immunostaining', 'immunofluorescence', 'acid_fast', 'masson_trichrome', 'giemsa', 'papanicolaou', 'gram', 'fish',
+                                  'endoscopy', 'colonoscopy', 'bronchoscopy', 'ekg', 'eeg', 'chart']
+            image_type_label = st.selectbox("Image Type Label", options=[''] + image_type_options)
+            image_type_label = image_type_label if image_type_label != '' else None
     
-            # Instantiate the class and apply filters
-            cch = ClinicalCaseHub(article_metadata_df, image_metadata_df, cases_df, image_folder='img')
-            cch.apply_filters(st.session_state['filters'])
+            # Anatomical Region Label
+            anatomical_region_options = ['head', 'neck', 'thorax', 'abdomen', 'pelvis', 'upper_limb', 'lower_limb', 'dental_view']
+            anatomical_region_label = st.selectbox("Anatomical Region Label", options=[''] + anatomical_region_options)
+            anatomical_region_label = anatomical_region_label if anatomical_region_label != '' else None
     
-            # Pagination setup
-            results_per_page = 5
+            # Caption Text Search
+            caption_search = st.text_input("Caption Text Search", value='')
     
-            if st.session_state['filters']['resource'] == 'text':
-                num_results = len(cch.cases_df)
-                st.write(f"Number of results: {num_results}")
-                if num_results == 0:
-                    st.write("No results found.")
+            # Resource Type, adding 'both' option
+            resource = st.selectbox("Resource Type", options=['text', 'image', 'both'], index=0)
+    
+            # License as horizontal radio buttons
+            license = st.radio("License", options=['all', 'commercial'], horizontal=True)
+
+            submitted = st.form_submit_button("Apply Filters")
+            if submitted: 
+            
+                # Create filter dictionary
+                filter_dict = {
+                    'min_age': min_age,
+                    'max_age': max_age,
+                    'gender': gender,
+                    'case_search': case_search,
+                    'image_type_label': image_type_label,
+                    'anatomical_region_label': anatomical_region_label,
+                    'caption_search': caption_search,
+                    'min_year': min_year,
+                    'max_year': max_year,
+                    'resource': resource,
+                    'license': license
+                }
+        
+                # Load data
+                file_folder = '.'
+                article_metadata_df = load_article_metadata(file_folder)
+                image_metadata_df = load_image_metadata(file_folder)
+                cases_df = load_cases(file_folder, min_year, max_year)
+                
+                # Instantiate the class
+                cch = ClinicalCaseHub(article_metadata_df, image_metadata_df, cases_df, image_folder='img')
+        
+                # Apply filters
+                cch.apply_filters(filter_dict)
+                
+                # Pagination setup
+                results_per_page = 5
+            
+                if filter_dict['resource'] == 'text':
+                    num_results = len(cch.cases_df)
+                    st.write(f"Number of results: {num_results}")
+                    if num_results == 0:
+                        st.write("No results found.")
+                    else:
+                        # Pagination
+                        total_pages = (num_results + results_per_page - 1) // results_per_page
+                        page_number = st.number_input("Page", min_value=1, max_value=total_pages, value=1, step=1)
+                        start_idx = (page_number - 1) * results_per_page
+                        end_idx = min(start_idx + results_per_page, num_results)
+                        for index in range(start_idx, end_idx):
+                            display_case_text(cch, index)
+            
+                elif filter_dict['resource'] == 'image':
+                    num_results = len(cch.image_metadata_df)
+                    st.write(f"Number of results: {num_results}")
+                    if num_results == 0:
+                        st.write("No results found.")
+                    else:
+                        # Pagination
+                        total_pages = (num_results + results_per_page - 1) // results_per_page
+                        page_number = st.number_input("Page", min_value=1, max_value=total_pages, value=1, step=1)
+                        start_idx = (page_number - 1) * results_per_page
+                        end_idx = min(start_idx + results_per_page, num_results)
+                        for index in range(start_idx, end_idx):
+                            display_image(cch, index)
+            
+                elif filter_dict['resource'] == 'both':
+                    num_results = len(cch.cases_df)
+                    st.write(f"Number of results: {num_results}")
+                    if num_results == 0:
+                        st.write("No results found.")
+                    else:
+                        # Pagination
+                        total_pages = (num_results + results_per_page - 1) // results_per_page
+                        page_number = st.number_input("Page", min_value=1, max_value=total_pages, value=1, step=1)
+                        start_idx = (page_number - 1) * results_per_page
+                        end_idx = min(start_idx + results_per_page, num_results)
+            
+                        for index in range(start_idx, end_idx):
+                            display_case_both(cch, index)
                 else:
-                    total_pages = (num_results + results_per_page - 1) // results_per_page
-                    page_number = st.number_input("Page", min_value=1, max_value=total_pages, value=1, step=1)
-                    start_idx = (page_number - 1) * results_per_page
-                    end_idx = min(start_idx + results_per_page, num_results)
-                    for index in range(start_idx, end_idx):
-                        display_case_text(cch, index)
-    
-            elif st.session_state['filters']['resource'] == 'image':
-                num_results = len(cch.image_metadata_df)
-                st.write(f"Number of results: {num_results}")
-                if num_results == 0:
-                    st.write("No results found.")
-                else:
-                    total_pages = (num_results + results_per_page - 1) // results_per_page
-                    page_number = st.number_input("Page", min_value=1, max_value=total_pages, value=1, step=1)
-                    start_idx = (page_number - 1) * results_per_page
-                    end_idx = min(start_idx + results_per_page, num_results)
-                    for index in range(start_idx, end_idx):
-                        display_image(cch, index)
-    
-            elif st.session_state['filters']['resource'] == 'both':
-                num_results = len(cch.cases_df)
-                st.write(f"Number of results: {num_results}")
-                if num_results == 0:
-                    st.write("No results found.")
-                else:
-                    total_pages = (num_results + results_per_page - 1) // results_per_page
-                    page_number = st.number_input("Page", min_value=1, max_value=total_pages, value=1, step=1)
-                    start_idx = (page_number - 1) * results_per_page
-                    end_idx = min(start_idx + results_per_page, num_results)
-                    for index in range(start_idx, end_idx):
-                        display_case_both(cch, index)
-        else:
-            st.write("Please perform a search to display results.")
+                    st.write("Please perform a search to display results.")
+
+
+                
     elif selected == "About":
         st.title("About")
         st.write("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
