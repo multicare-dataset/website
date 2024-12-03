@@ -145,16 +145,38 @@ class ClinicalCaseHub():
         # Use regex with word boundaries for full-word match
         return re.search(rf'\b{re.escape(word.lower())}\b', text) is not None
 
+
+
+# ---------- STREAMLIT CODE --------------
+
+# Global CSS 
+st.markdown(
+    """
+    <style>
+    .stMainBlockContainer {
+        padding-top: 1.5rem;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
 def main():
+    with st.sidebar:
     # Define the menu options
-    selected = option_menu(
-        menu_title=None,
-        options=["Home", "Search", "About"],
-        icons=["house", "search", "info-circle"],
-        menu_icon="cast",
-        default_index=0,
-        orientation="horizontal"
-    )
+        selected = option_menu(
+            menu_title=None,
+            options=["Home", "Search", "About"],
+            icons=["house", "search", "info-circle"],
+            menu_icon="cast",
+            default_index=0,
+            orientation="vertical",
+            styles={
+                "container": {"padding": "0!important", "background-color": "transparent"},
+                "nav-link-selected": {"background-color": "#0F376A80", "font-weight": 700},
+            },
+        )
 
     if selected == "Home":
         st.title("Clinical Case Hub")
@@ -293,25 +315,18 @@ def display_case_text(cch, index, case_search):
     # Highlight search term in case_text
     if case_search:
         pattern = re.compile(re.escape(case_search), re.IGNORECASE)
-        highlighted_text = pattern.sub(f'<mark>{case_search}</mark>', case_text)
+        highlighted_text = pattern.sub(lambda match: f'<mark>{match.group(0)}</mark>', case_text)
     else:
         highlighted_text = case_text
 
-    with st.container():
-        st.markdown(
-            """
-            <div style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
-            """,
-            unsafe_allow_html=True
-        )
+    with st.container(border=True):
         st.subheader(f"Case ID: {case_id}")
         st.write(f"Gender: {patient_gender}")
         st.write(f"Age: {patient_age}")
         with st.expander("Case Description"):
-            st.markdown(
-                f"<div style='text-align: justify;'>{highlighted_text}</div>",
-                unsafe_allow_html=True
-            )
+            # Render highlighted text with HTML
+            st.write(f"<div style='text-align: justify; padding: 2rem;'>{highlighted_text}</div>", unsafe_allow_html=True)
+            
         st.write(f"Article Link: [Link]({article_link})")
         st.write(f"Citation: {article_citation}")
         st.markdown("</div>", unsafe_allow_html=True)
@@ -333,13 +348,7 @@ def display_image(cch, index):
     article_citation = cch.metadata_df[cch.metadata_df.article_id == article_id].citation.iloc[0]
     article_link = cch.metadata_df[cch.metadata_df.article_id == article_id].link.iloc[0]
 
-    with st.container():
-        st.markdown(
-            """
-            <div style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
-            """,
-            unsafe_allow_html=True
-        )
+    with st.container(border=True):
         st.subheader(f"Case ID: {case_id}")
         st.write(f"Gender: {patient_gender}")
         st.write(f"Age: {patient_age}")
@@ -348,7 +357,7 @@ def display_image(cch, index):
         st.image(Image.open(image_path), caption=image_caption)
 
         st.write(f"Image Labels: {', '.join(image_labels)}")
-        st.write(f"Article Link: [Link]({article_link})")
+        # st.write(f"Article Link: [Link]({article_link})")
         st.write(f"Citation: {article_citation}")
         st.markdown("</div>", unsafe_allow_html=True)
 
@@ -368,26 +377,17 @@ def display_case_both(cch, index, case_search):
     # Highlight search term in case_text
     if case_search:
         pattern = re.compile(re.escape(case_search), re.IGNORECASE)
-        highlighted_text = pattern.sub(f'<mark>{case_search}</mark>', case_text)
+        highlighted_text = pattern.sub(lambda match: f'<mark>{match.group(0)}</mark>', case_text)
     else:
         highlighted_text = case_text
 
-    with st.container():
-        st.markdown(
-            """
-            <div style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
-            """,
-            unsafe_allow_html=True
-        )
+    with st.container(border=True):
         st.subheader(f"Case ID: {case_id}")
         st.write(f"Gender: {patient_gender}")
         st.write(f"Age: {patient_age}")
-
         with st.expander("Case Description"):
-            st.markdown(
-                f"<div style='text-align: justify;'>{highlighted_text}</div>",
-                unsafe_allow_html=True
-            )
+            # Render highlighted text with HTML
+            st.write(f"<div style='text-align: justify; padding: 2rem;'>{highlighted_text}</div>", unsafe_allow_html=True)
 
         # Display images associated with this case
         images = cch.image_metadata_df[cch.image_metadata_df.case_id == case_id]
@@ -398,7 +398,7 @@ def display_case_both(cch, index, case_search):
                 image_caption = images.at[idx, 'caption']
                 st.image(Image.open(image_path), caption=image_caption)
 
-        st.write(f"Article Link: [Link]({article_link})")
+        # st.write(f"Article Link: [Link]({article_link})")
         st.write(f"Citation: {article_citation}")
         st.markdown("</div>", unsafe_allow_html=True)
 
