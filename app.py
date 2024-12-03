@@ -34,12 +34,25 @@ def load_cases(file_folder, min_year, max_year):
     """
     Load case data from multiple parquet files based on the year range.
     """
-    df = pd.DataFrame()
-    for file_ in ['cases_1990_2012.parquet', 'cases_2013_2017.parquet', 'cases_2018_2021.parquet', 'cases_2022_2024.parquet']:
-        years = file_.split('.')[0].split('_')[1:]
-        if (max_year >= int(years[0])) and (min_year <= int(years[1])):
-            df = pd.concat([df, pd.read_parquet(os.path.join(file_folder, file_))], ignore_index=True)
-    return df
+    files_to_load = [
+        'cases_1990_2012.parquet',
+        'cases_2013_2017.parquet',
+        'cases_2018_2021.parquet',
+        'cases_2022_2024.parquet'
+    ]
+    dfs = []
+    for file_ in files_to_load:
+        year_range = map(int, file_.split('_')[1:3])
+        if max_year >= min(year_range) and min_year <= max(year_range):
+            dfs.append(pd.read_parquet(os.path.join(file_folder, file_)))
+    return pd.concat(dfs, ignore_index=True)
+    
+    # df = pd.DataFrame()
+    # for file_ in ['cases_1990_2012.parquet', 'cases_2013_2017.parquet', 'cases_2018_2021.parquet', 'cases_2022_2024.parquet']:
+    #     years = file_.split('.')[0].split('_')[1:]
+    #     if (max_year >= int(years[0])) and (min_year <= int(years[1])):
+    #         df = pd.concat([df, pd.read_parquet(os.path.join(file_folder, file_))], ignore_index=True)
+    # return df
 
 class ClinicalCaseHub():
 
@@ -55,7 +68,6 @@ class ClinicalCaseHub():
 
         self.full_metadata_df = article_metadata_df.copy()
         self.full_image_metadata_df = image_metadata_df.copy()
-        #self.full_image_metadata_df['labels'] = self.full_image_metadata_df.labels.apply(ast.literal_eval)
         self.full_cases_df = cases_df.copy()
         self.full_cases_df['age'] = self.full_cases_df['age'].astype(int, errors='ignore')
 
@@ -236,6 +248,8 @@ def main():
         # License as horizontal radio buttons
         license = st.sidebar.radio("License", options=['all', 'commercial'], horizontal=True)
 
+
+
         # Create filter dictionary
         filter_dict = {
             'min_age': min_age,
@@ -260,8 +274,11 @@ def main():
         # Instantiate the class
         cch = ClinicalCaseHub(article_metadata_df, image_metadata_df, cases_df, image_folder='img')
 
-        # Apply filters
-        cch.apply_filters(filter_dict)
+        # Sidebar filters
+        if st.sidebar.button("Search"):
+            cch.apply_filters(filter_dict)
+        
+        #cch.apply_filters(filter_dict)
 
         # Pagination setup
         results_per_page = 5
@@ -277,9 +294,13 @@ def main():
                 page_number = st.number_input("Page", min_value=1, max_value=total_pages, value=1, step=1)
                 start_idx = (page_number - 1) * results_per_page
                 end_idx = min(start_idx + results_per_page, num_results)
-
-                for index in range(start_idx, end_idx):
+                
+                display_data = cch.cases_df.iloc[start_idx:end_idx]
+                for index, row in display_data.iterrows():
                     display_case_text(cch, index)
+                    
+                #for index in range(start_idx, end_idx):
+                    #display_case_text(cch, index)
         elif filter_dict['resource'] == 'image':
             num_results = len(cch.image_metadata_df)
             st.write(f"Number of results: {num_results}")
@@ -292,8 +313,13 @@ def main():
                 start_idx = (page_number - 1) * results_per_page
                 end_idx = min(start_idx + results_per_page, num_results)
 
-                for index in range(start_idx, end_idx):
+                display_data = cch.image_metadata_df.iloc[start_idx:end_idx]
+                for index, row in display_data.iterrows():
                     display_image(cch, index)
+                
+                #for index in range(start_idx, end_idx):
+                    #display_image(cch, index)
+        
         elif filter_dict['resource'] == 'both':
             num_results = len(cch.cases_df)
             st.write(f"Number of results: {num_results}")
