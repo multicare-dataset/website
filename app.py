@@ -268,7 +268,7 @@ def main():
             st.session_state.page_number = 1
         
             # Fuerza una recarga controlada
-            st.experimental_rerun()
+            #st.experimental_rerun()
     
             # Usar filtros guardados en la sesión
             if "filters" in st.session_state:
