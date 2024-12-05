@@ -169,6 +169,14 @@ st.markdown(
         justify-content: center;
         align-items: center;
     }
+    .stColumn > div {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: stretch;
+        min-height: 200px; /* Ajusta este valor según tus necesidades */
+        padding: 10px;
+    }
     </style>
     """,
     unsafe_allow_html=True,
@@ -290,7 +298,7 @@ def main():
                 if num_results == 0:
                     st.write("No results found.")
                 else:
-                    st.write(f"Number of results: {num_results}")
+                    #st.write(f"Number of results: {num_results}")
                 
                     # Configurar el estado de la página
                     if 'page_number' not in st.session_state:
