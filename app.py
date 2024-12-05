@@ -282,49 +282,53 @@ def main():
             
             # Pagination setup
             results_per_page = 5
-        
+            
+            # Inicializar el estado de la página si no existe
+            if "page_number" not in st.session_state:
+                st.session_state.page_number = 1
+            
+            # Determinar el recurso a paginar
             if filter_dict['resource'] == 'text':
                 num_results = len(cch.cases_df)
                 st.write(f"Number of results: {num_results}")
-                if num_results == 0:
-                    st.write("No results found.")
-                else:
-                    # Pagination
-                    total_pages = (num_results + results_per_page - 1) // results_per_page
-                    page_number = st.number_input("Page", min_value=1, max_value=total_pages, value=1, step=1)
-                    start_idx = (page_number - 1) * results_per_page
-                    end_idx = min(start_idx + results_per_page, num_results)
-                    for index in range(start_idx, end_idx):
-                        display_case_text(cch, index)
-        
+                data_source = cch.cases_df
+                display_function = display_case_text
             elif filter_dict['resource'] == 'image':
                 num_results = len(cch.image_metadata_df)
                 st.write(f"Number of results: {num_results}")
-                if num_results == 0:
-                    st.write("No results found.")
-                else:
-                    # Pagination
-                    total_pages = (num_results + results_per_page - 1) // results_per_page
-                    page_number = st.number_input("Page", min_value=1, max_value=total_pages, value=1, step=1)
-                    start_idx = (page_number - 1) * results_per_page
-                    end_idx = min(start_idx + results_per_page, num_results)
-                    for index in range(start_idx, end_idx):
-                        display_image(cch, index)
-        
-            elif filter_dict['resource'] == 'both':
+                data_source = cch.image_metadata_df
+                display_function = display_image
+            else:
                 num_results = len(cch.cases_df)
                 st.write(f"Number of results: {num_results}")
-                if num_results == 0:
-                    st.write("No results found.")
-                else:
-                    # Pagination
-                    total_pages = (num_results + results_per_page - 1) // results_per_page
-                    page_number = st.number_input("Page", min_value=1, max_value=total_pages, value=1, step=1)
-                    start_idx = (page_number - 1) * results_per_page
-                    end_idx = min(start_idx + results_per_page, num_results)
-        
-                    for index in range(start_idx, end_idx):
-                        display_case_both(cch, index)
+                data_source = cch.cases_df
+                display_function = display_case_both
+            
+            if num_results == 0:
+                st.write("No results found.")
+            else:
+                # Calcular índices de resultados para la página actual
+                total_pages = (num_results + results_per_page - 1) // results_per_page
+                start_idx = (st.session_state.page_number - 1) * results_per_page
+                end_idx = min(start_idx + results_per_page, num_results)
+            
+                # Mostrar resultados de la página actual
+                for index in range(start_idx, end_idx):
+                    display_function(cch, index)
+            
+                # Navegación de páginas
+                col1, col2, col3 = st.columns([1, 2, 1])
+            
+                with col1:
+                    if st.button("Previous") and st.session_state.page_number > 1:
+                        st.session_state.page_number -= 1
+            
+                with col2:
+                    st.write(f"Page {st.session_state.page_number} of {total_pages}")
+            
+                with col3:
+                    if st.button("Next") and st.session_state.page_number < total_pages:
+                        st.session_state.page_number += 1
 
                 
     elif selected == "About":
