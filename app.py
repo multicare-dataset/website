@@ -283,6 +283,10 @@ def main():
             # Pagination setup
             results_per_page = 5
 
+            # Configurar estado inicial de la página
+            if 'page_number' not in st.session_state:
+                st.session_state.page_number = 1
+            
             # Determinar número total de resultados
             if filter_dict['resource'] == 'text':
                 num_results = len(cch.cases_df)
@@ -296,12 +300,19 @@ def main():
             if num_results == 0:
                 st.write("No results found.")
             else:
-                # Calcular total de páginas
-                total_pages = (num_results + results_per_page - 1) // results_per_page
-                page_number = st.slider("Select Page", min_value=1, max_value=total_pages, value=1)
+                # Navegación de páginas
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    if st.button("Previous") and st.session_state.page_number > 1:
+                        st.session_state.page_number -= 1
+                with col2:
+                    st.write(f"Page {st.session_state.page_number}")
+                with col3:
+                    if st.button("Next") and st.session_state.page_number * results_per_page < num_results:
+                        st.session_state.page_number += 1
             
-                # Mostrar resultados de la página seleccionada
-                start_idx = (page_number - 1) * results_per_page
+                # Mostrar resultados de la página actual
+                start_idx = (st.session_state.page_number - 1) * results_per_page
                 end_idx = min(start_idx + results_per_page, num_results)
             
                 if filter_dict['resource'] == 'text':
@@ -313,6 +324,7 @@ def main():
                 else:
                     for index in range(start_idx, end_idx):
                         display_case_both(cch, index)
+
 
 
                 
