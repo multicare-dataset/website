@@ -282,12 +282,7 @@ def main():
             # Pagination setup
             results_per_page = 5
             
-            # Inicializar el estado de la página si no existe
-            if "page_number" not in st.session_state:
-                st.session_state.page_number = 1
-                #apply_filters_logic()
-            
-            # Determinar el recurso a paginar
+            # Determinar número total de resultados
             if filter_dict['resource'] == 'text':
                 num_results = len(cch.cases_df)
                 st.write(f"Number of results: {num_results}")
@@ -307,7 +302,7 @@ def main():
             if num_results == 0:
                 st.write("No results found.")
             else:
-                # Calcular índices de resultados para la página actual
+                # Calcular total de páginas
                 total_pages = (num_results + results_per_page - 1) // results_per_page
                 start_idx = (st.session_state.page_number - 1) * results_per_page
                 end_idx = min(start_idx + results_per_page, num_results)
@@ -316,12 +311,13 @@ def main():
                 for index in range(start_idx, end_idx):
                     display_function(cch, index)
             
-                # Navegación de páginas
+                # Navegación de páginas con botones
                 col1, col2, col3 = st.columns([1, 2, 1])
             
                 with col1:
                     if st.button("Previous") and st.session_state.page_number > 1:
                         st.session_state.page_number -= 1
+                        st.experimental_rerun()  # Fuerza una recarga controlada
             
                 with col2:
                     st.write(f"Page {st.session_state.page_number} of {total_pages}")
@@ -329,7 +325,8 @@ def main():
                 with col3:
                     if st.button("Next") and st.session_state.page_number < total_pages:
                         st.session_state.page_number += 1
-                        #st.experimental_rerun()
+                        st.experimental_rerun()  # Fuerza una recarga controlada
+
 
                 
     elif selected == "About":
