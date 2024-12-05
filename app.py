@@ -176,6 +176,9 @@ st.markdown(
 
 
 def main():
+    if "page_number" not in st.session_state:
+    st.session_state.page_number = 1
+
     with st.sidebar:
         st.logo("multicare-logo.webp", size="large")
     
@@ -282,7 +285,7 @@ def main():
             # Inicializar el estado de la página si no existe
             if "page_number" not in st.session_state:
                 st.session_state.page_number = 1
-                apply_filters_logic()
+                #apply_filters_logic()
             
             # Determinar el recurso a paginar
             if filter_dict['resource'] == 'text':
