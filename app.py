@@ -169,17 +169,6 @@ st.markdown(
         justify-content: center;
         align-items: center;
     }
-    /* 
-    # .stColumn > div {
-    #     display: flex;
-    #     flex-direction: column;
-    #     justify-content: space-between;
-    #     align-items: stretch;
-    #     min-height: 200px; /* Ajusta este valor según tus necesidades */
-    #     padding: 10px;
-    # }
-    */
-
     </style>
     """,
     unsafe_allow_html=True,
@@ -290,7 +279,6 @@ def main():
     
             # Apply filters
             cch.apply_filters(filter_dict)
-            num_results = len(cch.cases_df)
             
             # Pagination setup
             results_per_page = 5
@@ -301,27 +289,11 @@ def main():
                 if num_results == 0:
                     st.write("No results found.")
                 else:
-                    #st.write(f"Number of results: {num_results}")
-                
-                    # Configurar el estado de la página
-                    if 'page_number' not in st.session_state:
-                        st.session_state.page_number = 1
-                
-                    # Botones de navegación
-                    col1, col2, col3 = st.columns(3)
-                    with col1:
-                        if st.button("Previous") and st.session_state.page_number > 1:
-                            st.session_state.page_number -= 1
-                    with col2:
-                        st.write(f"Page {st.session_state.page_number}")
-                    with col3:
-                        if st.button("Next") and st.session_state.page_number * results_per_page < num_results:
-                            st.session_state.page_number += 1
-                
-                    # Calcular índices de resultados
-                    start_idx = (st.session_state.page_number - 1) * results_per_page
+                    # Pagination
+                    total_pages = (num_results + results_per_page - 1) // results_per_page
+                    page_number = st.number_input("Page", min_value=1, max_value=total_pages, value=1, step=1)
+                    start_idx = (page_number - 1) * results_per_page
                     end_idx = min(start_idx + results_per_page, num_results)
-                
                     for index in range(start_idx, end_idx):
                         display_case_text(cch, index)
         
@@ -331,68 +303,28 @@ def main():
                 if num_results == 0:
                     st.write("No results found.")
                 else:
-            if filter_dict['resource'] == 'text':
-                num_results = len(cch.cases_df)
-                st.write(f"Number of results: {num_results}")
-                if num_results == 0:
-                    st.write("No results found.")
-                else:
-                    #st.write(f"Number of results: {num_results}")
-                
-                    # Configurar el estado de la página
-                    if 'page_number' not in st.session_state:
-                        st.session_state.page_number = 1
-                
-                    # Botones de navegación
-                    col1, col2, col3 = st.columns(3)
-                    with col1:
-                        if st.button("Previous") and st.session_state.page_number > 1:
-                            st.session_state.page_number -= 1
-                    with col2:
-                        st.write(f"Page {st.session_state.page_number}")
-                    with col3:
-                        if st.button("Next") and st.session_state.page_number * results_per_page < num_results:
-                            st.session_state.page_number += 1
-                
-                    # Calcular índices de resultados
-                    start_idx = (st.session_state.page_number - 1) * results_per_page
+                    # Pagination
+                    total_pages = (num_results + results_per_page - 1) // results_per_page
+                    page_number = st.number_input("Page", min_value=1, max_value=total_pages, value=1, step=1)
+                    start_idx = (page_number - 1) * results_per_page
                     end_idx = min(start_idx + results_per_page, num_results)
-                
                     for index in range(start_idx, end_idx):
-                        display_case_text(cch, index)
+                        display_image(cch, index)
         
             elif filter_dict['resource'] == 'both':
                 num_results = len(cch.cases_df)
                 st.write(f"Number of results: {num_results}")
-            if filter_dict['resource'] == 'text':
-                num_results = len(cch.cases_df)
-                st.write(f"Number of results: {num_results}")
                 if num_results == 0:
                     st.write("No results found.")
                 else:
-                    #st.write(f"Number of results: {num_results}")
-                
-                    # Configurar el estado de la página
-                    if 'page_number' not in st.session_state:
-                        st.session_state.page_number = 1
-                
-                    # Botones de navegación
-                    col1, col2, col3 = st.columns(3)
-                    with col1:
-                        if st.button("Previous") and st.session_state.page_number > 1:
-                            st.session_state.page_number -= 1
-                    with col2:
-                        st.write(f"Page {st.session_state.page_number}")
-                    with col3:
-                        if st.button("Next") and st.session_state.page_number * results_per_page < num_results:
-                            st.session_state.page_number += 1
-                
-                    # Calcular índices de resultados
-                    start_idx = (st.session_state.page_number - 1) * results_per_page
+                    # Pagination
+                    total_pages = (num_results + results_per_page - 1) // results_per_page
+                    page_number = st.number_input("Page", min_value=1, max_value=total_pages, value=1, step=1)
+                    start_idx = (page_number - 1) * results_per_page
                     end_idx = min(start_idx + results_per_page, num_results)
-                
+        
                     for index in range(start_idx, end_idx):
-                        display_case_text(cch, index)
+                        display_case_both(cch, index)
 
                 
     elif selected == "About":
