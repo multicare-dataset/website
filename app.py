@@ -176,7 +176,6 @@ st.markdown(
 
 
 def main():
-
     with st.sidebar:
         st.logo("multicare-logo.webp", size="large")
     
@@ -196,18 +195,6 @@ def main():
         
         image_path = os.path.join('.', 'medical_doctor_desktop.webp')
         st.image(Image.open(image_path))
-        # Cargar datos completos al inicio
-        if "full_cases_df" not in st.session_state:
-            file_folder = '.'
-            article_metadata_df = load_article_metadata(file_folder)
-            image_metadata_df = load_image_metadata(file_folder)
-            cases_df = load_cases(file_folder, 1990, 2024)  # Rango amplio para cargar todos los datos
-        
-            st.session_state.full_cases_df = cases_df
-            st.session_state.full_metadata_df = article_metadata_df
-            st.session_state.full_image_metadata_df = image_metadata_df
-
-
 
     if selected == "Search":      
 
@@ -258,10 +245,11 @@ def main():
                 resource = st.selectbox("Resource Type", options=['text', 'image', 'both'], index=0)
 
     
-        #submitted = st.form_submit_button("Apply Filters")
-        if submitted:
-            # Guardar los filtros en el estado de la sesión
-            st.session_state.filters = {
+        
+        if submitted: 
+        
+            # Create filter dictionary
+            filter_dict = {
                 'min_age': min_age,
                 'max_age': max_age,
                 'gender': gender,
@@ -274,73 +262,64 @@ def main():
                 'resource': resource,
                 'license': license
             }
-        
-            # Reiniciar el número de página al aplicar filtros
-            st.session_state.page_number = 1
-        
-            # Fuerza una recarga controlada
-            #st.experimental_rerun()
     
-            # Usar filtros guardados en la sesión
-            if "filters" in st.session_state:
-                filter_dict = st.session_state.filters
+            # Load data
+            file_folder = '.'
+            article_metadata_df = load_article_metadata(file_folder)
+            image_metadata_df = load_image_metadata(file_folder)
+            cases_df = load_cases(file_folder, min_year, max_year)
             
-                # Filtrar datos ya cargados
-                cch = ClinicalCaseHub(
-                    st.session_state.full_metadata_df,
-                    st.session_state.full_image_metadata_df,
-                    st.session_state.full_cases_df,
-                    image_folder='img'
-                )
-                cch.apply_filters(filter_dict)
-                # Validar datos después del filtrado
-                if cch.cases_df.empty and cch.image_metadata_df.empty:
-                    st.warning("No results match the selected filters.")
-                    return
+            # Instantiate the class
+            cch = ClinicalCaseHub(article_metadata_df, image_metadata_df, cases_df, image_folder='img')
+    
+            # Apply filters
+            cch.apply_filters(filter_dict)
             
-                # Configuración de resultados por página
-                results_per_page = 5
-                if filter_dict['resource'] == 'text':
-                    data_source = cch.cases_df
-                    display_function = display_case_text
-                elif filter_dict['resource'] == 'image':
-                    data_source = cch.image_metadata_df
-                    display_function = display_image
-                else:
-                    data_source = cch.cases_df
-                    display_function = display_case_both
-            
-                # Determinar número total de resultados
-                num_results = len(data_source)
+            # Pagination setup
+            results_per_page = 5
+        
+            if filter_dict['resource'] == 'text':
+                num_results = len(cch.cases_df)
                 st.write(f"Number of results: {num_results}")
-            
                 if num_results == 0:
                     st.write("No results found.")
                 else:
-                    # Calcular índices para la página actual
+                    # Pagination
                     total_pages = (num_results + results_per_page - 1) // results_per_page
-                    start_idx = (st.session_state.page_number - 1) * results_per_page
+                    page_number = st.number_input("Page", min_value=1, max_value=total_pages, value=1, step=1)
+                    start_idx = (page_number - 1) * results_per_page
                     end_idx = min(start_idx + results_per_page, num_results)
-            
-                    # Mostrar resultados segmentados
                     for index in range(start_idx, end_idx):
-                        display_function(cch, index)
-            
-                    # Navegación de páginas
-                    col1, col2, col3 = st.columns([1, 2, 1])
-            
-                    with col1:
-                        if st.button("Previous") and st.session_state.page_number > 1:
-                            st.session_state.page_number -= 1
-            
-                    with col2:
-                        st.write(f"Page {st.session_state.page_number} of {total_pages}")
-            
-                    with col3:
-                        if st.button("Next") and st.session_state.page_number < total_pages:
-                            st.session_state.page_number += 1
-
-
+                        display_case_text(cch, index)
+        
+            elif filter_dict['resource'] == 'image':
+                num_results = len(cch.image_metadata_df)
+                st.write(f"Number of results: {num_results}")
+                if num_results == 0:
+                    st.write("No results found.")
+                else:
+                    # Pagination
+                    total_pages = (num_results + results_per_page - 1) // results_per_page
+                    page_number = st.number_input("Page", min_value=1, max_value=total_pages, value=1, step=1)
+                    start_idx = (page_number - 1) * results_per_page
+                    end_idx = min(start_idx + results_per_page, num_results)
+                    for index in range(start_idx, end_idx):
+                        display_image(cch, index)
+        
+            elif filter_dict['resource'] == 'both':
+                num_results = len(cch.cases_df)
+                st.write(f"Number of results: {num_results}")
+                if num_results == 0:
+                    st.write("No results found.")
+                else:
+                    # Pagination
+                    total_pages = (num_results + results_per_page - 1) // results_per_page
+                    page_number = st.number_input("Page", min_value=1, max_value=total_pages, value=1, step=1)
+                    start_idx = (page_number - 1) * results_per_page
+                    end_idx = min(start_idx + results_per_page, num_results)
+        
+                    for index in range(start_idx, end_idx):
+                        display_case_both(cch, index)
 
                 
     elif selected == "About":
