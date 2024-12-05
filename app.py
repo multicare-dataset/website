@@ -182,7 +182,7 @@ def main():
         # Define the menu options
         selected = option_menu(
             menu_title=None,
-            options=["Home", "Search", "About"],
+            options=["Search", "About"],
             icons=["house", "search", "info-circle"],
             menu_icon="cast",
             default_index=0,
@@ -196,12 +196,8 @@ def main():
         image_path = os.path.join('.', 'medical_doctor_desktop.webp')
         st.image(Image.open(image_path))
 
-    if selected == "Home":
-        st.title("Clinical Case Hub")
-        st.write("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
 
-
-    elif selected == "Search":      
+    if selected == "Search":      
 
         with st.form("filter_form"):
             st.subheader("Filters")
