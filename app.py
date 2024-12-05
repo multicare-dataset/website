@@ -236,7 +236,7 @@ def main():
                 anatomical_region_label = st.selectbox("Anatomical Region Label", options=[''] + anatomical_region_options)
                 anatomical_region_label = anatomical_region_label if anatomical_region_label != '' else None
 
-                #submitted = st.form_submit_button("Apply Filters")
+                submitted = st.form_submit_button("Apply Filters")
 
             with col3:
                             
@@ -250,7 +250,7 @@ def main():
                 resource = st.selectbox("Resource Type", options=['text', 'image', 'both'], index=0)
 
     
-        submitted = st.form_submit_button("Apply Filters")
+        #submitted = st.form_submit_button("Apply Filters")
         if submitted: 
         
             # Create filter dictionary
