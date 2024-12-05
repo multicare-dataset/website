@@ -1,4 +1,5 @@
 import streamlit as st
+import SessionState
 import pandas as pd
 import ast
 import os
@@ -147,6 +148,31 @@ class ClinicalCaseHub():
         # Use regex with word boundaries for full-word match
         return re.search(rf'\b{re.escape(word.lower())}\b', text) is not None
 
+    def display_paginated_results(session_state, cases_df, page_number, results_per_page):
+        total_pages = (len(cases_df) + results_per_page - 1) // results_per_page
+        st.write(f"Page {page_number + 1} of {total_pages}")
+        # Determine the start and end indices for the current page
+        start_idx = page_number * results_per_page
+        end_idx = min(start_idx + results_per_page, len(cases_df))
+    
+        # Display the results for the current page
+        sub_df = cases_df.iloc[start_idx:end_idx]
+        for index, row in sub_df.iterrows():
+            st.write(f"Case ID: {row['case_id']}, Age: {row['age']}, Gender: {row['gender']}")
+    
+        # Pagination controls
+        prev, _, next = st.columns([1, 10, 1])
+        with prev:
+            if page_number > 0:
+                if st.button("Previous"):
+                    session_state.page_number -= 1
+        with next:
+            if page_number < total_pages - 1:
+                if st.button("Next"):
+                    session_state.page_number += 1
+
+
+
 
 
 # ---------- STREAMLIT CODE --------------
@@ -247,6 +273,7 @@ def main():
     
         
         if submitted: 
+            session_state = SessionState.get(page_number=0)
         
             # Create filter dictionary
             filter_dict = {
@@ -275,44 +302,9 @@ def main():
             # Apply filters
             cch.apply_filters(filter_dict)
             
-            # Pagination setup
-            results_per_page = 5
-            
-            # Initialize session state for page number
-            if "page_number" not in st.session_state:
-                st.session_state.page_number = 1
-            
-            # Increment and decrement page functions
-            def next_page():
-                st.session_state.page_number += 1
-            
-            def prev_page():
-                st.session_state.page_number -= 1
-            
-            if filter_dict['resource'] == 'text':
-                num_results = len(cch.cases_df)
-                st.write(f"Number of results: {num_results}")
-                if num_results == 0:
-                    st.write("No results found.")
-                else:
-                    # Pagination
-                    total_pages = (num_results + results_per_page - 1) // results_per_page
-                    st.write(f"Page {st.session_state.page_number} of {total_pages}")
-            
-                    start_idx = (st.session_state.page_number - 1) * results_per_page
-                    end_idx = min(start_idx + results_per_page, num_results)
-            
-                    for index in range(start_idx, end_idx):
-                        display_case_text(cch, index)
-            
-                    # Navigation buttons
-                    col1, col2, _ = st.columns([1, 1, 6])
-                    with col1:
-                        if st.session_state.page_number > 1:
-                            st.button("Previous", on_click=prev_page)
-                    with col2:
-                        if st.session_state.page_number < total_pages:
-                            st.button("Next", on_click=next_page)
+            st.title("Clinical Cases")
+            display_paginated_results(session_state, cch.cases_df, session_state.page_number, results_per_page=5)
+
 
                 
     elif selected == "About":
