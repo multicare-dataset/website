@@ -176,8 +176,6 @@ st.markdown(
 
 
 def main():
-    if "page_number" not in st.session_state:
-    st.session_state.page_number = 1
 
     with st.sidebar:
         st.logo("multicare-logo.webp", size="large")
@@ -278,6 +276,8 @@ def main():
     
             # Apply filters
             cch.apply_filters(filter_dict)
+            if "page_number" not in st.session_state:
+                st.session_state.page_number = 1
             
             # Pagination setup
             results_per_page = 5
