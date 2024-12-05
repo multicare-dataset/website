@@ -329,6 +329,7 @@ def main():
                 with col3:
                     if st.button("Next") and st.session_state.page_number < total_pages:
                         st.session_state.page_number += 1
+                        st.experimental_rerun()
 
                 
     elif selected == "About":
