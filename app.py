@@ -196,6 +196,17 @@ def main():
         
         image_path = os.path.join('.', 'medical_doctor_desktop.webp')
         st.image(Image.open(image_path))
+        # Cargar datos completos al inicio
+        if "full_cases_df" not in st.session_state:
+            file_folder = '.'
+            article_metadata_df = load_article_metadata(file_folder)
+            image_metadata_df = load_image_metadata(file_folder)
+            cases_df = load_cases(file_folder, 1990, 2024)  # Rango amplio para cargar todos los datos
+        
+            st.session_state.full_cases_df = cases_df
+            st.session_state.full_metadata_df = article_metadata_df
+            st.session_state.full_image_metadata_df = image_metadata_df
+
 
 
     if selected == "Search":      
@@ -274,49 +285,48 @@ def main():
             if "filters" in st.session_state:
                 filter_dict = st.session_state.filters
             
-                # Cargar los datos y aplicar filtros
-                file_folder = '.'
-                article_metadata_df = load_article_metadata(file_folder)
-                image_metadata_df = load_image_metadata(file_folder)
-                cases_df = load_cases(file_folder, filter_dict['min_year'], filter_dict['max_year'])
-            
-                # Instanciar la clase con los datos filtrados
-                cch = ClinicalCaseHub(article_metadata_df, image_metadata_df, cases_df, image_folder='img')
+                # Filtrar datos ya cargados
+                cch = ClinicalCaseHub(
+                    st.session_state.full_metadata_df,
+                    st.session_state.full_image_metadata_df,
+                    st.session_state.full_cases_df,
+                    image_folder='img'
+                )
                 cch.apply_filters(filter_dict)
+                # Validar datos después del filtrado
+                if cch.cases_df.empty and cch.image_metadata_df.empty:
+                    st.warning("No results match the selected filters.")
+                    return
             
                 # Configuración de resultados por página
                 results_per_page = 5
-            
-                # Determinar número total de resultados
                 if filter_dict['resource'] == 'text':
-                    num_results = len(cch.cases_df)
-                    st.write(f"Number of results: {num_results}")
                     data_source = cch.cases_df
                     display_function = display_case_text
                 elif filter_dict['resource'] == 'image':
-                    num_results = len(cch.image_metadata_df)
-                    st.write(f"Number of results: {num_results}")
                     data_source = cch.image_metadata_df
                     display_function = display_image
                 else:
-                    num_results = len(cch.cases_df)
-                    st.write(f"Number of results: {num_results}")
                     data_source = cch.cases_df
                     display_function = display_case_both
+            
+                # Determinar número total de resultados
+                num_results = len(data_source)
+                st.write(f"Number of results: {num_results}")
             
                 if num_results == 0:
                     st.write("No results found.")
                 else:
-                    # Calcular total de páginas
+                    # Calcular índices para la página actual
                     total_pages = (num_results + results_per_page - 1) // results_per_page
                     start_idx = (st.session_state.page_number - 1) * results_per_page
                     end_idx = min(start_idx + results_per_page, num_results)
             
-                    # Mostrar resultados de la página actual
+                    # Mostrar resultados segmentados
                     for index in range(start_idx, end_idx):
                         display_function(cch, index)
             
-                    # Navegación de páginas sin usar st.experimental_rerun
+                    # Navegación de páginas
                     col1, col2, col3 = st.columns([1, 2, 1])
             
                     with col1:
@@ -329,8 +339,6 @@ def main():
                     with col3:
                         if st.button("Next") and st.session_state.page_number < total_pages:
                             st.session_state.page_number += 1
-            
-
 
 
 
