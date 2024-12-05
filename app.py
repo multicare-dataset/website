@@ -316,13 +316,12 @@ def main():
                     for index in range(start_idx, end_idx):
                         display_function(cch, index)
             
-                    # Navegación de páginas con botones
+                    # Navegación de páginas sin usar st.experimental_rerun
                     col1, col2, col3 = st.columns([1, 2, 1])
             
                     with col1:
                         if st.button("Previous") and st.session_state.page_number > 1:
                             st.session_state.page_number -= 1
-                            st.experimental_rerun()
             
                     with col2:
                         st.write(f"Page {st.session_state.page_number} of {total_pages}")
@@ -330,7 +329,8 @@ def main():
                     with col3:
                         if st.button("Next") and st.session_state.page_number < total_pages:
                             st.session_state.page_number += 1
-                            st.experimental_rerun()
+            
+
 
 
 
