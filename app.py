@@ -248,10 +248,9 @@ def main():
 
     
         #submitted = st.form_submit_button("Apply Filters")
-        if submitted: 
-        
-            # Create filter dictionary
-            filter_dict = {
+        if submitted:
+            # Guardar los filtros en el estado de la sesión
+            st.session_state.filters = {
                 'min_age': min_age,
                 'max_age': max_age,
                 'gender': gender,
@@ -264,68 +263,75 @@ def main():
                 'resource': resource,
                 'license': license
             }
+        
+            # Reiniciar el número de página al aplicar filtros
+            st.session_state.page_number = 1
+        
+            # Fuerza una recarga controlada
+            st.experimental_rerun()
     
-            # Load data
-            file_folder = '.'
-            article_metadata_df = load_article_metadata(file_folder)
-            image_metadata_df = load_image_metadata(file_folder)
-            cases_df = load_cases(file_folder, min_year, max_year)
+            # Usar filtros guardados en la sesión
+            if "filters" in st.session_state:
+                filter_dict = st.session_state.filters
             
-            # Instantiate the class
-            cch = ClinicalCaseHub(article_metadata_df, image_metadata_df, cases_df, image_folder='img')
-    
-            # Apply filters
-            cch.apply_filters(filter_dict)
-            if "page_number" not in st.session_state:
-                st.session_state.page_number = 1
+                # Cargar los datos y aplicar filtros
+                file_folder = '.'
+                article_metadata_df = load_article_metadata(file_folder)
+                image_metadata_df = load_image_metadata(file_folder)
+                cases_df = load_cases(file_folder, filter_dict['min_year'], filter_dict['max_year'])
             
-            # Pagination setup
-            results_per_page = 5
+                # Instanciar la clase con los datos filtrados
+                cch = ClinicalCaseHub(article_metadata_df, image_metadata_df, cases_df, image_folder='img')
+                cch.apply_filters(filter_dict)
             
-            # Determinar número total de resultados
-            if filter_dict['resource'] == 'text':
-                num_results = len(cch.cases_df)
-                st.write(f"Number of results: {num_results}")
-                data_source = cch.cases_df
-                display_function = display_case_text
-            elif filter_dict['resource'] == 'image':
-                num_results = len(cch.image_metadata_df)
-                st.write(f"Number of results: {num_results}")
-                data_source = cch.image_metadata_df
-                display_function = display_image
-            else:
-                num_results = len(cch.cases_df)
-                st.write(f"Number of results: {num_results}")
-                data_source = cch.cases_df
-                display_function = display_case_both
+                # Configuración de resultados por página
+                results_per_page = 5
             
-            if num_results == 0:
-                st.write("No results found.")
-            else:
-                # Calcular total de páginas
-                total_pages = (num_results + results_per_page - 1) // results_per_page
-                start_idx = (st.session_state.page_number - 1) * results_per_page
-                end_idx = min(start_idx + results_per_page, num_results)
+                # Determinar número total de resultados
+                if filter_dict['resource'] == 'text':
+                    num_results = len(cch.cases_df)
+                    st.write(f"Number of results: {num_results}")
+                    data_source = cch.cases_df
+                    display_function = display_case_text
+                elif filter_dict['resource'] == 'image':
+                    num_results = len(cch.image_metadata_df)
+                    st.write(f"Number of results: {num_results}")
+                    data_source = cch.image_metadata_df
+                    display_function = display_image
+                else:
+                    num_results = len(cch.cases_df)
+                    st.write(f"Number of results: {num_results}")
+                    data_source = cch.cases_df
+                    display_function = display_case_both
             
-                # Mostrar resultados de la página actual
-                for index in range(start_idx, end_idx):
-                    display_function(cch, index)
+                if num_results == 0:
+                    st.write("No results found.")
+                else:
+                    # Calcular total de páginas
+                    total_pages = (num_results + results_per_page - 1) // results_per_page
+                    start_idx = (st.session_state.page_number - 1) * results_per_page
+                    end_idx = min(start_idx + results_per_page, num_results)
             
-                # Navegación de páginas con botones
-                col1, col2, col3 = st.columns([1, 2, 1])
+                    # Mostrar resultados de la página actual
+                    for index in range(start_idx, end_idx):
+                        display_function(cch, index)
             
-                with col1:
-                    if st.button("Previous") and st.session_state.page_number > 1:
-                        st.session_state.page_number -= 1
-                        st.experimental_rerun()  # Fuerza una recarga controlada
+                    # Navegación de páginas con botones
+                    col1, col2, col3 = st.columns([1, 2, 1])
             
-                with col2:
-                    st.write(f"Page {st.session_state.page_number} of {total_pages}")
+                    with col1:
+                        if st.button("Previous") and st.session_state.page_number > 1:
+                            st.session_state.page_number -= 1
+                            st.experimental_rerun()
             
-                with col3:
-                    if st.button("Next") and st.session_state.page_number < total_pages:
-                        st.session_state.page_number += 1
-                        st.experimental_rerun()  # Fuerza una recarga controlada
+                    with col2:
+                        st.write(f"Page {st.session_state.page_number} of {total_pages}")
+            
+                    with col3:
+                        if st.button("Next") and st.session_state.page_number < total_pages:
+                            st.session_state.page_number += 1
+                            st.experimental_rerun()
+
 
 
                 
