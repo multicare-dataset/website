@@ -324,17 +324,17 @@ def main():
                 # Pagination Controls
                 col1, col2, col3 = st.columns([1, 2, 1])
                 with col1:
-                    if st.button("Previous") and st.session_state.page_number > 1:
+                    if st.button("Previous", key="prev_page") and st.session_state.page_number > 1:
                         st.session_state.page_number -= 1
                 with col3:
-                    if st.button("Next") and st.session_state.page_number < total_pages:
+                    if st.button("Next", key="next_page") and st.session_state.page_number < total_pages:
                         st.session_state.page_number += 1
-
+                
                 # Display current page results
                 page_number = st.session_state.page_number
                 start_idx = (page_number - 1) * results_per_page
                 end_idx = min(start_idx + results_per_page, num_results)
-
+                
                 st.write(f"Displaying page {page_number} of {total_pages}")
 
                 if filter_dict['resource'] == 'text':
@@ -400,6 +400,13 @@ def display_image(cch, index):
         st.subheader(f"Case ID: {case_id}")
         st.write(f"Gender: {patient_gender}")
         st.write(f"Age: {patient_age}")
+
+        st.markdown(
+            f""<div style="text-align: center;"> <img src="data:image/png;base64,{Image.open(image_path).convert('RGB').tobytes().hex()}" alt="{image_caption}" style="max-width: 800px; height: auto;"><p>{image_caption}</p>
+            </div>
+            "",
+            unsafe_allow_html=True,
+        )
 
         # Display image
         st.image(Image.open(image_path), caption=image_caption, use_column_width=False, class_="centered-image")
