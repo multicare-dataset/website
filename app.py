@@ -223,6 +223,21 @@ def main():
         st.image(Image.open(image_path))
 
     if selected == "Search":
+        # CSS for centering images
+        st.markdown(
+            """
+            <style>
+            .centered-image {
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+                width: 50%;
+            }
+            </style>
+            """,
+            unsafe_allow_html=True,
+        )
+
         with st.form("filter_form"):
             st.subheader("Filters")
 
@@ -294,13 +309,11 @@ def main():
                 # Pagination Controls
                 col1, col2, col3 = st.columns([1, 2, 1])
                 with col1:
-                    if st.session_state.page_number > 1:
-                        if st.button("Previous"):
-                            st.session_state.page_number -= 1
+                    if st.button("Previous") and st.session_state.page_number > 1:
+                        st.session_state.page_number -= 1
                 with col3:
-                    if st.session_state.page_number < total_pages:
-                        if st.button("Next"):
-                            st.session_state.page_number += 1
+                    if st.button("Next") and st.session_state.page_number < total_pages:
+                        st.session_state.page_number += 1
 
                 # Display current page results
                 page_number = st.session_state.page_number
