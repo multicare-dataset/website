@@ -202,6 +202,21 @@ st.markdown(
 
 
 def main():
+    # CSS personalizado para centrar imágenes y establecer tamaño máximo
+    st.markdown(
+        """
+        <style>
+        .centered-image {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            max-width: 800px; /* Cambiar para establecer tamaño máximo */
+            height: auto;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
     with st.sidebar:
         st.logo("multicare-logo.webp", size="large")
 
@@ -387,7 +402,7 @@ def display_image(cch, index):
         st.write(f"Age: {patient_age}")
 
         # Display image
-        st.image(Image.open(image_path), caption=image_caption)
+        st.image(Image.open(image_path), caption=image_caption, use_column_width=False, class_="centered-image")
 
         st.write(f"Image Labels: {', '.join(image_labels)}")
         # st.write(f"Article Link: [Link]({article_link})")
