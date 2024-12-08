@@ -322,14 +322,17 @@ def main():
                 total_pages = (num_results + results_per_page - 1) // results_per_page
 
                 # Pagination Controls
-                col1, col2, col3 = st.columns([1, 2, 1])
-                with col1:
-                    if st.button("Previous", key="prev_page") and st.session_state.page_number > 1:
-                        st.session_state.page_number -= 1
-                with col3:
-                    if st.button("Next", key="next_page") and st.session_state.page_number < total_pages:
-                        st.session_state.page_number += 1
+                with st.form("pagination_form"):
+                    col1, col2, col3 = st.columns([1, 2, 1])
+                    with col1:
+                        previous_clicked = st.form_submit_button("Previous")
+                    with col3:
+                        next_clicked = st.form_submit_button("Next")
                 
+                    if previous_clicked and st.session_state.page_number > 1:
+                        st.session_state.page_number -= 1
+                    if next_clicked and st.session_state.page_number < total_pages:
+                        st.session_state.page_number += 1
                 # Display current page results
                 page_number = st.session_state.page_number
                 start_idx = (page_number - 1) * results_per_page
