@@ -204,7 +204,7 @@ st.markdown(
 def main():
     with st.sidebar:
         st.logo("multicare-logo.webp", size="large")
-    
+
         # Define the menu options
         selected = option_menu(
             menu_title=None,
@@ -218,99 +218,111 @@ def main():
                 "nav-link-selected": {"background-color": "#12588ECC", "font-weight": 700},
             },
         )
-        
+
         image_path = os.path.join('.', 'medical_doctor_desktop.webp')
         st.image(Image.open(image_path))
 
-    if selected == "Search":      
-
+    if selected == "Search":
         with st.form("filter_form"):
             st.subheader("Filters")
 
             col1, col2, col3 = st.columns(3)
             
             with col1:
-                # Year slider: double-sided slider
                 min_year, max_year = st.slider("Year", 1990, 2024, (2023, 2024))
-            
-                # Gender
                 gender = st.selectbox("Gender", options=['Any', 'Female', 'Male'])
-            
-                # Image Type Label
-                image_type_options = ['ct', 'mri', 'x_ray', 'ultrasound', 'angiography', 'mammography', 'echocardiogram', 'cholangiogram',
-                                      'cta', 'cmr', 'mra', 'mrcp', 'spect', 'pet', 'scintigraphy', 'tractography',
-                                      'skin_photograph', 'oral_photograph', 'other_medical_photograph', 'fundus_photograph', 'ophtalmic_angiography', 'oct',
-                                      'pathology', 'h&e', 'immunostaining', 'immunofluorescence', 'acid_fast', 'masson_trichrome', 'giemsa', 'papanicolaou', 'gram', 'fish',
-                                      'endoscopy', 'colonoscopy', 'bronchoscopy', 'ekg', 'eeg', 'chart']
+                image_type_options = [
+                    'ct', 'mri', 'x_ray', 'ultrasound', 'angiography', 'mammography', 
+                    'echocardiogram', 'cholangiogram', 'cta', 'cmr', 'mra', 'mrcp', 'spect', 
+                    'pet', 'scintigraphy', 'tractography', 'skin_photograph', 
+                    'oral_photograph', 'fundus_photograph', 'pathology', 'h&e'
+                ]
                 image_type_label = st.selectbox("Image Type Label", options=[''] + image_type_options)
                 image_type_label = image_type_label if image_type_label != '' else None
             
             with col2:
-                # Age slider: double-sided slider
                 min_age, max_age = st.slider("Age", 0, 100, (15, 45))
-            
-                # Case Text Search
                 case_search = st.text_input("Case Text Search", value='')
-            
-                # Anatomical Region Label
-                anatomical_region_options = ['head', 'neck', 'thorax', 'abdomen', 'pelvis', 'upper_limb', 'lower_limb', 'dental_view']
+                anatomical_region_options = ['head', 'neck', 'thorax', 'abdomen', 'pelvis', 'upper_limb', 'lower_limb']
                 anatomical_region_label = st.selectbox("Anatomical Region Label", options=[''] + anatomical_region_options)
                 anatomical_region_label = anatomical_region_label if anatomical_region_label != '' else None
 
-                submitted = st.form_submit_button("Apply Filters")
-
             with col3:
-                            
-                # License as horizontal radio buttons
                 license = st.radio("License", options=['all', 'commercial'], horizontal=True)
-                
-                # Caption Text Search
                 caption_search = st.text_input("Caption Text Search", value='')
-            
-                # Resource Type, adding 'both' option
                 resource = st.selectbox("Resource Type", options=['text', 'image', 'both'], index=0)
 
-    
-        
-        if submitted: 
-            session_state = SessionState.get(page_number=0)
-        
-            # Create filter dictionary
+            submitted = st.form_submit_button("Apply Filters")
+
+        if submitted:
             filter_dict = {
-                'min_age': min_age,
-                'max_age': max_age,
-                'gender': gender,
-                'case_search': case_search,
-                'image_type_label': image_type_label,
-                'anatomical_region_label': anatomical_region_label,
-                'caption_search': caption_search,
-                'min_year': min_year,
-                'max_year': max_year,
-                'resource': resource,
-                'license': license
+                'min_age': min_age, 'max_age': max_age, 'gender': gender, 'case_search': case_search,
+                'image_type_label': image_type_label, 'anatomical_region_label': anatomical_region_label,
+                'caption_search': caption_search, 'min_year': min_year, 'max_year': max_year,
+                'resource': resource, 'license': license
             }
-    
-            # Load data
+
             file_folder = '.'
             article_metadata_df = load_article_metadata(file_folder)
             image_metadata_df = load_image_metadata(file_folder)
             cases_df = load_cases(file_folder, min_year, max_year)
             
-            # Instantiate the class
             cch = ClinicalCaseHub(article_metadata_df, image_metadata_df, cases_df, image_folder='img')
-    
-            # Apply filters
             cch.apply_filters(filter_dict)
             
-            st.title("Clinical Cases")
-            display_paginated_results(session_state, cch.cases_df, session_state.page_number, results_per_page=5)
+            results_per_page = 5
 
+            if filter_dict['resource'] == 'text':
+                num_results = len(cch.cases_df)
+            elif filter_dict['resource'] == 'image':
+                num_results = len(cch.image_metadata_df)
+            else:
+                num_results = len(cch.cases_df)
 
-                
+            st.write(f"Number of results: {num_results}")
+
+            if num_results == 0:
+                st.write("No results found.")
+            else:
+                # Initialize or use current page state
+                if 'page_number' not in st.session_state:
+                    st.session_state.page_number = 1
+
+                # Calculate total pages
+                total_pages = (num_results + results_per_page - 1) // results_per_page
+
+                # Pagination Controls
+                col1, col2, col3 = st.columns([1, 2, 1])
+                with col1:
+                    if st.session_state.page_number > 1:
+                        if st.button("Previous"):
+                            st.session_state.page_number -= 1
+                with col3:
+                    if st.session_state.page_number < total_pages:
+                        if st.button("Next"):
+                            st.session_state.page_number += 1
+
+                # Display current page results
+                page_number = st.session_state.page_number
+                start_idx = (page_number - 1) * results_per_page
+                end_idx = min(start_idx + results_per_page, num_results)
+
+                st.write(f"Displaying page {page_number} of {total_pages}")
+
+                if filter_dict['resource'] == 'text':
+                    for index in range(start_idx, end_idx):
+                        display_case_text(cch, index)
+                elif filter_dict['resource'] == 'image':
+                    for index in range(start_idx, end_idx):
+                        display_image(cch, index)
+                else:
+                    for index in range(start_idx, end_idx):
+                        display_case_both(cch, index)
+
     elif selected == "About":
         st.title("About")
         st.write("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
-       
+
 def display_case_text(cch, index):
     """
     Display text case information.
