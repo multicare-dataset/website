@@ -400,21 +400,14 @@ def display_image(cch, index):
         st.subheader(f"Case ID: {case_id}")
         st.write(f"Gender: {patient_gender}")
         st.write(f"Age: {patient_age}")
-
-        st.markdown(
-            f""<div style="text-align: center;"> <img src="data:image/png;base64,{Image.open(image_path).convert('RGB').tobytes().hex()}" alt="{image_caption}" style="max-width: 800px; height: auto;"><p>{image_caption}</p>
-            </div>
-            "",
-            unsafe_allow_html=True,
-        )
-
+    
         # Display image
         st.image(Image.open(image_path), caption=image_caption, use_column_width=False, class_="centered-image")
-
+    
         st.write(f"Image Labels: {', '.join(image_labels)}")
         # st.write(f"Article Link: [Link]({article_link})")
         st.write(f"Citation: {article_citation}")
-
+           
 def display_case_both(cch, index):
     """
     Display both text and images for a case.
