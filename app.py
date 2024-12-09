@@ -319,12 +319,16 @@ def main():
                     st.session_state.page_number = 1
                 
                 # Pagination controls
-                col1, col2, col3 = st.columns([1, 2, 1])
-                with col1:
-                    if st.button("Previous", key="prev_button") and st.session_state.page_number > 1:
+                with st.form("pagination_form"):
+                    col1, col2, col3 = st.columns([1, 2, 1])
+                    with col1:
+                        prev_clicked = st.form_submit_button("Previous")
+                    with col3:
+                        next_clicked = st.form_submit_button("Next")
+                    
+                    if prev_clicked and st.session_state.page_number > 1:
                         st.session_state.page_number -= 1
-                with col3:
-                    if st.button("Next", key="next_button") and st.session_state.page_number < total_pages:
+                    if next_clicked and st.session_state.page_number < total_pages:
                         st.session_state.page_number += 1
                 
                 # Display results
