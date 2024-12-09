@@ -148,28 +148,28 @@ class ClinicalCaseHub():
         # Use regex with word boundaries for full-word match
         return re.search(rf'\b{re.escape(word.lower())}\b', text) is not None
 
-    def display_paginated_results(session_state, cases_df, page_number, results_per_page):
-        total_pages = (len(cases_df) + results_per_page - 1) // results_per_page
-        st.write(f"Page {page_number + 1} of {total_pages}")
-        # Determine the start and end indices for the current page
-        start_idx = page_number * results_per_page
-        end_idx = min(start_idx + results_per_page, len(cases_df))
+    # def display_paginated_results(session_state, cases_df, page_number, results_per_page):
+    #     total_pages = (len(cases_df) + results_per_page - 1) // results_per_page
+    #     st.write(f"Page {page_number + 1} of {total_pages}")
+    #     # Determine the start and end indices for the current page
+    #     start_idx = page_number * results_per_page
+    #     end_idx = min(start_idx + results_per_page, len(cases_df))
     
-        # Display the results for the current page
-        sub_df = cases_df.iloc[start_idx:end_idx]
-        for index, row in sub_df.iterrows():
-            st.write(f"Case ID: {row['case_id']}, Age: {row['age']}, Gender: {row['gender']}")
+    #     # Display the results for the current page
+    #     sub_df = cases_df.iloc[start_idx:end_idx]
+    #     for index, row in sub_df.iterrows():
+    #         st.write(f"Case ID: {row['case_id']}, Age: {row['age']}, Gender: {row['gender']}")
     
-        # Pagination controls
-        prev, _, next = st.columns([1, 10, 1])
-        with prev:
-            if page_number > 0:
-                if st.button("Previous"):
-                    session_state.page_number -= 1
-        with next:
-            if page_number < total_pages - 1:
-                if st.button("Next"):
-                    session_state.page_number += 1
+    #     # Pagination controls
+    #     prev, _, next = st.columns([1, 10, 1])
+    #     with prev:
+    #         if page_number > 0:
+    #             if st.button("Previous"):
+    #                 session_state.page_number -= 1
+    #     with next:
+    #         if page_number < total_pages - 1:
+    #             if st.button("Next"):
+    #                 session_state.page_number += 1
 
 
 
@@ -314,30 +314,23 @@ def main():
             if num_results == 0:
                 st.write("No results found.")
             else:
-                # Initialize or use current page state
-                if 'page_number' not in st.session_state:
+                # Initialize session state for page number
+                if "page_number" not in st.session_state:
                     st.session_state.page_number = 1
-
-                # Calculate total pages
-                total_pages = (num_results + results_per_page - 1) // results_per_page
-
-                # Pagination Controls
-                with st.form("pagination_form"):
-                    col1, col2, col3 = st.columns([1, 2, 1])
-                    with col1:
-                        previous_clicked = st.form_submit_button("Previous")
-                    with col3:
-                        next_clicked = st.form_submit_button("Next")
                 
-                    if previous_clicked and st.session_state.page_number > 1:
+                # Pagination controls
+                col1, col2, col3 = st.columns([1, 2, 1])
+                with col1:
+                    if st.button("Previous", key="prev_button") and st.session_state.page_number > 1:
                         st.session_state.page_number -= 1
-                    if next_clicked and st.session_state.page_number < total_pages:
+                with col3:
+                    if st.button("Next", key="next_button") and st.session_state.page_number < total_pages:
                         st.session_state.page_number += 1
-                # Display current page results
+                
+                # Display results
                 page_number = st.session_state.page_number
                 start_idx = (page_number - 1) * results_per_page
                 end_idx = min(start_idx + results_per_page, num_results)
-                
                 st.write(f"Displaying page {page_number} of {total_pages}")
 
                 if filter_dict['resource'] == 'text':
