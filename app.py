@@ -327,15 +327,15 @@ def main():
             st.write(f"Displaying page {page_number} of {total_pages}")
             st.write(f"Results: {cch.cases_df.iloc[start_idx:end_idx]}")
 
-                # if filter_dict['resource'] == 'text':
-                #     for index in range(start_idx, end_idx):
-                #         display_case_text(cch, index)
-                # elif filter_dict['resource'] == 'image':
-                #     for index in range(start_idx, end_idx):
-                #         display_image(cch, index)
-                # else:
-                #     for index in range(start_idx, end_idx):
-                #         display_case_both(cch, index)
+            if filter_dict['resource'] == 'text':
+                for index in range(start_idx, end_idx):
+                    display_case_text(cch, index)
+            elif filter_dict['resource'] == 'image':
+                for index in range(start_idx, end_idx):
+                    display_image(cch, index)
+            else:
+                for index in range(start_idx, end_idx):
+                    display_case_both(cch, index)
 
     elif selected == "About":
         st.title("About")
