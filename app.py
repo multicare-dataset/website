@@ -1,5 +1,4 @@
 import streamlit as st
-#import SessionState
 import pandas as pd
 import ast
 import os
@@ -314,22 +313,20 @@ def main():
             if num_results == 0:
                 st.write("No results found.")
             else:
+                # Calculate total pages
                 total_pages = (num_results + results_per_page - 1) // results_per_page
+                
                 # Initialize session state for page number
                 if "page_number" not in st.session_state:
                     st.session_state.page_number = 1
                 
-                # Pagination controls
-                with st.form("pagination_form"):
-                    col1, col2, col3 = st.columns([1, 2, 1])
-                    with col1:
-                        prev_clicked = st.form_submit_button("Previous")
-                    with col3:
-                        next_clicked = st.form_submit_button("Next")
-                    
-                    if prev_clicked and st.session_state.page_number > 1:
+                # Pagination controls outside a form
+                col1, col2, col3 = st.columns([1, 2, 1])
+                with col1:
+                    if st.button("Previous") and st.session_state.page_number > 1:
                         st.session_state.page_number -= 1
-                    if next_clicked and st.session_state.page_number < total_pages:
+                with col3:
+                    if st.button("Next") and st.session_state.page_number < total_pages:
                         st.session_state.page_number += 1
                 
                 # Display results
