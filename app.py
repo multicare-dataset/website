@@ -291,59 +291,51 @@ def main():
                 'resource': resource, 'license': license
             }
 
-            file_folder = '.'
-            article_metadata_df = load_article_metadata(file_folder)
-            image_metadata_df = load_image_metadata(file_folder)
-            cases_df = load_cases(file_folder, min_year, max_year)
-            
-            cch = ClinicalCaseHub(article_metadata_df, image_metadata_df, cases_df, image_folder='img')
+            # Load data
+            article_metadata_df = load_article_metadata('.')
+            image_metadata_df = load_image_metadata('.')
+            cases_df = load_cases('.', min_year, max_year)
+
+            # Process data
+            cch = ClinicalCaseHub(article_metadata_df, image_metadata_df, cases_df)
             cch.apply_filters(filter_dict)
-            
+
+            st.session_state.filter_dict = filter_dict
+            st.session_state.cch = cch
+            st.session_state.num_results = len(cch.cases_df)
+
+        if "cch" in st.session_state:
+            cch = st.session_state.cch
+            num_results = st.session_state.num_results
             results_per_page = 5
+            total_pages = (num_results + results_per_page - 1) // results_per_page
 
-            if filter_dict['resource'] == 'text':
-                num_results = len(cch.cases_df)
-            elif filter_dict['resource'] == 'image':
-                num_results = len(cch.image_metadata_df)
-            else:
-                num_results = len(cch.cases_df)
+            if "page_number" not in st.session_state:
+                st.session_state.page_number = 1
 
-            st.write(f"Number of results: {num_results}")
+            col1, col2, col3 = st.columns([1, 2, 1])
+            with col1:
+                if st.button("Previous") and st.session_state.page_number > 1:
+                    st.session_state.page_number -= 1
+            with col3:
+                if st.button("Next") and st.session_state.page_number < total_pages:
+                    st.session_state.page_number += 1
 
-            if num_results == 0:
-                st.write("No results found.")
-            else:
-                # Calculate total pages
-                total_pages = (num_results + results_per_page - 1) // results_per_page
-                
-                # Initialize session state for page number
-                if "page_number" not in st.session_state:
-                    st.session_state.page_number = 1
-                
-                # Pagination controls outside a form
-                col1, col2, col3 = st.columns([1, 2, 1])
-                with col1:
-                    if st.button("Previous") and st.session_state.page_number > 1:
-                        st.session_state.page_number -= 1
-                with col3:
-                    if st.button("Next") and st.session_state.page_number < total_pages:
-                        st.session_state.page_number += 1
-                
-                # Display results
-                page_number = st.session_state.page_number
-                start_idx = (page_number - 1) * results_per_page
-                end_idx = min(start_idx + results_per_page, num_results)
-                st.write(f"Displaying page {page_number} of {total_pages}")
+            page_number = st.session_state.page_number
+            start_idx = (page_number - 1) * results_per_page
+            end_idx = min(start_idx + results_per_page, num_results)
+            st.write(f"Displaying page {page_number} of {total_pages}")
+            st.write(f"Results: {cch.cases_df.iloc[start_idx:end_idx]}")
 
-                if filter_dict['resource'] == 'text':
-                    for index in range(start_idx, end_idx):
-                        display_case_text(cch, index)
-                elif filter_dict['resource'] == 'image':
-                    for index in range(start_idx, end_idx):
-                        display_image(cch, index)
-                else:
-                    for index in range(start_idx, end_idx):
-                        display_case_both(cch, index)
+                # if filter_dict['resource'] == 'text':
+                #     for index in range(start_idx, end_idx):
+                #         display_case_text(cch, index)
+                # elif filter_dict['resource'] == 'image':
+                #     for index in range(start_idx, end_idx):
+                #         display_image(cch, index)
+                # else:
+                #     for index in range(start_idx, end_idx):
+                #         display_case_both(cch, index)
 
     elif selected == "About":
         st.title("About")
