@@ -314,6 +314,7 @@ def main():
             if num_results == 0:
                 st.write("No results found.")
             else:
+                total_pages = (num_results + results_per_page - 1) // results_per_page
                 # Initialize session state for page number
                 if "page_number" not in st.session_state:
                     st.session_state.page_number = 1
