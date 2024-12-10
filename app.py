@@ -280,7 +280,7 @@ def main():
         if "cch" in st.session_state:
             cch = st.session_state.cch
             num_results = st.session_state.num_results
-            results_per_page = 5
+             results_per_page = 5
             total_pages = (num_results + results_per_page - 1) // results_per_page
             
             # Inicializar variables de estado
@@ -299,7 +299,7 @@ def main():
             with col3_top:
                 if st.button("Next", key="next_top"):
                     next_pressed = True
-            
+                    
             # Controles de paginación en la parte inferior
             col1_bot, col2_bot, col3_bot = st.columns([1, 2, 1])
             with col1_bot:
@@ -308,7 +308,7 @@ def main():
             with col3_bot:
                 if st.button("Next", key="next_bot"):
                     next_pressed = True
-                    
+            
             # Procesar la acción de navegación
             if next_pressed and st.session_state.page_number < total_pages:
                 st.session_state.page_number += 1
