@@ -286,25 +286,34 @@ def main():
             # Inicializar variables de estado
             if "page_number" not in st.session_state:
                 st.session_state.page_number = 1
-            if "current_action" not in st.session_state:
-                st.session_state.current_action = None
             
-            # Función para manejar la acción de navegación
-            def handle_pagination():
-                if st.session_state.current_action == "next" and st.session_state.page_number < total_pages:
-                    st.session_state.page_number += 1
-                elif st.session_state.current_action == "prev" and st.session_state.page_number > 1:
-                    st.session_state.page_number -= 1
-                st.session_state.current_action = None  # Resetear acción después de manejarla
+            # Bandera para saber si se presionó un botón
+            next_pressed = False
+            prev_pressed = False
             
             # Controles de paginación en la parte superior
             col1_top, col2_top, col3_top = st.columns([1, 2, 1])
             with col1_top:
                 if st.button("Previous", key="prev_top"):
-                    st.session_state.current_action = "prev"
+                    prev_pressed = True
             with col3_top:
                 if st.button("Next", key="next_top"):
-                    st.session_state.current_action = "next"
+                    next_pressed = True
+            
+            # Controles de paginación en la parte inferior
+            col1_bot, col2_bot, col3_bot = st.columns([1, 2, 1])
+            with col1_bot:
+                if st.button("Previous", key="prev_bot"):
+                    prev_pressed = True
+            with col3_bot:
+                if st.button("Next", key="next_bot"):
+                    next_pressed = True
+            
+            # Procesar la acción de navegación
+            if next_pressed and st.session_state.page_number < total_pages:
+                st.session_state.page_number += 1
+            elif prev_pressed and st.session_state.page_number > 1:
+                st.session_state.page_number -= 1
             
             # Mostrar los resultados de la página actual
             page_number = st.session_state.page_number
@@ -321,18 +330,6 @@ def main():
             else:
                 for index in range(start_idx, end_idx):
                     display_case_both(cch, index)
-            
-            # Controles de paginación en la parte inferior
-            col1_bot, col2_bot, col3_bot = st.columns([1, 2, 1])
-            with col1_bot:
-                if st.button("Previous", key="prev_bot"):
-                    st.session_state.current_action = "prev"
-            with col3_bot:
-                if st.button("Next", key="next_bot"):
-                    st.session_state.current_action = "next"
-            
-            # Manejar la navegación después de procesar los botones
-            handle_pagination()
 
             st.write(f"Displaying page {page_number} of {total_pages}")
 
