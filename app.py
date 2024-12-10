@@ -325,12 +325,11 @@ def main():
             start_idx = (page_number - 1) * results_per_page
             end_idx = min(start_idx + results_per_page, num_results)
             st.write(f"Displaying page {page_number} of {total_pages}")
-            st.write(f"Results: {cch.cases_df.iloc[start_idx:end_idx]}")
 
-            if filter_dict['resource'] == 'text':
+            if st.session_state.filter_dict['resource'] == 'text':
                 for index in range(start_idx, end_idx):
                     display_case_text(cch, index)
-            elif filter_dict['resource'] == 'image':
+            elif st.session_state.filter_dict['resource'] == 'image':
                 for index in range(start_idx, end_idx):
                     display_image(cch, index)
             else:
