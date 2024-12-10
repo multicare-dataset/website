@@ -299,13 +299,6 @@ def main():
             with col3_top:
                 if st.button("Next", key="next_top"):
                     next_pressed = True
-
-            # Procesar la acción de navegación
-            if next_pressed and st.session_state.page_number < total_pages:
-                st.session_state.page_number += 1
-            elif prev_pressed and st.session_state.page_number > 1:
-                st.session_state.page_number -= 1
-                    
                 
             # Mostrar los resultados de la página actual
             page_number = st.session_state.page_number
