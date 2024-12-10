@@ -299,6 +299,16 @@ def main():
             with col3_top:
                 if st.button("Next", key="next_top"):
                     next_pressed = True
+
+            if st.session_state.filter_dict['resource'] == 'text':
+                for index in range(start_idx, end_idx):
+                    display_case_text(cch, index)
+            elif st.session_state.filter_dict['resource'] == 'image':
+                for index in range(start_idx, end_idx):
+                    display_image(cch, index)
+            else:
+                for index in range(start_idx, end_idx):
+                    display_case_both(cch, index)
             
             # Controles de paginación en la parte inferior
             col1_bot, col2_bot, col3_bot = st.columns([1, 2, 1])
@@ -321,17 +331,7 @@ def main():
             end_idx = min(start_idx + results_per_page, num_results)
             st.write(f"Mostrando página {page_number} de {total_pages}")
             
-            if st.session_state.filter_dict['resource'] == 'text':
-                for index in range(start_idx, end_idx):
-                    display_case_text(cch, index)
-            elif st.session_state.filter_dict['resource'] == 'image':
-                for index in range(start_idx, end_idx):
-                    display_image(cch, index)
-            else:
-                for index in range(start_idx, end_idx):
-                    display_case_both(cch, index)
 
-            st.write(f"Displaying page {page_number} of {total_pages}")
 
     elif selected == "About":
         st.title("About")
