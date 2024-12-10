@@ -280,7 +280,7 @@ def main():
         if "cch" in st.session_state:
             cch = st.session_state.cch
             num_results = st.session_state.num_results
-             results_per_page = 5
+            results_per_page = 5
             total_pages = (num_results + results_per_page - 1) // results_per_page
             
             # Inicializar variables de estado
@@ -300,8 +300,10 @@ def main():
                 if st.button("Next", key="next_top"):
                     next_pressed = True
                     
-            # Espaciador con líneas en blanco
-            st.write("\n" * 10)  # Ajusta el número de saltos de línea para aumentar el espacio
+            # Contenedor vacío para crear espacio dinámico
+            spacer = st.empty()
+            for _ in range(10):  # Ajusta el rango para aumentar el espacio
+                spacer.write("")
             
             # Controles de paginación en la parte inferior
             col1_bot, col2_bot, col3_bot = st.columns([1, 2, 1])
