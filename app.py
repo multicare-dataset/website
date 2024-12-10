@@ -300,19 +300,18 @@ def main():
                 if st.button("Next", key="next_top"):
                     next_pressed = True
                     
-            # Contenedor con espacio fijo
-            with st.container():
-                for _ in range(10):  # Ajusta el rango para añadir más espacio
-                    st.write(" ")
+            # Espaciador con líneas en blanco
+            st.write("\n" * 10)  # Ajusta el número de saltos de línea para aumentar el espacio
             
-                # Controles de paginación en la parte inferior
-                col1_bot, col2_bot, col3_bot = st.columns([1, 2, 1])
-                with col1_bot:
-                    if st.button("Previous", key="prev_bot"):
-                        prev_pressed = True
-                with col3_bot:
-                    if st.button("Next", key="next_bot"):
-                        next_pressed = True
+            # Controles de paginación en la parte inferior
+            col1_bot, col2_bot, col3_bot = st.columns([1, 2, 1])
+            with col1_bot:
+                if st.button("Previous", key="prev_bot"):
+                    prev_pressed = True
+            with col3_bot:
+                if st.button("Next", key="next_bot"):
+                    next_pressed = True
+
             
             # Procesar la acción de navegación
             if next_pressed and st.session_state.page_number < total_pages:
