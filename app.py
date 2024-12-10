@@ -300,12 +300,7 @@ def main():
                 if st.button("Next", key="next_top"):
                     next_pressed = True
                     
-            # Contenedor con espacio fijo
             with st.container():
-                for _ in range(10):  # Ajusta el rango para añadir más espacio
-                    st.write(" ")
-            
-                # Controles de paginación en la parte inferior
                 col1_bot, col2_bot, col3_bot = st.columns([1, 2, 1])
                 with col1_bot:
                     if st.button("Previous", key="prev_bot"):
