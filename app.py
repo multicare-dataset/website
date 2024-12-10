@@ -311,24 +311,34 @@ def main():
             results_per_page = 5
             total_pages = (num_results + results_per_page - 1) // results_per_page
             
-            # Initialize session state for page number
+            # Initialize session state variables
             if "page_number" not in st.session_state:
                 st.session_state.page_number = 1
+            if "current_action" not in st.session_state:
+                st.session_state.current_action = None
+            
+            # Define a function to handle page changes
+            def handle_pagination(action):
+                if action == "next" and st.session_state.page_number < total_pages:
+                    st.session_state.page_number += 1
+                elif action == "prev" and st.session_state.page_number > 1:
+                    st.session_state.page_number -= 1
+                st.session_state.current_action = None  # Reset action after handling
             
             # Pagination controls at the top
             col1_top, col2_top, col3_top = st.columns([1, 2, 1])
             with col1_top:
-                if st.button("Previous", key="prev_top") and st.session_state.page_number > 1:
-                    st.session_state.page_number -= 1
+                if st.button("Previous", key="prev_top"):
+                    st.session_state.current_action = "prev"
             with col3_top:
-                if st.button("Next", key="next_top") and st.session_state.page_number < total_pages:
-                    st.session_state.page_number += 1
+                if st.button("Next", key="next_top"):
+                    st.session_state.current_action = "next"
             
             # Display results for the current page
             page_number = st.session_state.page_number
             start_idx = (page_number - 1) * results_per_page
             end_idx = min(start_idx + results_per_page, num_results)
-            st.write(f"Mostrando la página {page_number} de {total_pages}")
+            st.write(f"Displaying page {page_number} of {total_pages}")
             
             # Resource type-specific display logic
             if st.session_state.filter_dict['resource'] == 'text':
@@ -344,12 +354,14 @@ def main():
             # Pagination controls at the bottom
             col1_bot, col2_bot, col3_bot = st.columns([1, 2, 1])
             with col1_bot:
-                if st.button("Previous", key="prev_bot") and st.session_state.page_number > 1:
-                    st.session_state.page_number -= 1
+                if st.button("Previous", key="prev_bot"):
+                    st.session_state.current_action = "prev"
             with col3_bot:
-                if st.button("Next", key="next_bot") and st.session_state.page_number < total_pages:
-                    st.session_state.page_number += 1
-            st.write(f"Mostrando la página {page_number} de {total_pages}")
+                if st.button("Next", key="next_bot"):
+                    st.session_state.current_action = "next"
+            
+            # Handle pagination after all buttons
+            handle_pagination(st.session_state.current_action)
 
     elif selected == "About":
         st.title("About")
