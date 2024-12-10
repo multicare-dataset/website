@@ -277,7 +277,7 @@ def main():
             st.session_state.cch = cch
             st.session_state.num_results = len(cch.cases_df)
 
-             if "cch" in st.session_state:
+            if "cch" in st.session_state:
             cch = st.session_state.cch
             num_results = st.session_state.num_results
             results_per_page = 5
