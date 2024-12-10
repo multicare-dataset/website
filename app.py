@@ -300,20 +300,29 @@ def main():
                 if st.button("Next", key="next_top"):
                     next_pressed = True
                     
-            # Contenedor vacío para crear espacio dinámico
-            spacer = st.empty()
-            for _ in range(10):  # Ajusta el rango para aumentar el espacio
-                spacer.write("")
+            # Estilo CSS para añadir margen inferior
+            st.markdown(
+                """
+                <style>
+                .bot-buttons {
+                    margin-top: 50px;  /* Ajusta este valor para controlar el espacio */
+                }
+                </style>
+                """,
+                unsafe_allow_html=True
+            )
             
             # Controles de paginación en la parte inferior
-            col1_bot, col2_bot, col3_bot = st.columns([1, 2, 1])
-            with col1_bot:
-                if st.button("Previous", key="prev_bot"):
-                    prev_pressed = True
-            with col3_bot:
-                if st.button("Next", key="next_bot"):
-                    next_pressed = True
-
+            with st.container():
+                st.markdown('<div class="bot-buttons">', unsafe_allow_html=True)
+                col1_bot, col2_bot, col3_bot = st.columns([1, 2, 1])
+                with col1_bot:
+                    if st.button("Previous", key="prev_bot"):
+                        prev_pressed = True
+                with col3_bot:
+                    if st.button("Next", key="next_bot"):
+                        next_pressed = True
+                st.markdown('</div>', unsafe_allow_html=True)
             
             # Procesar la acción de navegación
             if next_pressed and st.session_state.page_number < total_pages:
