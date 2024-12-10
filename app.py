@@ -316,8 +316,13 @@ def main():
                 st.session_state.page_number += 1
             elif prev_pressed and st.session_state.page_number > 1:
                 st.session_state.page_number -= 1
-
-            # Controles de paginación en la parte inferior
+            
+            # Mostrar los resultados de la página actual
+            page_number = st.session_state.page_number
+            start_idx = (page_number - 1) * results_per_page
+            end_idx = min(start_idx + results_per_page, num_results)
+            st.write(f"Mostrando página {page_number} de {total_pages}")
+             # Controles de paginación en la parte inferior
             col1_bot, col2_bot, col3_bot = st.columns([1, 2, 1])
             with col1_bot:
                 if st.button("Previous", key="prev_bot"):
@@ -325,12 +330,6 @@ def main():
             with col3_bot:
                 if st.button("Next", key="next_bot"):
                     next_pressed = True
-            
-            # Mostrar los resultados de la página actual
-            page_number = st.session_state.page_number
-            start_idx = (page_number - 1) * results_per_page
-            end_idx = min(start_idx + results_per_page, num_results)
-            st.write(f"Mostrando página {page_number} de {total_pages}")
             
 
 
