@@ -349,6 +349,7 @@ def main():
             with col3_bot:
                 if st.button("Next", key="next_bot") and st.session_state.page_number < total_pages:
                     st.session_state.page_number += 1
+            st.write(f"Displaying page {page_number} of {total_pages}")
 
     elif selected == "About":
         st.title("About")
