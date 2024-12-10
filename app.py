@@ -328,7 +328,7 @@ def main():
             page_number = st.session_state.page_number
             start_idx = (page_number - 1) * results_per_page
             end_idx = min(start_idx + results_per_page, num_results)
-            st.write(f"Displaying page {page_number} of {total_pages}")
+            st.write(f"Mostrando la página {page_number} de {total_pages}")
             
             # Resource type-specific display logic
             if st.session_state.filter_dict['resource'] == 'text':
@@ -349,7 +349,7 @@ def main():
             with col3_bot:
                 if st.button("Next", key="next_bot") and st.session_state.page_number < total_pages:
                     st.session_state.page_number += 1
-            st.write(f"Displaying page {page_number} of {total_pages}")
+            st.write(f"Mostrando la página {page_number} de {total_pages}")
 
     elif selected == "About":
         st.title("About")
