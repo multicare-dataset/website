@@ -300,23 +300,6 @@ def main():
                 if st.button("Next", key="next_top"):
                     next_pressed = True
                     
-            # Divisor para separar resultados de los botones inferiores
-            st.divider()
-            
-            # Controles de paginación en la parte inferior
-            col1_bot, col2_bot, col3_bot = st.columns([1, 2, 1])
-            with col1_bot:
-                if st.button("Previous", key="prev_bot"):
-                    prev_pressed = True
-            with col3_bot:
-                if st.button("Next", key="next_bot"):
-                    next_pressed = True
-                    
-            # Procesar la acción de navegación
-            if next_pressed and st.session_state.page_number < total_pages:
-                st.session_state.page_number += 1
-            elif prev_pressed and st.session_state.page_number > 1:
-                st.session_state.page_number -= 1
                 
             # Mostrar los resultados de la página actual
             page_number = st.session_state.page_number
@@ -333,6 +316,21 @@ def main():
             else:
                 for index in range(start_idx, end_idx):
                     display_case_both(cch, index)
+
+            # Controles de paginación en la parte inferior
+            col1_bot, col2_bot, col3_bot = st.columns([1, 2, 1])
+            with col1_bot:
+                if st.button("Previous", key="prev_bot"):
+                    prev_pressed = True
+            with col3_bot:
+                if st.button("Next", key="next_bot"):
+                    next_pressed = True
+                    
+            # Procesar la acción de navegación
+            if next_pressed and st.session_state.page_number < total_pages:
+                st.session_state.page_number += 1
+            elif prev_pressed and st.session_state.page_number > 1:
+                st.session_state.page_number -= 1
 
             st.write(f"Mostrando página {page_number} de {total_pages}")
 
