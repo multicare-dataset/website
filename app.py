@@ -307,25 +307,30 @@ def main():
         if "cch" in st.session_state:
             cch = st.session_state.cch
             num_results = st.session_state.num_results
+            # Calculate total pages
             results_per_page = 5
             total_pages = (num_results + results_per_page - 1) // results_per_page
-
+            
+            # Initialize session state for page number
             if "page_number" not in st.session_state:
                 st.session_state.page_number = 1
-
-            col1, col2, col3 = st.columns([1, 2, 1])
-            with col1:
-                if st.button("Previous") and st.session_state.page_number > 1:
+            
+            # Pagination controls at the top
+            col1_top, col2_top, col3_top = st.columns([1, 2, 1])
+            with col1_top:
+                if st.button("Previous", key="prev_top") and st.session_state.page_number > 1:
                     st.session_state.page_number -= 1
-            with col3:
-                if st.button("Next") and st.session_state.page_number < total_pages:
+            with col3_top:
+                if st.button("Next", key="next_top") and st.session_state.page_number < total_pages:
                     st.session_state.page_number += 1
-
+            
+            # Display results for the current page
             page_number = st.session_state.page_number
             start_idx = (page_number - 1) * results_per_page
             end_idx = min(start_idx + results_per_page, num_results)
             st.write(f"Displaying page {page_number} of {total_pages}")
-
+            
+            # Resource type-specific display logic
             if st.session_state.filter_dict['resource'] == 'text':
                 for index in range(start_idx, end_idx):
                     display_case_text(cch, index)
@@ -335,6 +340,15 @@ def main():
             else:
                 for index in range(start_idx, end_idx):
                     display_case_both(cch, index)
+            
+            # Pagination controls at the bottom
+            col1_bot, col2_bot, col3_bot = st.columns([1, 2, 1])
+            with col1_bot:
+                if st.button("Previous", key="prev_bot") and st.session_state.page_number > 1:
+                    st.session_state.page_number -= 1
+            with col3_bot:
+                if st.button("Next", key="next_bot") and st.session_state.page_number < total_pages:
+                    st.session_state.page_number += 1
 
     elif selected == "About":
         st.title("About")
