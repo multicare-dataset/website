@@ -244,30 +244,14 @@ def main():
             
             with col2:
                 min_age, max_age = st.slider("Age", 0, 100, (18, 65))
-                case_search = st.text_input("Case Text Search", value='', key="case_text_search")
-                st.markdown(
-                    """
-                    <span style="font-size: 1.5rem;" title="INFO CASE TEXT SEARCH INFO INFO INFO'">
-                        ℹ️
-                    </span>
-                    """,
-                    unsafe_allow_html=True,
-                )
+                case_search = st.text_input("Case Text Search", value='', help="INFO INFO INFO CASE TEXT SEARCH")
                 anatomical_region_options = ['head', 'neck', 'thorax', 'abdomen', 'pelvis', 'upper_limb', 'lower_limb']
                 anatomical_region_label = st.selectbox("Anatomical Region Label", options=[''] + anatomical_region_options)
                 anatomical_region_label = anatomical_region_label if anatomical_region_label != '' else None
 
             with col3:
                 license = st.radio("License", options=['all', 'commercial'], horizontal=True, index=0)
-                caption_search = st.text_input("Caption Text Search", value='', key="caption_text_search")
-                st.markdown(
-                    """
-                    <span style="font-size: 1.5rem;" title="INFO INFO INFO INFO CAPTION TEXT SEARCH INFO INFO INFO'">
-                        ℹ️
-                    </span>
-                    """,
-                    unsafe_allow_html=True,
-                )
+                caption_search = st.text_input("Caption Text Search", value='', help="INFO CAPTION TEXT SEARCH INFO INFO INFO")
                 resource = st.selectbox("Resource Type", options=['text', 'image', 'both'], index=0)
 
             submitted = st.form_submit_button("Apply Filters")
