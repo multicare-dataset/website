@@ -246,7 +246,7 @@ def main():
                 min_age, max_age = st.slider("Age", 0, 100, (18, 65))
                 case_search = st.text_input("Case Text Search", value='', help="INFO INFO INFO CASE TEXT SEARCH")
                 anatomical_region_options = ['head', 'neck', 'thorax', 'abdomen', 'pelvis', 'upper_limb', 'lower_limb']
-                anatomical_region_label = st.selectbox("Anatomical Region Label", options=[''] + anatomical_region_options)
+                anatomical_region_label = st.selectbox("Anatomical Region Label", options=[''] + anatomical_region_options, help="This option only filters if Image type ['ct', 'mri', 'x_ray', 'ultrasound', 'angiography', 'cta', 'mra', 'spect', 'pet', 'scintigraphy'].")
                 anatomical_region_label = anatomical_region_label if anatomical_region_label != '' else None
 
             with col3:
