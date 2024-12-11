@@ -348,9 +348,11 @@ def display_case_text(cch, index):
         st.write(f"Gender: {patient_gender}")
         st.write(f"Age: {patient_age}")
         
+        case_text_aux=case_text[:300] #Limitarnado cantidad de caracteres
+        
         with st.expander("Case Description"):
             st.markdown(
-                f"<div style='text-align: justify; padding:2rem;'>{case_text}</div>",
+                f"<div style='text-align: justify; padding:2rem;'>{case_text_aux}</div>",
                 unsafe_allow_html=True
             )
             
