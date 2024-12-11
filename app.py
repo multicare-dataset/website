@@ -348,7 +348,16 @@ def display_case_text(cch, index):
         st.write(f"Gender: {patient_gender}")
         st.write(f"Age: {patient_age}")
         
-        case_text_aux=case_text[:300] #Limitarnado cantidad de caracteres
+        #case_text_aux=case_text[:300] #Limitarnado cantidad de caracteres
+        # Limitar la cantidad de caracteres iniciales
+        max_characters = 350
+        case_text_aux = case_text[:max_characters]
+        
+        # Buscar el primer punto (.) después de los caracteres iniciales
+        match = re.search(r'\.', case_text[max_characters:])
+        if match:
+            # Extender el texto hasta el primer punto encontrado
+            case_text_aux += case_text[max_characters:max_characters + match.start() + 1]
         
         with st.expander("Case Description"):
             st.markdown(
