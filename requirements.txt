@@ -2,3 +2,4 @@ streamlit==1.40.2
 pandas==2.2.3
 Pillow==11.0.0
 streamlit_option_menu==0.4.0
+re==3.13.1
