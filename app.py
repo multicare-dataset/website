@@ -277,49 +277,42 @@ def main():
             st.session_state.cch = cch
             st.session_state.num_results = len(cch.cases_df)
 
+            def update_page(direction):
+                if direction == "next" and st.session_state.page_number < st.session_state.total_pages:
+                    st.session_state.page_number += 1
+                elif direction == "prev" and st.session_state.page_number > 1:
+                    st.session_state.page_number -= 1
+            
             if "cch" in st.session_state:
                 cch = st.session_state.cch
                 num_results = st.session_state.num_results
                 results_per_page = 5
-                total_pages = (num_results + results_per_page - 1) // results_per_page
                 
                 # Inicializar variables de estado
                 if "page_number" not in st.session_state:
                     st.session_state.page_number = 1
-                
-                # Bandera para saber si se presionó un botón
-                next_pressed = False
-                prev_pressed = False
+                if "total_pages" not in st.session_state:
+                    st.session_state.total_pages = (num_results + results_per_page - 1) // results_per_page
                 
                 # Controles de paginación en la parte superior
                 col1_top, col2_top, col3_top = st.columns([1, 2, 1])
                 with col1_top:
-                    if st.button("Previous", key="prev_top"):
-                        prev_pressed = True
+                    st.button("Previous", key="prev_top", on_click=update_page, args=("prev",))
                 with col3_top:
-                    if st.button("Next", key="next_top"):
-                        next_pressed = True
-                        
+                    st.button("Next", key="next_top", on_click=update_page, args=("next",))
+                
                 # Controles de paginación en la parte inferior
                 col1_bot, col2_bot, col3_bot = st.columns([1, 2, 1])
                 with col1_bot:
-                    if st.button("Previous", key="prev_bot"):
-                        prev_pressed = True
+                    st.button("Previous", key="prev_bot", on_click=update_page, args=("prev",))
                 with col3_bot:
-                    if st.button("Next", key="next_bot"):
-                        next_pressed = True
+                    st.button("Next", key="next_bot", on_click=update_page, args=("next",))
                 
-                # Procesar la acción de navegación
-                if next_pressed and st.session_state.page_number < total_pages:
-                    st.session_state.page_number += 1
-                elif prev_pressed and st.session_state.page_number > 1:
-                    st.session_state.page_number -= 1
-                    
                 # Mostrar los resultados de la página actual
                 page_number = st.session_state.page_number
                 start_idx = (page_number - 1) * results_per_page
                 end_idx = min(start_idx + results_per_page, num_results)
-                st.write(f"Mostrando página {page_number} de {total_pages}")
+                st.write(f"Mostrando página {page_number} de {st.session_state.total_pages}")
                 
                 if st.session_state.filter_dict['resource'] == 'text':
                     for index in range(start_idx, end_idx):
@@ -330,8 +323,8 @@ def main():
                 else:
                     for index in range(start_idx, end_idx):
                         display_case_both(cch, index)
-    
-                st.write(f"Mostrando página {page_number} de {total_pages}")
+            
+                st.write(f"Mostrando página {page_number} de {st.session_state.total_pages}")
         
     elif selected == "About":
         st.title("About")
