@@ -196,7 +196,7 @@ def main():
         selected = option_menu(
             menu_title=None,
             options=["Search", "About"],
-            icons=["house", "search", "info-circle"],
+            icons=["search", "info-circle"],
             menu_icon="cast",
             default_index=0,
             orientation="vertical",
@@ -231,8 +231,8 @@ def main():
             col1, col2, col3 = st.columns(3)
             
             with col1:
-                min_year, max_year = st.slider("Year", 1990, 2024, (2023, 2024))
-                gender = st.selectbox("Gender", options=['Any', 'Female', 'Male'])
+                min_year, max_year = st.slider("Year", 1990, 2024, (2014, 2024))
+                gender = st.selectbox("Gender", options=['Any', 'Female', 'Male'], index=0)
                 image_type_options = [
                     'ct', 'mri', 'x_ray', 'ultrasound', 'angiography', 'mammography', 
                     'echocardiogram', 'cholangiogram', 'cta', 'cmr', 'mra', 'mrcp', 'spect', 
@@ -243,14 +243,14 @@ def main():
                 image_type_label = image_type_label if image_type_label != '' else None
             
             with col2:
-                min_age, max_age = st.slider("Age", 0, 100, (15, 45))
+                min_age, max_age = st.slider("Age", 0, 100, (18, 65))
                 case_search = st.text_input("Case Text Search", value='')
                 anatomical_region_options = ['head', 'neck', 'thorax', 'abdomen', 'pelvis', 'upper_limb', 'lower_limb']
                 anatomical_region_label = st.selectbox("Anatomical Region Label", options=[''] + anatomical_region_options)
                 anatomical_region_label = anatomical_region_label if anatomical_region_label != '' else None
 
             with col3:
-                license = st.radio("License", options=['all', 'commercial'], horizontal=True)
+                license = st.radio("License", options=['all', 'commercial'], horizontal=True, index=0)
                 caption_search = st.text_input("Caption Text Search", value='')
                 resource = st.selectbox("Resource Type", options=['text', 'image', 'both'], index=0)
 
