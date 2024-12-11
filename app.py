@@ -408,6 +408,7 @@ def display_case_both(cch, index):
     case_id = cch.cases_df.case_id.iloc[index]
     case_text = cch.cases_df.case_text.iloc[index]
     article_id = cch.cases_df.article_id.iloc[index]
+    image_labels = cch.image_metadata_df.labels.iloc[index]
     article_citation = cch.metadata_df[cch.metadata_df.article_id == article_id].citation.iloc[0]
     article_link = cch.metadata_df[cch.metadata_df.article_id == article_id].link.iloc[0]
 
