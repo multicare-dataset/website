@@ -241,71 +241,75 @@ def main():
 
             submitted = st.form_submit_button("Apply Filters")
 
-     if submitted:
-         filter_dict = {
-            'min_age': min_age, 'max_age': max_age, 'gender': gender, 'case_search': case_search,
-            'image_type_label': image_type_label, 'anatomical_region_label': anatomical_region_label,
-            'caption_search': caption_search, 'min_year': min_year, 'max_year': max_year,
-            'resource': resource, 'license': license
-        }
+         if submitted:
 
-        file_folder = '.'
-        article_metadata_df = load_article_metadata(file_folder)
-        image_metadata_df = load_image_metadata(file_folder)
-        cases_df = load_cases(file_folder, min_year, max_year)
-        
-        cch = ClinicalCaseHub(article_metadata_df, image_metadata_df, cases_df, image_folder='img')
-        cch.apply_filters(filter_dict)
-        
-        results_per_page = 5
-
-        if filter_dict['resource'] == 'text':
-            num_results = len(cch.cases_df)
-        elif filter_dict['resource'] == 'image':
-            num_results = len(cch.image_metadata_df)
-        else:
-            num_results = len(cch.cases_df)
-
-        st.write(f"Number of results: {num_results}")
-
-        if num_results == 0:
-            st.write("No results found.")
-        else:
-            total_pages = (num_results + results_per_page - 1) // results_per_page
-            # Initialize session state for page number
+            # Initialize session state variables
             if "page_number" not in st.session_state:
                 st.session_state.page_number = 1
             
-            # Pagination controls
-            with st.form("pagination_form"):
+            if "filter_dict" not in st.session_state:
+                st.session_state.filter_dict = {}
+                
+             filter_dict = {
+                'min_age': min_age, 'max_age': max_age, 'gender': gender, 'case_search': case_search,
+                'image_type_label': image_type_label, 'anatomical_region_label': anatomical_region_label,
+                'caption_search': caption_search, 'min_year': min_year, 'max_year': max_year,
+                'resource': resource, 'license': license
+            }
+    
+            file_folder = '.'
+            article_metadata_df = load_article_metadata(file_folder)
+            image_metadata_df = load_image_metadata(file_folder)
+            cases_df = load_cases(file_folder, min_year, max_year)
+            
+            cch = ClinicalCaseHub(article_metadata_df, image_metadata_df, cases_df, image_folder='img')
+            cch.apply_filters(filter_dict)
+            
+            results_per_page = 5
+    
+            if filter_dict['resource'] == 'text':
+                num_results = len(cch.cases_df)
+            elif filter_dict['resource'] == 'image':
+                num_results = len(cch.image_metadata_df)
+            else:
+                num_results = len(cch.cases_df)
+    
+            st.write(f"Number of results: {num_results}")
+    
+            if num_results == 0:
+                st.write("No results found.")
+            else:
+                total_pages = (num_results + results_per_page - 1) // results_per_page
+                # Initialize session state for page number
+                if "page_number" not in st.session_state:
+                    st.session_state.page_number = 1
+                
+                # Pagination buttons outside the form
                 col1, col2, col3 = st.columns([1, 2, 1])
                 with col1:
-                    prev_clicked = st.form_submit_button("Previous")
+                    if st.button("Previous") and st.session_state.page_number > 1:
+                        st.session_state.page_number -= 1
                 with col3:
-                    next_clicked = st.form_submit_button("Next")
-                
-                if prev_clicked and st.session_state.page_number > 1:
-                    st.session_state.page_number -= 1
-                if next_clicked and st.session_state.page_number < total_pages:
-                    st.session_state.page_number += 1
+                    if st.button("Next") and st.session_state.page_number < total_pages:
+                        st.session_state.page_number += 1
+                                
+                # Display results
+                page_number = st.session_state.page_number
+                start_idx = (page_number - 1) * results_per_page
+                end_idx = min(start_idx + results_per_page, num_results)
+                st.write(f"Displaying page {page_number} of {total_pages}")
+    
+                if filter_dict['resource'] == 'text':
+                    for index in range(start_idx, end_idx):
+                        display_case_text(cch, index)
+                elif filter_dict['resource'] == 'image':
+                    for index in range(start_idx, end_idx):
+                        display_image(cch, index)
+                else:
+                    for index in range(start_idx, end_idx):
+                        display_case_both(cch, index)
             
-            # Display results
-            page_number = st.session_state.page_number
-            start_idx = (page_number - 1) * results_per_page
-            end_idx = min(start_idx + results_per_page, num_results)
-            st.write(f"Displaying page {page_number} of {total_pages}")
-
-            if filter_dict['resource'] == 'text':
-                for index in range(start_idx, end_idx):
-                    display_case_text(cch, index)
-            elif filter_dict['resource'] == 'image':
-                for index in range(start_idx, end_idx):
-                    display_image(cch, index)
-            else:
-                for index in range(start_idx, end_idx):
-                    display_case_both(cch, index)
-        
-            st.write(f"Mostrando página {page_number} de {st.session_state.total_pages}")
+                st.write(f"Mostrando página {page_number} de {st.session_state.total_pages}")
     
     elif selected == "About":
         st.title("About")
