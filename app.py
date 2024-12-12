@@ -243,80 +243,101 @@ def main():
 
         if submitted: 
         
-            # Create filter dictionary
-            filter_dict = {
-                'min_age': min_age,
-                'max_age': max_age,
-                'gender': gender,
-                'case_search': case_search,
-                'image_type_label': image_type_label,
-                'anatomical_region_label': anatomical_region_label,
-                'caption_search': caption_search,
-                'min_year': min_year,
-                'max_year': max_year,
-                'resource': resource,
-                'license': license
-            }
-    
-            # Load data
-            file_folder = '.'
-            article_metadata_df = load_article_metadata(file_folder)
-            image_metadata_df = load_image_metadata(file_folder)
-            cases_df = load_cases(file_folder, min_year, max_year)
-            
-            # Instantiate the class
-            cch = ClinicalCaseHub(article_metadata_df, image_metadata_df, cases_df, image_folder='img')
-    
-            # Apply filters
-            cch.apply_filters(filter_dict)
-            
             # Pagination setup
             results_per_page = 5
-        
+            
+            # Definir clave en `st.session_state` si no existe
+            if "page_number" not in st.session_state:
+                st.session_state.page_number = 1
+            
+            # Manejador de cambio de página
+            def change_page(new_page):
+                st.session_state.page_number = new_page
+            
             if filter_dict['resource'] == 'text':
                 num_results = len(cch.cases_df)
                 st.write(f"Number of results: {num_results}")
                 if num_results == 0:
                     st.write("No results found.")
                 else:
-                    # Pagination
+                    # Calcular total de páginas
                     total_pages = (num_results + results_per_page - 1) // results_per_page
-                    page_number = st.number_input("Page", min_value=1, max_value=total_pages, value=1, step=1)
-                    start_idx = (page_number - 1) * results_per_page
+            
+                    # Control de paginación
+                    col1, col2, col3 = st.columns([1, 2, 1])
+                    with col1:
+                        if st.button("⏮ Prev", disabled=(st.session_state.page_number <= 1)):
+                            change_page(st.session_state.page_number - 1)
+                    with col2:
+                        st.write(f"Page {st.session_state.page_number} of {total_pages}")
+                    with col3:
+                        if st.button("Next ⏭", disabled=(st.session_state.page_number >= total_pages)):
+                            change_page(st.session_state.page_number + 1)
+            
+                    # Calcular índice de inicio y fin
+                    start_idx = (st.session_state.page_number - 1) * results_per_page
                     end_idx = min(start_idx + results_per_page, num_results)
+            
+                    # Mostrar resultados
                     for index in range(start_idx, end_idx):
                         display_case_text(cch, index)
-        
+            
             elif filter_dict['resource'] == 'image':
                 num_results = len(cch.image_metadata_df)
                 st.write(f"Number of results: {num_results}")
                 if num_results == 0:
                     st.write("No results found.")
                 else:
-                    # Pagination
+                    # Calcular total de páginas
                     total_pages = (num_results + results_per_page - 1) // results_per_page
-                    page_number = st.number_input("Page", min_value=1, max_value=total_pages, value=1, step=1)
-                    start_idx = (page_number - 1) * results_per_page
+            
+                    # Control de paginación
+                    col1, col2, col3 = st.columns([1, 2, 1])
+                    with col1:
+                        if st.button("⏮ Prev", disabled=(st.session_state.page_number <= 1)):
+                            change_page(st.session_state.page_number - 1)
+                    with col2:
+                        st.write(f"Page {st.session_state.page_number} of {total_pages}")
+                    with col3:
+                        if st.button("Next ⏭", disabled=(st.session_state.page_number >= total_pages)):
+                            change_page(st.session_state.page_number + 1)
+            
+                    # Calcular índice de inicio y fin
+                    start_idx = (st.session_state.page_number - 1) * results_per_page
                     end_idx = min(start_idx + results_per_page, num_results)
+            
+                    # Mostrar resultados
                     for index in range(start_idx, end_idx):
                         display_image(cch, index)
-        
+            
             elif filter_dict['resource'] == 'both':
                 num_results = len(cch.cases_df)
                 st.write(f"Number of results: {num_results}")
                 if num_results == 0:
                     st.write("No results found.")
                 else:
-                    # Pagination
+                    # Calcular total de páginas
                     total_pages = (num_results + results_per_page - 1) // results_per_page
-                    page_number = st.number_input("Page", min_value=1, max_value=total_pages, value=1, step=1)
-                    start_idx = (page_number - 1) * results_per_page
+            
+                    # Control de paginación
+                    col1, col2, col3 = st.columns([1, 2, 1])
+                    with col1:
+                        if st.button("⏮ Prev", disabled=(st.session_state.page_number <= 1)):
+                            change_page(st.session_state.page_number - 1)
+                    with col2:
+                        st.write(f"Page {st.session_state.page_number} of {total_pages}")
+                    with col3:
+                        if st.button("Next ⏭", disabled=(st.session_state.page_number >= total_pages)):
+                            change_page(st.session_state.page_number + 1)
+            
+                    # Calcular índice de inicio y fin
+                    start_idx = (st.session_state.page_number - 1) * results_per_page
                     end_idx = min(start_idx + results_per_page, num_results)
-        
+            
+                    # Mostrar resultados
                     for index in range(start_idx, end_idx):
                         display_case_both(cch, index)
-                
-                    st.write(f"Mostrando página {page_number} de {st.session_state.total_pages}")
+
     
     elif selected == "About":
         st.title("About")
