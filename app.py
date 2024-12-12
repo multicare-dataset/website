@@ -359,18 +359,34 @@ def display_image(cch, index):
     article_citation = cch.metadata_df[cch.metadata_df.article_id == article_id].citation.iloc[0]
     article_link = cch.metadata_df[cch.metadata_df.article_id == article_id].link.iloc[0]
 
-    with st.container(border=True):
+    with st.container():
         st.subheader(f"Case ID: {case_id}")
         st.write(f"Gender: {patient_gender}")
         st.write(f"Age: {patient_age}")
     
-        # Display image
-        st.image(Image.open(image_path), caption=image_caption, use_column_width=False, class_="centered-image")
-    
+        # Center and display the image with adjusted size
+        st.markdown(
+            f"""
+            <div style="text-align: center;">
+                <img src="data:image/jpeg;base64,{convert_image_to_base64(image_path)}" alt="{image_caption}" style="width: 50%; border-radius: 8px;">
+                <p><em>{image_caption}</em></p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+        
         st.write(f"Image Labels: {', '.join(image_labels)}")
         # st.write(f"Article Link: [Link]({article_link})")
         st.write(f"Citation: {article_citation}")
-           
+
+def convert_image_to_base64(image_path):
+    """
+    Convert an image file to a base64 encoded string for HTML rendering.
+    """
+    from base64 import b64encode
+    with open(image_path, "rb") as img_file:
+        return b64encode(img_file.read()).decode("utf-8")
+
 def display_case_both(cch, index):
     """
     Display both text and images for a case.
