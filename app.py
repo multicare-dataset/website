@@ -257,6 +257,9 @@ def main():
             article_metadata_df = load_article_metadata(file_folder)
             image_metadata_df = load_image_metadata(file_folder)
             cases_df = load_cases(file_folder, min_year, max_year)
+
+            cch = ClinicalCaseHub(article_metadata_df, image_metadata_df, cases_df, image_folder='img')
+            cch.apply_filters(filter_dict)
             
             # Definir clave en `st.session_state` si no existe
             if "page_number" not in st.session_state:
