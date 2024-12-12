@@ -245,6 +245,18 @@ def main():
         
             # Pagination setup
             results_per_page = 5
+
+            filter_dict = {
+                'min_age': min_age, 'max_age': max_age, 'gender': gender, 'case_search': case_search,
+                'image_type_label': image_type_label, 'anatomical_region_label': anatomical_region_label,
+                'caption_search': caption_search, 'min_year': min_year, 'max_year': max_year,
+                'resource': resource, 'license': license
+            }
+    
+            file_folder = '.'
+            article_metadata_df = load_article_metadata(file_folder)
+            image_metadata_df = load_image_metadata(file_folder)
+            cases_df = load_cases(file_folder, min_year, max_year)
             
             # Definir clave en `st.session_state` si no existe
             if "page_number" not in st.session_state:
