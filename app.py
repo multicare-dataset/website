@@ -405,9 +405,19 @@ def display_case_both(cch, index):
         st.subheader(f"Case ID: {case_id}")
         st.write(f"Gender: {patient_gender}")
         st.write(f"Age: {patient_age}")
+        # Limitar la cantidad de caracteres iniciales
+        max_characters = 350
+        case_text_aux = case_text[:max_characters]
+        
+        # Buscar el primer punto (.) después de los caracteres iniciales
+        match = re.search(r'\.', case_text[max_characters:])
+        if match:
+            # Extender el texto hasta el primer punto encontrado
+            case_text_aux += case_text[max_characters:max_characters + match.start() + 1]
+        
         with st.expander("Case Description"):
             st.markdown(
-                f"<div style='text-align: justify; padding:2rem;'>{case_text}</div>",
+                f"<div style='text-align: justify; padding:2rem;'>{case_text_aux}</div>",
                 unsafe_allow_html=True
             )
 
