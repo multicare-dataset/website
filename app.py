@@ -174,21 +174,6 @@ st.markdown(
 
 
 def main():
-    # CSS personalizado para centrar imágenes y establecer tamaño máximo
-    st.markdown(
-        """
-        <style>
-        .centered-image {
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-            max-width: 800px; /* Cambiar para establecer tamaño máximo */
-            height: auto;
-        }
-        </style>
-        """,
-        unsafe_allow_html=True,
-    )
     with st.sidebar:
         st.logo("multicare-logo.webp", size="large")
 
@@ -276,14 +261,16 @@ def main():
             st.session_state.filter_dict = filter_dict
             st.session_state.cch = cch
             st.session_state.num_results = len(cch.cases_df)
+            st.session_state.search_performed = True  # Añade esta línea
 
             def update_page(direction):
                 if direction == "next" and st.session_state.page_number < st.session_state.total_pages:
                     st.session_state.page_number += 1
                 elif direction == "prev" and st.session_state.page_number > 1:
                     st.session_state.page_number -= 1
+                st.experimental_rerun()
             
-            if "cch" in st.session_state:
+            if "search_performed" in st.session_state and st.session_state.search_performed:
                 cch = st.session_state.cch
                 num_results = st.session_state.num_results
                 results_per_page = 5
