@@ -244,6 +244,7 @@ def main():
         if submitted: 
         
             # Pagination setup
+
             filter_dict = {
                 'min_age': min_age, 'max_age': max_age, 'gender': gender, 'case_search': case_search,
                 'image_type_label': image_type_label, 'anatomical_region_label': anatomical_region_label,
@@ -277,6 +278,7 @@ def main():
                 # Initialize session state for page number
                 if "page_number" not in st.session_state:
                     st.session_state.page_number = 1
+                    st.session_state.total_pages = total_pages
                 
                 # Pagination controls
                 with st.form("pagination_form"):
