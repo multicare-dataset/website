@@ -278,7 +278,6 @@ def main():
                 # Initialize session state for page number
                 if "page_number" not in st.session_state:
                     st.session_state.page_number = 1
-                    st.session_state.total_pages = total_pages
                 
                 # Pagination controls
                 with st.form("pagination_form"):
@@ -309,7 +308,7 @@ def main():
                     for index in range(start_idx, end_idx):
                         display_case_both(cch, index)
             
-                st.write(f"Mostrando página {page_number} de {st.session_state.total_pages}")
+                st.write(f"Mostrando página {page_number} de {total_pages}")
 
     
     elif selected == "About":
