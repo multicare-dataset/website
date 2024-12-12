@@ -241,7 +241,7 @@ def main():
 
             submitted = st.form_submit_button("Apply Filters")
 
-        if submitted:
+         if submitted:
             filter_dict = {
                 'min_age': min_age, 'max_age': max_age, 'gender': gender, 'case_search': case_search,
                 'image_type_label': image_type_label, 'anatomical_region_label': anatomical_region_label,
@@ -249,62 +249,56 @@ def main():
                 'resource': resource, 'license': license
             }
 
-            # Load data
-            article_metadata_df = load_article_metadata('.')
-            image_metadata_df = load_image_metadata('.')
-            cases_df = load_cases('.', min_year, max_year)
-
-            # Process data
-            cch = ClinicalCaseHub(article_metadata_df, image_metadata_df, cases_df)
-            cch.apply_filters(filter_dict)
-
-            st.session_state.filter_dict = filter_dict
-            st.session_state.cch = cch
-            st.session_state.num_results = len(cch.cases_df)
-            st.session_state.search_performed = True  # Añade esta línea
-
-            def update_page(direction):
-                if direction == "next" and st.session_state.page_number < st.session_state.total_pages:
-                    st.session_state.page_number += 1
-                elif direction == "prev" and st.session_state.page_number > 1:
-                    st.session_state.page_number -= 1
-                st.experimental_rerun()
+            file_folder = '.'
+            article_metadata_df = load_article_metadata(file_folder)
+            image_metadata_df = load_image_metadata(file_folder)
+            cases_df = load_cases(file_folder, min_year, max_year)
             
-            if "search_performed" in st.session_state and st.session_state.search_performed:
-                cch = st.session_state.cch
-                num_results = st.session_state.num_results
-                results_per_page = 5
-                
-                # Inicializar variables de estado
+            cch = ClinicalCaseHub(article_metadata_df, image_metadata_df, cases_df, image_folder='img')
+            cch.apply_filters(filter_dict)
+            
+            results_per_page = 5
+
+            if filter_dict['resource'] == 'text':
+                num_results = len(cch.cases_df)
+            elif filter_dict['resource'] == 'image':
+                num_results = len(cch.image_metadata_df)
+            else:
+                num_results = len(cch.cases_df)
+
+            st.write(f"Number of results: {num_results}")
+
+            if num_results == 0:
+                st.write("No results found.")
+            else:
+                total_pages = (num_results + results_per_page - 1) // results_per_page
+                # Initialize session state for page number
                 if "page_number" not in st.session_state:
                     st.session_state.page_number = 1
-                if "total_pages" not in st.session_state:
-                    st.session_state.total_pages = (num_results + results_per_page - 1) // results_per_page
                 
-                # Controles de paginación en la parte superior
-                col1_top, col2_top, col3_top = st.columns([1, 2, 1])
-                with col1_top:
-                    st.button("Previous", key="prev_top", on_click=update_page, args=("prev",))
-                with col3_top:
-                    st.button("Next", key="next_top", on_click=update_page, args=("next",))
+                # Pagination controls
+                with st.form("pagination_form"):
+                    col1, col2, col3 = st.columns([1, 2, 1])
+                    with col1:
+                        prev_clicked = st.form_submit_button("Previous")
+                    with col3:
+                        next_clicked = st.form_submit_button("Next")
+                    
+                    if prev_clicked and st.session_state.page_number > 1:
+                        st.session_state.page_number -= 1
+                    if next_clicked and st.session_state.page_number < total_pages:
+                        st.session_state.page_number += 1
                 
-                # Controles de paginación en la parte inferior
-                col1_bot, col2_bot, col3_bot = st.columns([1, 2, 1])
-                with col1_bot:
-                    st.button("Previous", key="prev_bot", on_click=update_page, args=("prev",))
-                with col3_bot:
-                    st.button("Next", key="next_bot", on_click=update_page, args=("next",))
-                
-                # Mostrar los resultados de la página actual
+                # Display results
                 page_number = st.session_state.page_number
                 start_idx = (page_number - 1) * results_per_page
                 end_idx = min(start_idx + results_per_page, num_results)
-                st.write(f"Mostrando página {page_number} de {st.session_state.total_pages}")
-                
-                if st.session_state.filter_dict['resource'] == 'text':
+                st.write(f"Displaying page {page_number} of {total_pages}")
+
+                if filter_dict['resource'] == 'text':
                     for index in range(start_idx, end_idx):
                         display_case_text(cch, index)
-                elif st.session_state.filter_dict['resource'] == 'image':
+                elif filter_dict['resource'] == 'image':
                     for index in range(start_idx, end_idx):
                         display_image(cch, index)
                 else:
