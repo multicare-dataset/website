@@ -433,7 +433,7 @@ def display_case_both(cch, index):
                 st.markdown(
                     f"""
                     <div style="text-align: center;">
-                        <img src="data:image/jpeg;base64,{convert_image_to_base64(image_path)}" alt="{image_caption}" style="width: 200; border-radius: 8px;">
+                        <img src="data:image/jpeg;base64,{convert_image_to_base64(image_path)}" alt="{image_caption}" style="width: 5%; border-radius: 8px;">
                         <p><em>{image_caption}</em></p>
                     </div>
                     """,
