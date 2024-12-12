@@ -239,7 +239,7 @@ def main():
                 caption_search = st.text_input("Caption Text Search", value='', help="INFO CAPTION TEXT SEARCH INFO INFO INFO")
                 resource = st.selectbox("Resource Type", options=['text', 'image', 'both'], index=0)
 
-        submitted = st.form_submit_button("Apply Filters")
+            submitted = st.form_submit_button("Apply Filters")
 
         if submitted: 
         
