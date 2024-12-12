@@ -418,11 +418,21 @@ def display_case_both(cch, index):
                 image_file = images.at[idx, 'file']
                 image_path = os.path.join(cch.image_folder, image_file)
                 image_caption = images.at[idx, 'caption']
-                st.image(Image.open(image_path), caption=image_caption)
-
-        # st.write(f"Article Link: [Link]({article_link})")
-        st.write(f"Citation: {article_citation}")
-
+                #st.image(Image.open(image_path), caption=image_caption)
+                # Center and display the image with adjusted size
+                st.markdown(
+                    f"""
+                    <div style="text-align: center;">
+                        <img src="data:image/jpeg;base64,{convert_image_to_base64(image_path)}" alt="{image_caption}" style="width: 50%; border-radius: 8px;">
+                        <p><em>{image_caption}</em></p>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+                
+                st.write(f"Image Labels: {', '.join(image_labels)}")
+                # st.write(f"Article Link: [Link]({article_link})")
+                st.write(f"Citation: {article_citation}")
 
 if __name__ == '__main__':
     main()
