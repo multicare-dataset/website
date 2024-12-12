@@ -296,7 +296,7 @@ def main():
                 for index in range(start_idx, end_idx):
                     display_case_both(cch, index)
             
-                st.write(f"Displaying page {page_number} of {total_pages}")
+            st.write(f"Displaying page {page_number} of {total_pages}")
 
     
     elif selected == "About":
