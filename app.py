@@ -10,31 +10,25 @@ import psutil
 # Streamlit page configuration
 st.set_page_config(page_title="Multicare Dataset", page_icon=":stethoscope:", layout="wide")
 
-# Functions to load data with caching to improve performance
-@st.cache_data
+# Functions to load data with caching
+@st.cache_data(ttl=3600, max_entries=5)
 def load_article_metadata(file_folder):
-    """
-    Load article metadata from a parquet file.
-    """
+    """Load article metadata from a parquet file."""
     df = pd.read_parquet(os.path.join(file_folder, 'article_metadata_website_version.parquet'))
     df['year'] = df['year'].astype(int)
     return df
 
-@st.cache_data
+@st.cache_data(ttl=3600, max_entries=5)
 def load_image_metadata(file_folder):
-    """
-    Load image metadata from a parquet file.
-    """
+    """Load image metadata from a parquet file."""
     df = pd.read_parquet(os.path.join(file_folder, 'image_metadata_website_version.parquet'))
-    df.rename({'postprocessed_label_list': 'labels'}, axis = 1, inplace = True)
-    df['labels'] = df.labels.apply(ast.literal_eval)
+    df.rename({'postprocessed_label_list': 'labels'}, axis=1, inplace=True)
+    df['labels'] = df['labels'].apply(ast.literal_eval)
     return df
 
-@st.cache_data
+@st.cache_data(ttl=3600, max_entries=5)
 def load_cases(file_folder, min_year, max_year):
-    """
-    Load case data from multiple parquet files based on the year range.
-    """
+    """Load case data from multiple parquet files based on the year range."""
     df = pd.DataFrame()
     for file_ in ['cases_1990_2012.parquet', 'cases_2013_2017.parquet', 'cases_2018_2021.parquet', 'cases_2022_2024.parquet']:
         years = file_.split('.')[0].split('_')[1:]
@@ -42,111 +36,59 @@ def load_cases(file_folder, min_year, max_year):
             df = pd.concat([df, pd.read_parquet(os.path.join(file_folder, file_))], ignore_index=True)
     return df
 
-class ClinicalCaseHub():
+# Centralized profiling for resource usage
+def display_resource_usage():
+    st.write(f"Memory Usage: {psutil.Process().memory_info().rss / (1024 ** 2):.2f} MB")
+    st.write(f"CPU Usage: {psutil.cpu_percent(interval=1)}%")
 
+# Clinical Case Hub Class
+class ClinicalCaseHub:
     def __init__(self, article_metadata_df, image_metadata_df, cases_df, image_folder='img'):
-        """
-        Class initialization.
-        article_metadata_df (DataFrame): DataFrame containing article metadata.
-        image_metadata_df (DataFrame): DataFrame containing image metadata.
-        cases_df (DataFrame): DataFrame containing case data.
-        image_folder (str): Folder where images are stored.
-        """
         self.image_folder = image_folder
-
         self.full_metadata_df = article_metadata_df.copy()
         self.full_image_metadata_df = image_metadata_df.copy()
         self.full_cases_df = cases_df.copy()
-        self.full_cases_df['age'] = self.full_cases_df['age'].astype(int, errors='ignore')
+        self.full_cases_df['age'] = pd.to_numeric(self.full_cases_df['age'], errors='coerce', downcast='integer')
 
     def apply_filters(self, filter_dict):
-        """
-        Apply filters to the data based on the filter dictionary.
-        filter_dict (dict): Dictionary containing filter parameters.
-        """
+        # Optimized filtering operations
         self.filter_dict = filter_dict
 
-        # Filter article metadata
         self.metadata_df = self.full_metadata_df[
             (self.full_metadata_df.year >= self.filter_dict['min_year']) &
             (self.full_metadata_df.year <= self.filter_dict['max_year'])
         ].copy()
         if self.filter_dict['license'] == 'commercial':
-            self.metadata_df = self.metadata_df[self.metadata_df.commercial_use_license == True]
+            self.metadata_df = self.metadata_df[self.metadata_df.commercial_use_license]
 
-        # Filter cases
         self.cases_df = self.full_cases_df[self.full_cases_df['article_id'].isin(self.metadata_df['article_id'])]
-        if self.filter_dict['min_age'] != 0:
+        if self.filter_dict['min_age']:
             self.cases_df = self.cases_df[self.cases_df.age >= self.filter_dict['min_age']]
-        if self.filter_dict['max_age'] != 100:
+        if self.filter_dict['max_age']:
             self.cases_df = self.cases_df[self.cases_df.age <= self.filter_dict['max_age']]
         if self.filter_dict['gender'] != 'Any':
             self.cases_df = self.cases_df[self.cases_df.gender == self.filter_dict['gender']]
         if self.filter_dict['case_search']:
-            self.cases_df = self.cases_df[self.cases_df.case_text.apply(lambda x: self._text_matches_conditions(x, self.filter_dict['case_search']))]
+            self.cases_df = self.cases_df[self.cases_df.case_text.str.contains(self.filter_dict['case_search'], case=False, na=False)]
 
-        # Filter image metadata
-        self.image_metadata_df = self.full_image_metadata_df.copy()
-        self.image_metadata_df = self.image_metadata_df[self.image_metadata_df['article_id'].isin(self.metadata_df['article_id'])]
+        self.image_metadata_df = self.full_image_metadata_df[self.full_image_metadata_df['article_id'].isin(self.metadata_df['article_id'])]
         if self.filter_dict['image_type_label']:
             self.image_metadata_df = self.image_metadata_df[self.image_metadata_df.labels.apply(lambda x: self.filter_dict['image_type_label'] in x)]
         if self.filter_dict['anatomical_region_label']:
             self.image_metadata_df = self.image_metadata_df[self.image_metadata_df.labels.apply(lambda x: self.filter_dict['anatomical_region_label'] in x)]
         if filter_dict['caption_search']:
-            self.image_metadata_df = self.image_metadata_df[self.image_metadata_df.caption.apply(lambda x: self._text_matches_conditions(x, self.filter_dict['caption_search']))]
+            self.image_metadata_df = self.image_metadata_df[self.image_metadata_df.caption.str.contains(filter_dict['caption_search'], case=False, na=False)]
 
-        # Harmonize data
-        self.filtered_article_ids = set(self.metadata_df['article_id'].unique()) & set(self.cases_df['article_id'].unique()) & set(self.image_metadata_df['article_id'].unique())
-        self.filtered_case_ids = set(self.cases_df['case_id'].unique()) & set(self.image_metadata_df['case_id'].unique())
+        # Harmonizing filtered data
+        self.filtered_article_ids = set(self.metadata_df['article_id']).intersection(
+            self.cases_df['article_id'], self.image_metadata_df['article_id']
+        )
+        self.filtered_case_ids = set(self.cases_df['case_id']).intersection(self.image_metadata_df['case_id'])
 
         self.metadata_df = self.metadata_df[self.metadata_df['article_id'].isin(self.filtered_article_ids)]
-        self.cases_df = self.cases_df[(self.cases_df['case_id'].isin(self.filtered_case_ids)) & (self.cases_df['article_id'].isin(self.filtered_article_ids))]
-        self.image_metadata_df = self.image_metadata_df[(self.image_metadata_df['case_id'].isin(self.filtered_case_ids)) & (self.image_metadata_df['article_id'].isin(self.filtered_article_ids))]
+        self.cases_df = self.cases_df[self.cases_df['case_id'].isin(self.filtered_case_ids)]
+        self.image_metadata_df = self.image_metadata_df[self.image_metadata_df['case_id'].isin(self.filtered_case_ids)]
 
-    def _text_matches_conditions(self, text, query):
-        """
-        Checks if a given text meets all conditions defined in the parsed list.
-        """
-        parsed_list = self._parse_search_string(query)
-        text = text.lower()  # Make text lowercase for case-insensitivity
-        for condition in parsed_list:
-            operator = condition['operator']
-            substrings = condition['substring']
-            if operator == "AND":
-                # True if the text contains any of the substrings as full words
-                if not any(self._full_word_match(text, sub) for sub in substrings):
-                    return False
-            elif operator == "NOT":
-                # False if the text contains any of the substrings as full words
-                if any(self._full_word_match(text, sub) for sub in substrings):
-                    return False
-        return True
-
-    def _parse_search_string(self, query):
-        """
-        Parses a search string into a list of dictionaries with operators and substrings.
-        """
-        # Split by AND and NOT while keeping the delimiters
-        tokens = re.split(r'(?<=\b)(AND|NOT)(?=\b)', query, flags=re.IGNORECASE)
-        parsed_list = []
-        current_operator = "AND"  # Default operator
-        for token in tokens:
-            token = token.strip()
-            if token.upper() in ["AND", "NOT"]:
-                current_operator = token.upper()
-            elif token:
-                # Split the substring by OR and clean it
-                substrings = [sub.strip(' "').strip() for sub in token.lower().split(" or ")]
-                substrings = [re.sub(r'^[^a-zA-Z0-9\s]+|[^a-zA-Z0-9\s]+$', '', substring) for substring in substrings]
-                parsed_list.append({'operator': current_operator, 'substring': substrings})
-        return parsed_list
-
-    def _full_word_match(self, text, word):
-        """
-        Checks if a word matches as a full word in the text, ignoring case and boundaries.
-        """
-        # Use regex with word boundaries for full-word match
-        return re.search(rf'\b{re.escape(word.lower())}\b', text) is not None
 
 # ---------- STREAMLIT CODE --------------
 
