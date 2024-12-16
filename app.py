@@ -33,20 +33,20 @@ label_dict = {
      'ekg': 'EKG'
 }
 
-@st.cache_resource
+# @st.cache_resource
 def load_article_metadata(file_folder):
     df = pd.read_parquet(os.path.join(file_folder, 'article_metadata_website_version.parquet'))
     df['year'] = df['year'].astype(int)
     return df
 
-@st.cache_resource
+# @st.cache_resource
 def load_image_metadata(file_folder):
     df = pd.read_parquet(os.path.join(file_folder, 'image_metadata_website_version.parquet'))
     df.rename({'postprocessed_label_list': 'labels'}, axis = 1, inplace = True)
     df['labels'] = df.labels.apply(ast.literal_eval)
     return df
 
-@st.cache_resource
+# @st.cache_resource
 def load_cases(file_folder, min_year, max_year):
     df = pd.DataFrame()
     for file_ in ['cases_1990_2012.parquet', 'cases_2013_2017.parquet', 'cases_2018_2021.parquet', 'cases_2022_2024.parquet']:
@@ -148,6 +148,8 @@ class ClinicalCaseHub():
         # Use regex with word boundaries for full-word match
         return re.search(rf'\b{re.escape(word.lower())}\b', text) is not None
 
+
+
 # ---------- STREAMLIT CODE --------------
 
 # Global CSS 
@@ -167,6 +169,13 @@ st.markdown(
         display: flex;
         justify-content: center;
         align-items: center;
+    }
+
+    .centered-image {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 50%;
     }
     </style>
     """,
@@ -190,28 +199,12 @@ def main():
             },
         )
 
-
         st.image('medical_doctor_desktop.webp')
         st.header("Resource Usage")
         st.write(f"Memory Usage: {psutil.Process().memory_info().rss / (1024 ** 2):.2f} MB")
         st.write(f"CPU Usage: {psutil.cpu_percent(interval=1)}%")
 
     if selected == "Search":
-        # CSS for centering images
-        st.markdown(
-            """
-            <style>
-            .centered-image {
-                display: block;
-                margin-left: auto;
-                margin-right: auto;
-                width: 50%;
-            }
-            </style>
-            """,
-            unsafe_allow_html=True,
-        )
-
         with st.form("filter_form"):
             st.subheader("Filters")
 
@@ -220,14 +213,18 @@ def main():
             with col1:
                 min_year, max_year = st.slider("Year", 1990, 2024, (2014, 2024))
                 gender = st.selectbox("Gender", options=['Any', 'Female', 'Male'], index=0)
-                image_type_options = [
-                    'ct', 'mri', 'x_ray', 'ultrasound', 'angiography', 'mammography', 
-                    'echocardiogram', 'cholangiogram', 'cta', 'cmr', 'mra', 'mrcp', 'spect', 
-                    'pet', 'scintigraphy', 'tractography', 'skin_photograph', 
-                    'oral_photograph', 'fundus_photograph', 'pathology', 'h&e'
-                ]
-                image_type_label = st.selectbox("Image Type Label", options=[''] + image_type_options)
-                image_type_label = image_type_label if image_type_label != '' else None
+                # image_type_options = [
+                #     'ct', 'mri', 'x_ray', 'ultrasound', 'angiography', 'mammography', 
+                #     'echocardiogram', 'cholangiogram', 'cta', 'cmr', 'mra', 'mrcp', 'spect', 
+                #     'pet', 'scintigraphy', 'tractography', 'skin_photograph', 
+                #     'oral_photograph', 'fundus_photograph', 'pathology', 'h&e'
+                # ]
+                image_type_label = st.selectbox("Image Type Label", options=[''] + list(label_dict.values())
+                # image_type_label = image_type_label if image_type_label != '' else None
+                if image_type_label:
+                    image_type_label = [key for key, value in label_dict.items() if value == image_type_label][0]
+                else:
+                    image_type_label = None
             
             with col2:
                 min_age, max_age = st.slider("Age", 0, 100, (18, 65))
