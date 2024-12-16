@@ -9,7 +9,6 @@ import psutil
 # Streamlit page configuration
 st.set_page_config(page_title="Multicare Dataset", page_icon=":stethoscope:", layout="wide")
 
-
 @st.cache_resource
 def load_article_metadata(file_folder):
     """
