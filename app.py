@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from ast import literal_eval
+import ast
 import os
 import re
 from streamlit_option_menu import option_menu
