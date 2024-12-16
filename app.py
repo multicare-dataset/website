@@ -251,17 +251,20 @@ def main():
             }
 
             # Load data
-            article_metadata_df = load_article_metadata('.')
-            image_metadata_df = load_image_metadata('.')
-            cases_df = load_cases('.', min_year, max_year)
+            # article_metadata_df = load_article_metadata('.')
+            # image_metadata_df = load_image_metadata('.')
+            # cases_df = load_cases('.', min_year, max_year)
 
             # Process data
-            cch = ClinicalCaseHub(article_metadata_df, image_metadata_df, cases_df)
+            cch = ClinicalCaseHub(load_article_metadata('.'), load_image_metadata('.'), load_cases('.', min_year, max_year))
             cch.apply_filters(filter_dict)
 
             st.session_state.filter_dict = filter_dict
             st.session_state.cch = cch
             st.session_state.num_results = len(cch.cases_df)
+            st.write(st.session_state.cch)
+            st.dataframe(filter_dict)
+            st.write(st.session_state.num_results)
 
         if "cch" in st.session_state:
             cch = st.session_state.cch
