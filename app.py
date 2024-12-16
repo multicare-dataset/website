@@ -3,7 +3,6 @@ import pandas as pd
 import ast
 import os
 import re
-from PIL import Image
 from streamlit_option_menu import option_menu
 import psutil
 
@@ -189,10 +188,8 @@ def main():
             },
         )
 
-        # image_path = os.path.join('.', 'medical_doctor_desktop.webp')
-        # st.image(Image.open(image_path))
+
         st.image('medical_doctor_desktop.webp')
-        
         st.header("Resource Usage")
         st.write(f"Memory Usage: {psutil.Process().memory_info().rss / (1024 ** 2):.2f} MB")
         st.write(f"CPU Usage: {psutil.cpu_percent(interval=1)}%")
