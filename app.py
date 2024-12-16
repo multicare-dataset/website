@@ -219,7 +219,7 @@ def main():
                 #     'pet', 'scintigraphy', 'tractography', 'skin_photograph', 
                 #     'oral_photograph', 'fundus_photograph', 'pathology', 'h&e'
                 # ]
-                image_type_label = st.selectbox("Image Type Label", options=[''] + list(label_dict.values())
+                image_type_label = st.selectbox("Image Type Label", options=[''] + list(label_dict.values()))
                 # image_type_label = image_type_label if image_type_label != '' else None
                 if image_type_label:
                     image_type_label = [key for key, value in label_dict.items() if value == image_type_label][0]
