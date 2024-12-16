@@ -9,20 +9,38 @@ import psutil
 # Streamlit page configuration
 st.set_page_config(page_title="Multicare Dataset", page_icon=":stethoscope:", layout="wide")
 
+label_dict = {
+    'ct': 'CT scan',
+     'mri': 'MRI',
+     'x_ray': 'X-ray',
+     'ultrasound': 'Ultrasound',
+     'angiography': 'Angiography',
+     'mammography': 'Mammography',
+     'echocardiogram': 'Echocardiogram',
+     'cholangiogram': 'Cholangiogram',
+     'nuclear_medicine': 'Nuclear Medicine',
+     'skin_photograph': 'Skin Photograph',
+     'oral_photograph': 'Oral Photograph',
+     'fundus_photograph': 'Fundus Photograph',
+     'ophthalmic_angiography': 'Ophthalmic Angiography',
+     'oct': 'Optical Coherence Tomography',
+     'pathology': 'Pathology',
+     'h&e': 'H&E',
+     'immunostaining': 'Immunostaining',
+     'immunofluorescence': 'Immunofluorescence',
+     'fish': 'Fluorescence In Situ Hybridization',
+     'endoscopy': 'Endoscopy',
+     'ekg': 'EKG'
+}
+
 @st.cache_resource
 def load_article_metadata(file_folder):
-    """
-    Load article metadata from a parquet file.
-    """
     df = pd.read_parquet(os.path.join(file_folder, 'article_metadata_website_version.parquet'))
     df['year'] = df['year'].astype(int)
     return df
 
 @st.cache_resource
 def load_image_metadata(file_folder):
-    """
-    Load image metadata from a parquet file.
-    """
     df = pd.read_parquet(os.path.join(file_folder, 'image_metadata_website_version.parquet'))
     df.rename({'postprocessed_label_list': 'labels'}, axis = 1, inplace = True)
     df['labels'] = df.labels.apply(ast.literal_eval)
@@ -30,9 +48,6 @@ def load_image_metadata(file_folder):
 
 @st.cache_resource
 def load_cases(file_folder, min_year, max_year):
-    """
-    Load case data from multiple parquet files based on the year range.
-    """
     df = pd.DataFrame()
     for file_ in ['cases_1990_2012.parquet', 'cases_2013_2017.parquet', 'cases_2018_2021.parquet', 'cases_2022_2024.parquet']:
         years = file_.split('.')[0].split('_')[1:]
@@ -41,15 +56,7 @@ def load_cases(file_folder, min_year, max_year):
     return df
 
 class ClinicalCaseHub():
-
     def __init__(self, article_metadata_df, image_metadata_df, cases_df, image_folder='img'):
-        """
-        Class initialization.
-        article_metadata_df (DataFrame): DataFrame containing article metadata.
-        image_metadata_df (DataFrame): DataFrame containing image metadata.
-        cases_df (DataFrame): DataFrame containing case data.
-        image_folder (str): Folder where images are stored.
-        """
         self.image_folder = image_folder
         self.full_metadata_df = article_metadata_df.copy()
         self.full_image_metadata_df = image_metadata_df.copy()
@@ -57,10 +64,6 @@ class ClinicalCaseHub():
         self.full_cases_df['age'] = self.full_cases_df['age'].astype(int, errors='ignore')
 
     def apply_filters(self, filter_dict):
-        """
-        Apply filters to the data based on the filter dictionary.
-        filter_dict (dict): Dictionary containing filter parameters.
-        """
         self.filter_dict = filter_dict
 
         # Filter article metadata
