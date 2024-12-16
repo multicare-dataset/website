@@ -10,8 +10,8 @@ import psutil
 # Streamlit page configuration
 st.set_page_config(page_title="Multicare Dataset", page_icon=":stethoscope:", layout="wide")
 
-# Functions to load data with caching to improve performance
-@st.cache_data
+
+@st.cache_resource
 def load_article_metadata(file_folder):
     """
     Load article metadata from a parquet file.
@@ -20,7 +20,7 @@ def load_article_metadata(file_folder):
     df['year'] = df['year'].astype(int)
     return df
 
-@st.cache_data
+@st.cache_resource
 def load_image_metadata(file_folder):
     """
     Load image metadata from a parquet file.
@@ -30,7 +30,7 @@ def load_image_metadata(file_folder):
     df['labels'] = df.labels.apply(ast.literal_eval)
     return df
 
-@st.cache_data
+@st.cache_resource
 def load_cases(file_folder, min_year, max_year):
     """
     Load case data from multiple parquet files based on the year range.
@@ -53,7 +53,6 @@ class ClinicalCaseHub():
         image_folder (str): Folder where images are stored.
         """
         self.image_folder = image_folder
-
         self.full_metadata_df = article_metadata_df.copy()
         self.full_image_metadata_df = image_metadata_df.copy()
         self.full_cases_df = cases_df.copy()
@@ -177,8 +176,6 @@ st.markdown(
 def main():
     with st.sidebar:
         st.logo("multicare-logo.webp", size="large")
-
-        # Define the menu options
         selected = option_menu(
             menu_title=None,
             options=["Search", "About"],
@@ -192,8 +189,9 @@ def main():
             },
         )
 
-        image_path = os.path.join('.', 'medical_doctor_desktop.webp')
-        st.image(Image.open(image_path))
+        # image_path = os.path.join('.', 'medical_doctor_desktop.webp')
+        # st.image(Image.open(image_path))
+        st.image('medical_doctor_desktop.webp')
         
         st.header("Resource Usage")
         st.write(f"Memory Usage: {psutil.Process().memory_info().rss / (1024 ** 2):.2f} MB")
