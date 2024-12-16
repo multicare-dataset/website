@@ -33,20 +33,20 @@ label_dict = {
      'ekg': 'EKG'
 }
 
-# @st.cache_resource
+@st.cache_data
 def load_article_metadata(file_folder):
     df = pd.read_parquet(os.path.join(file_folder, 'article_metadata_website_version.parquet'))
     df['year'] = df['year'].astype(int)
     return df
 
-# @st.cache_resource
+@st.cache_data
 def load_image_metadata(file_folder):
     df = pd.read_parquet(os.path.join(file_folder, 'image_metadata_website_version.parquet'))
     df.rename({'postprocessed_label_list': 'labels'}, axis = 1, inplace = True)
     df['labels'] = df.labels.apply(ast.literal_eval)
     return df
 
-# @st.cache_resource
+@st.cache_data
 def load_cases(file_folder, min_year, max_year):
     df = pd.DataFrame()
     for file_ in ['cases_1990_2012.parquet', 'cases_2013_2017.parquet', 'cases_2018_2021.parquet', 'cases_2022_2024.parquet']:
@@ -251,12 +251,12 @@ def main():
             }
 
             # Load data
-            # article_metadata_df = load_article_metadata('.')
-            # image_metadata_df = load_image_metadata('.')
-            # cases_df = load_cases('.', min_year, max_year)
+            article_metadata_df = load_article_metadata('.')
+            image_metadata_df = load_image_metadata('.')
+            cases_df = load_cases('.', min_year, max_year)
 
             # Process data
-            cch = ClinicalCaseHub(load_article_metadata('.'), load_image_metadata('.'), load_cases('.', min_year, max_year))
+            cch = ClinicalCaseHub(article_metadata_df, image_metadata_df, cases_df)
             cch.apply_filters(filter_dict)
 
             st.session_state.filter_dict = filter_dict
@@ -269,7 +269,7 @@ def main():
         if "cch" in st.session_state:
             cch = st.session_state.cch
             num_results = st.session_state.num_results
-            results_per_page = 5
+            results_per_page = 10
             total_pages = (num_results + results_per_page - 1) // results_per_page
 
             if "page_number" not in st.session_state:
@@ -316,7 +316,7 @@ def display_case_text(cch, index):
     case_text = cch.cases_df.case_text.iloc[index]
     article_id = cch.cases_df.article_id.iloc[index]
     article_citation = cch.metadata_df[cch.metadata_df.article_id == article_id].citation.iloc[0]
-    # article_link = cch.metadata_df[cch.metadata_df.article_id == article_id].link.iloc[0]
+    article_title = cch.metadata_df[cch.metadata_df.article_id == article_id].title.iloc[0]
 
     with st.container(border=True):
         st.subheader(f"Case ID: {case_id}")
