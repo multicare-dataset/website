@@ -225,7 +225,7 @@ def main():
             menu_icon="cast",
             default_index=0,
             orientation="vertical",
-            key= "selected"
+            key= "selected",
             styles={
                 "container": {"padding": "0!important", "background-color": "transparent"},
                 "nav-link-selected": {"background-color": "#12588ECC", "font-weight": 700},
@@ -250,7 +250,8 @@ def main():
         
         start_button = st.button("Start your search  →")
         if start_button:
-            st.session_state.selected = "Search"
+            # st.session_state.selected = "Search"
+            selected = "Search"
 
             
             
