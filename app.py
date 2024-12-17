@@ -170,17 +170,29 @@ st.markdown(
         display: flex;
         justify-content: center;
         align-items: center;
+        margin-top: 2rem;
+    }
+
+    .stVerticalBlock .stElementContainer .stButton {
+        display: flex;
+        justify-content: center;
+        margin-top: 2rem;
+        margin-bottom: 2rem;
     }
 
 
     .stElementContainer .stButton:nth-child(1) {
         display: flex;
         justify-content: flex-start;
+        margin-top: 2rem;
+        margin-bottom: 2rem;
     }
     
     .stElementContainer .stButton:nth-child(2) {
         display: flex;
         justify-content: flex-end;
+        margin-top: 2rem;
+        margin-bottom: 2rem;
     }
     
     .centered-image {
@@ -193,6 +205,12 @@ st.markdown(
     div[role="radiogroup"][aria-label="License"] {
         margin-bottom: 0.9rem;
     }
+
+    .stMarkdownContainer p {
+        font-size: 16px;
+        color: rgb(49, 51, 63);
+        text-align: justify; 
+        padding:2rem;
     </style>
     """,
     unsafe_allow_html=True,
@@ -233,6 +251,7 @@ def main():
             clinical decision-making, and critical thinking skills.
             """
         )
+        st.write("")
         start_button = st.button("Start your search →")
         if start_button:
             selected == "Search"
@@ -307,9 +326,6 @@ def main():
             st.session_state.filter_dict = filter_dict
             st.session_state.cch = cch
             st.session_state.num_results = len(cch.cases_df)
-            st.write(st.session_state.cch)
-            st.dataframe(filter_dict)
-            st.write(st.session_state.num_results)
 
         if "cch" in st.session_state:
             cch = st.session_state.cch
@@ -325,10 +341,6 @@ def main():
 
 
 
-
-
-
-
             if st.session_state.filter_dict['resource'] == 'text':
                 for index in range(start_idx, end_idx):
                     display_case_text(cch, index)
@@ -341,12 +353,12 @@ def main():
             
             col1, col2, col3 = st.columns([1, 2, 1])
             with col1:
-                if st.button("« ⟪ Previous") and st.session_state.page_number > 1:
+                if st.button("⏮  Previous") and st.session_state.page_number > 1:
                     st.session_state.page_number -= 1
             with col2:
                     st.write(f"Displaying page {page_number} of {total_pages}")
             with col3:
-                if st.button("Next ⏭") and st.session_state.page_number < total_pages:
+                if st.button("Next  ⏭") and st.session_state.page_number < total_pages:
                     st.session_state.page_number += 1
 
     
@@ -381,11 +393,7 @@ def main():
         )
 
 def display_case_text(cch, index):
-    """
-    Display text case information.
-    """
-    # Get data
-    patient_age = cch.cases_df.age.iloc[index]
+    patient_age = int(cch.cases_df.age.iloc[index])
     patient_gender = cch.cases_df.gender.iloc[index]
     case_id = cch.cases_df.case_id.iloc[index]
     case_text = cch.cases_df.case_text.iloc[index]
@@ -402,26 +410,24 @@ def display_case_text(cch, index):
             st.write(f"Gender: **{patient_gender}**")
         with col3:  
             st.write(f"Age: **{patient_age}**")
+        st.write("")
+        st.write(f"**Citation**: {article_citation}")
         
-        #case_text_aux=case_text[:300] #Limitarnado cantidad de caracteres
-        # Limitar la cantidad de caracteres iniciales
-        max_characters = 350
-        case_text_aux = case_text[:max_characters]
-        
-        # Buscar el primer punto (.) después de los caracteres iniciales
+        max_characters = 200
+        case_text_aux = case_text[:max_characters]  
         match = re.search(r'\.', case_text[max_characters:])
         if match:
-            # Extender el texto hasta el primer punto encontrado
             case_text_aux += case_text[max_characters:max_characters + match.start() + 1]
-        
-        with st.expander(f"{case_text_aux} (...)"):
-            st.write(case_text)
-            # st.markdown(
-            #     f"<div style='text-align: justify; padding:2rem;'>{case_text_aux}</div>",
-            #     unsafe_allow_html=True
-            # )
-            st.write(f"**Citation**: {article_citation}")
-        st.write(f"**Citation**: {article_citation}")
+
+        rest_text = case_text[len(aux_text):]
+
+        st.subheader("Case Description")
+        with st.expander(f"**Case Description** \n\n {case_text_aux}"):
+            st.markdown(
+                f"<div style='text-align: justify; padding:2rem;'>{rest_text}</div>",
+                unsafe_allow_html=True
+            )
+
 
 
 def display_image(cch, index):
