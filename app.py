@@ -158,7 +158,6 @@ st.markdown(
     """
     <style>
     .stForm {
-        padding: 3rem !important;
         margin-top: 1rem;
     }
 
