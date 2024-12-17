@@ -12,8 +12,6 @@ st.set_page_config(page_title="Clinical Case Hub", page_icon=":stethoscope:", la
 if "selected" not in st.session_state:
     st.session_state["selected"] = "Home"
 
-if "selected" in st.session_state:
-    st.session_state.selected = st.session_state.selected
 
 label_dict = {
     'ct': 'CT scan',
