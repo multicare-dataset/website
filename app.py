@@ -9,13 +9,6 @@ import psutil
 # Streamlit page configuration
 st.set_page_config(page_title="Clinical Case Hub", page_icon=":stethoscope:", layout="wide")
 
-    
-if "selected" not in st.session_state:
-    st.session_state["selected"] = "Home"
-
-if "selected" in st.session_state:
-    st.session_state.selected = st.session_state["selected"]
-    
 label_dict = {
     'ct': 'CT scan',
      'mri': 'MRI',
@@ -213,7 +206,11 @@ st.markdown(
 )
 
 
-
+if st.session_state.get('switch_button', False):
+    st.session_state['menu_option'] = (st.session_state.get('menu_option', 0) + 1) % 4
+    manual_select = st.session_state['menu_option']
+else:
+    manual_select = None
 
 def main():
     with st.sidebar:
@@ -225,7 +222,7 @@ def main():
             menu_icon="cast",
             default_index=0,
             orientation="vertical",
-            key= "selected",
+            manual_select=manual_select,
             styles={
                 "container": {"padding": "0!important", "background-color": "transparent"},
                 "nav-link-selected": {"background-color": "#12588ECC", "font-weight": 700},
@@ -234,7 +231,11 @@ def main():
         st.image('medical_doctor_desktop.webp')
         st.header("Resource Usage")
         st.write(f"Memory Usage: {psutil.Process().memory_info().rss / (1024 ** 2):.2f} MB")
-        st.write(f"CPU Usage: {psutil.cpu_percent(interval=1)}%")
+
+
+        
+
+
 
 
     if selected == "Home":
@@ -248,11 +249,8 @@ def main():
             """
         )
         
-        start_button = st.button("Start your search  →")
-        if start_button:
-            st.session_state.selected = "Search"
-            if selected != st.session_state.selected:
-                st.session_state.selected = selected
+        st.button(f"Start your search  → {st.session_state.get('menu_option', 1)}", key='switch_button')
+
 
             
             
