@@ -162,7 +162,7 @@ st.markdown(
     }
 
     .stForm {
-        padding: 3rem;
+        padding: 2rem;
     }
 
     .stVerticalBlock {
@@ -231,7 +231,7 @@ st.markdown(
     }    
 
     .st-emotion-cache-1wmy9hl .e1f1d6gn1 {
-        margin: 2rem;
+        margin: 1rem;
     }
     </style>
     """,
