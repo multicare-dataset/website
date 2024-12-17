@@ -186,13 +186,13 @@ st.markdown(
         margin-bottom: 0.9rem;
     }
 
-    div[data-testid="stMarkdownContainer"] p {
+    .details p {
         font-size: 16px;
         color: rgb(49, 51, 63);
         text-align: justify; 
         padding:3rem;
 
-    .stForm, .stVerticalBlockBorderWrapper {
+    .stForm {
         padding: 3rem;
     }
     
