@@ -230,8 +230,12 @@ st.markdown(
         text-align: justify; 
     }    
 
-    .st-emotion-cache-1wmy9hl .e1f1d6gn1 {
+    .stMainBlockContainer  div[data-testid="stVerticalBlockBorderWrapper"] .st-emotion-cache-1wmy9hl .e1f1d6gn1 {
         margin: 1rem;
+    }
+
+    .stMainBlockContainer div[data-testid="stVerticalBlockBorderWrapper"] .st-emotion-cache-1wmy9hl .e1f1d6gn .stVerticalBlock {
+        gap: 1rem;
     }
     </style>
     """,
