@@ -210,7 +210,7 @@ st.markdown(
 
 
 if "selected" not in st.session_state:
-    st.session_state.selected = selected
+    st.session_state.selected = "Home"
 
 if "selected" in st.session_state:
     st.session_state.selected = st.session_state.selected
