@@ -194,7 +194,6 @@ st.markdown(
         font-size: 16px !important;
         color: rgb(49, 51, 63);
         text-align: justify; 
-        padding:3rem;
 
     .stForm {
         padding: 3rem;
