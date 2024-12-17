@@ -233,11 +233,6 @@ def main():
         st.write(f"Memory Usage: {psutil.Process().memory_info().rss / (1024 ** 2):.2f} MB")
 
 
-        
-
-
-
-
     if selected == "Home":
         st.title("The Clinical Case Hub")
         st.write(
@@ -248,8 +243,7 @@ def main():
             clinical decision-making, and critical thinking skills.
             """
         )
-        
-        st.button(f"Start your search  → {st.session_state.get('menu_option', 1)}", key='switch_button')
+        st.button(f"Start your search  →", key='switch_button')
 
 
             
