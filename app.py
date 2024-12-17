@@ -161,6 +161,10 @@ st.markdown(
         padding: 3rem !important;
         margin-top: 1rem;
     }
+
+    div[data-testid="stVerticalBlockBorderWrapper"] {
+        padding: 3rem;
+    }
     
     p {
         text-align: justify; 
