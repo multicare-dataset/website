@@ -172,11 +172,26 @@ st.markdown(
         align-items: center;
     }
 
+
+    .stElementContainer .stButton:nth-child(1) {
+        display: flex;
+        justify-content: flex-start;
+    }
+    
+    .stElementContainer .stButton:nth-child(2) {
+        display: flex;
+        justify-content: flex-end;
+    }
+    
     .centered-image {
         display: block;
         margin-left: auto;
         margin-right: auto;
         width: 50%;
+    }
+
+    div[role="radiogroup"][aria-label="License"] {
+        margin-bottom: 0.9rem;
     }
     </style>
     """,
@@ -224,7 +239,7 @@ def main():
             
 
     elif selected == "Search":
-        st.header("The Clinical Case Hub")
+        st.title("The Clinical Case Hub")
         st.write(
             """
             Refine your search with filters to find the clinical cases that align with your research focus or 
@@ -233,31 +248,42 @@ def main():
             """
         )
         with st.form("filter_form"):
-            
+            st.subheader("Filters")
             col1, col2, col3 = st.columns(3)
             
             with col1:
                 min_year, max_year = st.slider("Year", 1990, 2024, (2014, 2024))
-                gender = st.selectbox("Gender", options=['Any', 'Female', 'Male'], index=0)
-                image_type_label = st.selectbox("Image Type Label", options=[''] + list(label_dict.values()))
-                if image_type_label:
-                    image_type_label = [key for key, value in label_dict.items() if value == image_type_label][0]
-                else:
-                    image_type_label = None
+                resource = st.selectbox("Resource Type", options=['text', 'image', 'both'], index=0)
+                image_type_label = st.selectbox("Image Type Label", options=[None] + list(label_dict.values()))
+                # if image_type_label:
+                #     image_type_label = [key for key, value in label_dict.items() if value == image_type_label][0]
+                # else:
+                #     image_type_label = None
+                if image_type_label is not None:
+                    image_type_label = next((key for key, value in label_dict.items() if value == image_type_label), None)
             
             with col2:
                 min_age, max_age = st.slider("Age", 0, 100, (18, 65))
-                case_search = st.text_input("Case Text Search", value='', help="Search operators: 'OR', 'AND', 'NOT'. Groups of terms that refer to the same concept should be concatenated using 'OR'. Use 'AND' to include a new term or group of terms, and use 'NOT' to exclude them. For example: '(CT OR tomography) AND (chest OR thorax) NOT abdomen' will return chest CT scans with no mentions of the word 'abdomen'.")
-                anatomical_region_options = ['head', 'neck', 'thorax', 'abdomen', 'pelvis', 'upper_limb', 'lower_limb']
-                anatomical_region_label = st.selectbox("Anatomical Region Label", options=[''] + anatomical_region_options, help="This filter can only be combined with specific image types: 'CT scan,' 'MRI,' 'X-ray,' 'Ultrasound,' 'Angiography,' and 'Nuclear Medicine'.")
-                anatomical_region_label = anatomical_region_label if anatomical_region_label != '' else None
+                gender = st.selectbox("Gender", options=['Any', 'Female', 'Male'], index=0)
+                caption_search = st.text_input(
+                    "Caption Text Search", value='', 
+                    help="Search operators: 'OR', 'AND', 'NOT'. Groups of terms that refer to the same concept should be concatenated using 'OR'. Use 'AND' to include a new term or group of terms, and use 'NOT' to exclude them. For example: '(CT OR tomography) AND (chest OR thorax) NOT abdomen' will return chest CT scans with no mentions of the word 'abdomen'."
+                )
 
             with col3:
                 license = st.radio("License", options=['all', 'commercial'], horizontal=True, index=0)
-                caption_search = st.text_input("Caption Text Search", value='', help="Search operators: 'OR', 'AND', 'NOT'. Groups of terms that refer to the same concept should be concatenated using 'OR'. Use 'AND' to include a new term or group of terms, and use 'NOT' to exclude them. For example: '(CT OR tomography) AND (chest OR thorax) NOT abdomen' will return chest CT scans with no mentions of the word 'abdomen'.")
-                resource = st.selectbox("Resource Type", options=['text', 'image', 'both'], index=0)
-
-            submitted = st.form_submit_button("Apply Filters")
+                case_search = st.text_input(
+                    "Case Text Search", 
+                    value='', 
+                    help="Search operators: 'OR', 'AND', 'NOT'. Groups of terms that refer to the same concept should be concatenated using 'OR'. Use 'AND' to include a new term or group of terms, and use 'NOT' to exclude them. For example: '(CT OR tomography) AND (chest OR thorax) NOT abdomen' will return chest CT scans with no mentions of the word 'abdomen'."
+                )
+                anatomical_region_label = st.selectbox(
+                    "Anatomical Region Label", 
+                    options=[None] + ['head', 'neck', 'thorax', 'abdomen', 'pelvis', 'upper_limb', 'lower_limb'],
+                    help="This filter can only be combined with specific image types: 'CT scan,' 'MRI,' 'X-ray,' 'Ultrasound,' 'Angiography,' and 'Nuclear Medicine'."
+                )
+                
+            submitted = st.form_submit_button("Search")
 
         if submitted: 
             st.subheader("Seach Results")
@@ -293,19 +319,15 @@ def main():
 
             if "page_number" not in st.session_state:
                 st.session_state.page_number = 1
-
-            col1, col2, col3 = st.columns([1, 2, 1])
-            with col1:
-                if st.button("Previous") and st.session_state.page_number > 1:
-                    st.session_state.page_number -= 1
-            with col3:
-                if st.button("Next") and st.session_state.page_number < total_pages:
-                    st.session_state.page_number += 1
-
             page_number = st.session_state.page_number
             start_idx = (page_number - 1) * results_per_page
             end_idx = min(start_idx + results_per_page, num_results)
-            st.write(f"Displaying page {page_number} of {total_pages}")
+
+
+
+
+
+
 
             if st.session_state.filter_dict['resource'] == 'text':
                 for index in range(start_idx, end_idx):
@@ -317,7 +339,15 @@ def main():
                 for index in range(start_idx, end_idx):
                     display_case_both(cch, index)
             
-            st.write(f"Displaying page {page_number} of {total_pages}")
+            col1, col2, col3 = st.columns([1, 2, 1])
+            with col1:
+                if st.button("« ⟪ Previous") and st.session_state.page_number > 1:
+                    st.session_state.page_number -= 1
+            with col2:
+                    st.write(f"Displaying page {page_number} of {total_pages}")
+            with col3:
+                if st.button("Next ⏭") and st.session_state.page_number < total_pages:
+                    st.session_state.page_number += 1
 
     
     elif selected == "About":
@@ -364,9 +394,14 @@ def display_case_text(cch, index):
     article_title = cch.metadata_df[cch.metadata_df.article_id == article_id].title.iloc[0]
 
     with st.container(border=True):
-        st.subheader(f"Case ID: {case_id}")
-        st.write(f"Gender: {patient_gender}")
-        st.write(f"Age: {patient_age}")
+        st.subheader("Title Here")
+        col1, col2, col3 = st.columns([1, 1, 1])
+        with col1:
+            st.write(f"Case ID: **{case_id}**")
+        with col2:  
+            st.write(f"Gender: **{patient_gender}**")
+        with col3:  
+            st.write(f"Age: **{patient_age}**")
         
         #case_text_aux=case_text[:300] #Limitarnado cantidad de caracteres
         # Limitar la cantidad de caracteres iniciales
@@ -379,14 +414,14 @@ def display_case_text(cch, index):
             # Extender el texto hasta el primer punto encontrado
             case_text_aux += case_text[max_characters:max_characters + match.start() + 1]
         
-        with st.expander("Case Description"):
-            st.markdown(
-                f"<div style='text-align: justify; padding:2rem;'>{case_text_aux}</div>",
-                unsafe_allow_html=True
-            )
-            
-        #  st.write(f"Article Link: [Link]({article_link})")
-        st.write(f"Citation: {article_citation}")
+        with st.expander(f"{case_text_aux} (...)"):
+            st.write(case_text)
+            # st.markdown(
+            #     f"<div style='text-align: justify; padding:2rem;'>{case_text_aux}</div>",
+            #     unsafe_allow_html=True
+            # )
+            st.write(f"**Citation**: {article_citation}")
+        st.write(f"**Citation**: {article_citation}")
 
 
 def display_image(cch, index):
