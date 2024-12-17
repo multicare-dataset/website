@@ -202,6 +202,10 @@ st.markdown(
         font-size: 16px !important;
         color: rgb(49, 51, 63);
         text-align: justify; 
+        padding-right: 3rem;
+        padding-left: 3rem;
+        padding-top: 3rem;
+        padding-bottom:0rem;
 
 
     
@@ -210,6 +214,12 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+
+if "selected" not in st.session_state:
+    st.session_state.selected = selected
+
+if "selected" in st.session_state:
+    st.session_state.selected = st.session_state.selected
 
 if st.session_state.get('switch_button', False):
     st.session_state['menu_option'] = 1
@@ -228,6 +238,7 @@ def main():
             default_index=0,
             orientation="vertical",
             manual_select=manual_select,
+            key="selected",
             styles={
                 "container": {"padding": "0!important", "background-color": "transparent"},
                 "nav-link-selected": {"background-color": "#12588ECC", "font-weight": 700},
