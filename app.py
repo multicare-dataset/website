@@ -161,6 +161,10 @@ st.markdown(
         padding-top: 3rem;
     }
 
+    .stElementContainer {
+        padding: 2rem;
+    }
+
     .stLogo {
         margin: auto;
         height: 45px;
@@ -171,6 +175,7 @@ st.markdown(
         justify-content: center;
         align-items: center;
         margin-top: 2rem;
+        margin-bottom: 2rem;
     }
 
     .stVerticalBlock .stElementContainer .stButton {
@@ -242,7 +247,7 @@ def main():
 
 
     if selected == "Home":
-        st.title("Clinical Case Hub")
+        st.title("The Clinical Case Hub")
         st.write(
             """
             Welcome to The Clinical Case Hub, a platform designed to empower healthcare professionals and medical 
@@ -251,8 +256,8 @@ def main():
             clinical decision-making, and critical thinking skills.
             """
         )
-        st.write("")
-        start_button = st.button("Start your search →")
+        st.markdown("##")
+        start_button = st.button("Start your search  →")
         if start_button:
             selected == "Search"
             
@@ -266,6 +271,7 @@ def main():
             case text. Select a resource type based on your interests—text, image, or both.
             """
         )
+        st.markdown("##")
         with st.form("filter_form"):
             st.subheader("Filters")
             col1, col2, col3 = st.columns(3)
@@ -363,7 +369,7 @@ def main():
 
     
     elif selected == "About":
-        st.header("About the MultiCaRe Dataset")
+        st.title("About the MultiCaRe Dataset")
         st.write(
             """
             MultiCaRe is a dataset containing clinical cases, labeled images, and captions, 
@@ -410,8 +416,7 @@ def display_case_text(cch, index):
             st.write(f"Gender: **{patient_gender}**")
         with col3:  
             st.write(f"Age: **{patient_age}**")
-        st.write("")
-        st.write(f"**Citation**: {article_citation}")
+        st.write(f"Citation: **{article_citation}**")
         
         max_characters = 200
         case_text_aux = case_text[:max_characters]  
@@ -419,7 +424,7 @@ def display_case_text(cch, index):
         if match:
             case_text_aux += case_text[max_characters:max_characters + match.start() + 1]
 
-        rest_text = case_text[len(aux_text):]
+        rest_text = case_text[len(case_text_aux):]
 
         st.subheader("Case Description")
         with st.expander(f"**Case Description** \n\n {case_text_aux}"):
