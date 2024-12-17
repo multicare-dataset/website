@@ -157,6 +157,10 @@ class ClinicalCaseHub():
 st.markdown(
     """
     <style>
+    p {
+        text-align: justify; 
+    }
+    
     .stMainBlockContainer {
         padding-top: 3rem;
     }
@@ -186,7 +190,7 @@ st.markdown(
         margin-bottom: 0.9rem;
     }
 
-    .details p {
+    details summary p {
         font-size: 16px;
         color: rgb(49, 51, 63);
         text-align: justify; 
@@ -236,7 +240,7 @@ def main():
             clinical decision-making, and critical thinking skills.
             """
         )
-        st.markdown("##")
+        
         start_button = st.button("Start your search  →")
         if start_button:
             selected == "Search"
@@ -251,7 +255,7 @@ def main():
             case text. Select a resource type based on your interests—text, image, or both.
             """
         )
-        st.markdown("##")
+        st.markdown("####")
         with st.form("filter_form"):
             st.subheader("Filters")
             col1, col2, col3 = st.columns(3)
@@ -260,10 +264,6 @@ def main():
                 min_year, max_year = st.slider("Year", 1990, 2024, (2014, 2024))
                 resource = st.selectbox("Resource Type", options=['text', 'image', 'both'], index=0)
                 image_type_label = st.selectbox("Image Type Label", options=[None] + list(label_dict.values()))
-                # if image_type_label:
-                #     image_type_label = [key for key, value in label_dict.items() if value == image_type_label][0]
-                # else:
-                #     image_type_label = None
                 if image_type_label is not None:
                     image_type_label = next((key for key, value in label_dict.items() if value == image_type_label), None)
             
@@ -291,6 +291,7 @@ def main():
             submitted = st.form_submit_button("Search")
 
         if submitted: 
+            st.markdown("####")
             st.subheader("Seach Results")
             # Pagination setup
             filter_dict = {
