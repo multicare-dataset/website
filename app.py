@@ -205,7 +205,7 @@ st.markdown(
     }
 
     .stExpander details {
-        padding-bottom: 2.5rem;
+        padding-bottom: 2rem;
     }
 
     .stExpander details summary {
@@ -213,9 +213,9 @@ st.markdown(
     }
 
     .stExpander details summary span {
-        padding-right: 2rem;
-        padding-left: 3rem;
-        padding-top: 3rem;
+        padding-right: 1rem;
+        padding-left: 2rem;
+        padding-top: 2rem;
     }
 
     div[data-testid="stExpanderDetails"] {
