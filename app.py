@@ -170,7 +170,6 @@ st.markdown(
     }
     
     .stMainBlockContainer .stVerticalBlock div[data-testid="stVerticalBlockBorderWrapper"] {
-        padding: 3rem;
     }
     
     p {
