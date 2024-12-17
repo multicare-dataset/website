@@ -161,10 +161,6 @@ st.markdown(
         padding-top: 3rem;
     }
 
-    .stElementContainer {
-        padding: 2rem;
-    }
-
     .stLogo {
         margin: auto;
         height: 45px;
