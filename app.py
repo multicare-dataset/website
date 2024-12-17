@@ -243,7 +243,7 @@ def main():
         
         start_button = st.button("Start your search  →")
         if start_button:
-            selected == "Search"
+            selected = "Search"
             
 
     elif selected == "Search":
