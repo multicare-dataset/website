@@ -178,27 +178,6 @@ st.markdown(
         margin-bottom: 2rem;
     }
 
-    .stVerticalBlock .stElementContainer .stButton {
-        display: flex;
-        justify-content: center;
-        margin-top: 2rem;
-        margin-bottom: 2rem;
-    }
-
-
-    .stElementContainer .stButton:nth-child(1) {
-        display: flex;
-        justify-content: flex-start;
-        margin-top: 2rem;
-        margin-bottom: 2rem;
-    }
-    
-    .stElementContainer .stButton:nth-child(2) {
-        display: flex;
-        justify-content: flex-end;
-        margin-top: 2rem;
-        margin-bottom: 2rem;
-    }
     
     .centered-image {
         display: block;
@@ -211,11 +190,16 @@ st.markdown(
         margin-bottom: 0.9rem;
     }
 
-    .stMarkdownContainer p {
+    div[data-testid="stMarkdownContainer"] p {
         font-size: 16px;
         color: rgb(49, 51, 63);
         text-align: justify; 
-        padding:2rem;
+        padding:3rem;
+
+    .stForm, .stVerticalBlockBorderWrapper {
+        padding: 3rem;
+    }
+    
     </style>
     """,
     unsafe_allow_html=True,
@@ -416,9 +400,9 @@ def display_case_text(cch, index):
             st.write(f"Gender: **{patient_gender}**")
         with col3:  
             st.write(f"Age: **{patient_age}**")
-        st.write(f"Citation: **{article_citation}**")
+        st.write(f"**Citation**: *{article_citation}*")
         
-        max_characters = 200
+        max_characters = 250
         case_text_aux = case_text[:max_characters]  
         match = re.search(r'\.', case_text[max_characters:])
         if match:
@@ -427,9 +411,9 @@ def display_case_text(cch, index):
         rest_text = case_text[len(case_text_aux):]
 
         st.subheader("Case Description")
-        with st.expander(f"**Case Description** \n\n {case_text_aux}"):
+        with st.expander(f"{case_text_aux}"):
             st.markdown(
-                f"<div style='text-align: justify; padding:2rem;'>{rest_text}</div>",
+                f"<div style='text-align: justify; padding:3rem;'>{rest_text}</div>",
                 unsafe_allow_html=True
             )
 
