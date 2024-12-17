@@ -161,7 +161,15 @@ st.markdown(
         margin-top: 1rem;
     }
 
-    div[data-testid="stVerticalBlockBorderWrapper"] {
+    .stForm {
+        padding: 3rem;
+    }
+
+    .stVerticalBlock {
+        gap: 2rem;
+    }
+    
+    .stMainBlockContainer .stVerticalBlock div[data-testid="stVerticalBlockBorderWrapper"] {
         padding: 3rem;
     }
     
@@ -185,7 +193,6 @@ st.markdown(
         margin-top: 2rem;
         margin-bottom: 1rem;
     }
-
     
     .centered-image {
         display: block;
@@ -196,6 +203,22 @@ st.markdown(
 
     div[role="radiogroup"][aria-label="License"] {
         margin-bottom: 0.9rem;
+    }
+
+    .stExpander details summary {
+        padding-bottom: 0rem;
+    }
+
+    .stExpander details summary span {
+        padding-right: 2rem;
+        padding-left: 3rem;
+        padding-top: 2rem;
+    }
+
+    div[data-testid="stExpanderDetails"] {
+        padding-right: 2rem;
+        padding-left: 1rem;
+        padding-top: 0rem;
     }
 
     details summary span p {
@@ -422,7 +445,7 @@ def display_case_text(cch, index):
         st.subheader("Case Description")
         with st.expander(f"{case_text_aux}"):
             st.markdown(
-                f"<div style='text-align: justify; padding:3rem;'>{rest_text}</div>",
+                f"<div style='text-align: justify; padding-right: 2rem; padding-left: 3rem; padding-bottom: 2rem;'>{rest_text}</div>",
                 unsafe_allow_html=True
             )
 
