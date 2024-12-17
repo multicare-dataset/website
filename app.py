@@ -215,7 +215,7 @@ st.markdown(
 def main():
     with st.sidebar:
         st.logo("multicare-logo.webp", size="large")
-        st.session_state["selected"] = option_menu(
+        selected = option_menu(
             menu_title=None,
             options=["Home", "Search", "About"],
             icons=["house", "search", "info-circle"],
@@ -227,14 +227,14 @@ def main():
                 "nav-link-selected": {"background-color": "#12588ECC", "font-weight": 700},
             },
         )
-
+        st.session_state["selected"] = selected
         st.image('medical_doctor_desktop.webp')
         st.header("Resource Usage")
         st.write(f"Memory Usage: {psutil.Process().memory_info().rss / (1024 ** 2):.2f} MB")
         st.write(f"CPU Usage: {psutil.cpu_percent(interval=1)}%")
 
 
-    if st.session_state["selected"] == "Home":
+    if selected == "Home":
         st.title("The Clinical Case Hub")
         st.write(
             """
@@ -247,11 +247,12 @@ def main():
         
         start_button = st.button("Start your search  →")
         if start_button:
-            st.session_state["selected"] = "Search"
-            st.rerun()
+            if "selected" in st.session_state:
+                st.session_state.selected = st.session_state["selected"]
+            
             
 
-    elif st.session_state["selected"] == "Search":
+    elif selected == "Search":
         st.title("The Clinical Case Hub")
         st.write(
             """
@@ -353,7 +354,7 @@ def main():
                     st.session_state.page_number += 1
 
     
-    elif st.session_state["selected"] == "About":
+    elif selected == "About":
         st.title("About the MultiCaRe Dataset")
         st.write(
             """
