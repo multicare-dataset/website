@@ -250,8 +250,9 @@ def main():
         
         start_button = st.button("Start your search  →")
         if start_button:
-            # st.session_state.selected = "Search"
-            selected = "Search"
+            st.session_state.selected = "Search"
+            if selected != st.session_state.selected:
+                st.session_state.selected = selected
 
             
             
