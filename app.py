@@ -175,7 +175,7 @@ st.markdown(
         justify-content: center;
         align-items: center;
         margin-top: 2rem;
-        margin-bottom: 2rem;
+        margin-bottom: 1rem;
     }
 
     
@@ -190,13 +190,14 @@ st.markdown(
         margin-bottom: 0.9rem;
     }
 
-    details summary p {
+    details summary span p {
         font-size: 16px !important;
         color: rgb(49, 51, 63);
         text-align: justify; 
 
     .stForm {
         padding: 3rem;
+        margin-top: 1rem;
     }
     
     </style>
@@ -254,7 +255,6 @@ def main():
             case text. Select a resource type based on your interests—text, image, or both.
             """
         )
-        st.markdown("####")
         with st.form("filter_form"):
             st.subheader("Filters")
             col1, col2, col3 = st.columns(3)
