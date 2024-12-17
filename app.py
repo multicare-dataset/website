@@ -191,7 +191,7 @@ st.markdown(
     }
 
     details summary p {
-        font-size: 16px;
+        font-size: 16px !important;
         color: rgb(49, 51, 63);
         text-align: justify; 
         padding:3rem;
