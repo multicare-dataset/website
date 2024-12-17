@@ -169,7 +169,6 @@ st.markdown(
 
     .stForm {
         padding: 1rem;
-        margin-top: 1rem;
     }
 
     .stVerticalBlock {
