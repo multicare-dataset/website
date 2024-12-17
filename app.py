@@ -157,6 +157,11 @@ class ClinicalCaseHub():
 st.markdown(
     """
     <style>
+
+    div.stExpander + div.stElementContainer {
+        padding: 2rem;
+    }
+        
     h3 {
         padding-top: 1rem;
         padding-right: 1rem;
