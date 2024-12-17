@@ -157,6 +157,12 @@ class ClinicalCaseHub():
 st.markdown(
     """
     <style>
+    h3 {
+        padding-top: 1rem;
+        padding-right: 1rem;
+        padding-left: 1rem;
+        padding-bottom: 0rem;
+    }
     .stForm {
         margin-top: 1rem;
     }
