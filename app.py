@@ -7,7 +7,7 @@ from streamlit_option_menu import option_menu
 import psutil
 
 # Streamlit page configuration
-st.set_page_config(page_title="Multicare Dataset", page_icon=":stethoscope:", layout="wide")
+st.set_page_config(page_title="Clinical Case Hub", page_icon=":stethoscope:", layout="wide")
 
 label_dict = {
     'ct': 'CT scan',
@@ -152,6 +152,7 @@ class ClinicalCaseHub():
 
 # ---------- STREAMLIT CODE --------------
 
+
 # Global CSS 
 st.markdown(
     """
@@ -183,13 +184,15 @@ st.markdown(
 )
 
 
+
+
 def main():
     with st.sidebar:
         st.logo("multicare-logo.webp", size="large")
         selected = option_menu(
             menu_title=None,
-            options=["Search", "About"],
-            icons=["search", "info-circle"],
+            options=["Home", "Search", "About"],
+            icons=["house", "search", "info-circle"],
             menu_icon="cast",
             default_index=0,
             orientation="vertical",
@@ -204,23 +207,39 @@ def main():
         st.write(f"Memory Usage: {psutil.Process().memory_info().rss / (1024 ** 2):.2f} MB")
         st.write(f"CPU Usage: {psutil.cpu_percent(interval=1)}%")
 
-    if selected == "Search":
-        with st.form("filter_form"):
-            st.subheader("Filters")
 
+    if selected == "Home":
+        st.title("Clinical Case Hub")
+        st.write(
+            """
+            Welcome to The Clinical Case Hub, a platform designed to empower healthcare professionals and medical 
+            students with real-world clinical cases. Our mission is to provide you with a diverse collection of 
+            cases and images sourced from PubMed Central case reports, enabling you to enhance your diagnostic, 
+            clinical decision-making, and critical thinking skills.
+            """
+        )
+        start_button = st.button("Start your search →")
+        if start_button:
+            selected == "Search"
+            
+
+    elif selected == "Search":
+        st.header("The Clinical Case Hub")
+        st.write(
+            """
+            Refine your search with filters to find the clinical cases that align with your research focus or 
+            learning goals. You can filter by different criteria, such as age, gender or content of the clinical 
+            case text. Select a resource type based on your interests—text, image, or both.
+            """
+        )
+        with st.form("filter_form"):
+            
             col1, col2, col3 = st.columns(3)
             
             with col1:
                 min_year, max_year = st.slider("Year", 1990, 2024, (2014, 2024))
                 gender = st.selectbox("Gender", options=['Any', 'Female', 'Male'], index=0)
-                # image_type_options = [
-                #     'ct', 'mri', 'x_ray', 'ultrasound', 'angiography', 'mammography', 
-                #     'echocardiogram', 'cholangiogram', 'cta', 'cmr', 'mra', 'mrcp', 'spect', 
-                #     'pet', 'scintigraphy', 'tractography', 'skin_photograph', 
-                #     'oral_photograph', 'fundus_photograph', 'pathology', 'h&e'
-                # ]
                 image_type_label = st.selectbox("Image Type Label", options=[''] + list(label_dict.values()))
-                # image_type_label = image_type_label if image_type_label != '' else None
                 if image_type_label:
                     image_type_label = [key for key, value in label_dict.items() if value == image_type_label][0]
                 else:
@@ -228,20 +247,20 @@ def main():
             
             with col2:
                 min_age, max_age = st.slider("Age", 0, 100, (18, 65))
-                case_search = st.text_input("Case Text Search", value='', help="INFO INFO INFO CASE TEXT SEARCH")
+                case_search = st.text_input("Case Text Search", value='', help="Search operators: 'OR', 'AND', 'NOT'. Groups of terms that refer to the same concept should be concatenated using 'OR'. Use 'AND' to include a new term or group of terms, and use 'NOT' to exclude them. For example: '(CT OR tomography) AND (chest OR thorax) NOT abdomen' will return chest CT scans with no mentions of the word 'abdomen'.")
                 anatomical_region_options = ['head', 'neck', 'thorax', 'abdomen', 'pelvis', 'upper_limb', 'lower_limb']
-                anatomical_region_label = st.selectbox("Anatomical Region Label", options=[''] + anatomical_region_options, help="This option only filters if Image type ['ct', 'mri', 'x_ray', 'ultrasound', 'angiography', 'cta', 'mra', 'spect', 'pet', 'scintigraphy'].")
+                anatomical_region_label = st.selectbox("Anatomical Region Label", options=[''] + anatomical_region_options, help="This filter can only be combined with specific image types: 'CT scan,' 'MRI,' 'X-ray,' 'Ultrasound,' 'Angiography,' and 'Nuclear Medicine'.")
                 anatomical_region_label = anatomical_region_label if anatomical_region_label != '' else None
 
             with col3:
                 license = st.radio("License", options=['all', 'commercial'], horizontal=True, index=0)
-                caption_search = st.text_input("Caption Text Search", value='', help="INFO CAPTION TEXT SEARCH INFO INFO INFO")
+                caption_search = st.text_input("Caption Text Search", value='', help="Search operators: 'OR', 'AND', 'NOT'. Groups of terms that refer to the same concept should be concatenated using 'OR'. Use 'AND' to include a new term or group of terms, and use 'NOT' to exclude them. For example: '(CT OR tomography) AND (chest OR thorax) NOT abdomen' will return chest CT scans with no mentions of the word 'abdomen'.")
                 resource = st.selectbox("Resource Type", options=['text', 'image', 'both'], index=0)
 
             submitted = st.form_submit_button("Apply Filters")
 
         if submitted: 
-        
+            st.subheader("Seach Results")
             # Pagination setup
             filter_dict = {
                 'min_age': min_age, 'max_age': max_age, 'gender': gender, 'case_search': case_search,
@@ -302,8 +321,34 @@ def main():
 
     
     elif selected == "About":
-        st.title("About")
-        st.write("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
+        st.header("About the MultiCaRe Dataset")
+        st.write(
+            """
+            MultiCaRe is a dataset containing clinical cases, labeled images, and captions, 
+            all extracted from open-access case reports in PubMed Central. It is derived from over 85,000 
+            case report articles, involving more than 320,000 authors and 110,000 patients. The dataset 
+            is designed for healthcare professionals, medical students, and data scientists.
+            """
+        )
+        st.subheader("Useful Links")
+        st.write(
+            """
+            - GitHub Repository: (...) [link]
+            - Zenodo Data Repository: (...) [link]
+            - Image Classification Model: [https://huggingface.co/mauro-nievoff/MultiCaReClassifier]
+            - Taxonomy Documentation: (...) [link]
+            """
+        )
+        st.subheader("Our Team")
+        st.write(
+            """
+            - Mauro Nievas Offidani, MD, MSc (https://www.linkedin.com/in/mauronievasoffidani/): Data Curation
+            - María Carolina González Galtier, MD, MA (https://www.linkedin.com/in/carogaltier/): Web Development
+            - Miguel Massiris (...): Web Development
+            - Facundo Roffet (...): ML Model Development
+            - Claudio Delrieux, PhD (...): Project Direction
+            """
+        )
 
 def display_case_text(cch, index):
     """
@@ -448,3 +493,7 @@ def display_case_both(cch, index):
 
 if __name__ == '__main__':
     main()
+
+
+
+
