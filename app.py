@@ -157,6 +157,11 @@ class ClinicalCaseHub():
 st.markdown(
     """
     <style>
+    .stForm {
+        padding: 3rem;
+        margin-top: 1rem;
+    }
+    
     p {
         text-align: justify; 
     }
@@ -195,10 +200,7 @@ st.markdown(
         color: rgb(49, 51, 63);
         text-align: justify; 
 
-    .stForm {
-        padding: 3rem;
-        margin-top: 1rem;
-    }
+
     
     </style>
     """,
