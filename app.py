@@ -202,13 +202,7 @@ st.markdown(
         font-size: 16px !important;
         color: rgb(49, 51, 63);
         text-align: justify; 
-        padding-right: 3rem;
-        padding-left: 3rem;
-        padding-top: 3rem;
-        padding-bottom:0rem;
-
-
-    
+    }    
     </style>
     """,
     unsafe_allow_html=True,
