@@ -229,6 +229,10 @@ st.markdown(
         color: rgb(49, 51, 63);
         text-align: justify; 
     }    
+
+    .st-emotion-cache-1wmy9hl .e1f1d6gn1 {
+        margin: 2rem;
+    }
     </style>
     """,
     unsafe_allow_html=True,
@@ -427,15 +431,15 @@ def display_case_text(cch, index):
     article_title = cch.metadata_df[cch.metadata_df.article_id == article_id].title.iloc[0]
 
     with st.container(border=True):
-        with st.container(border=False):
-            st.subheader("Title Here")
-            col1, col2, col3 = st.columns([1, 1, 1])
-            with col1:
-                st.write(f"Case ID: **{case_id}**")
-            with col2:  
-                st.write(f"Gender: **{patient_gender}**")
-            with col3:  
-                st.write(f"Age: **{patient_age}**")
+
+        st.subheader("Title Here")
+        col1, col2, col3 = st.columns([1, 1, 1])
+        with col1:
+            st.write(f"Case ID: **{case_id}**")
+        with col2:  
+            st.write(f"Gender: **{patient_gender}**")
+        with col3:  
+            st.write(f"Age: **{patient_age}**")
         
         max_characters = 250
         case_text_aux = case_text[:max_characters]  
@@ -444,16 +448,15 @@ def display_case_text(cch, index):
             case_text_aux += case_text[max_characters:max_characters + match.start() + 1]
 
         rest_text = case_text[len(case_text_aux):]
-        with st.container(border=False):
             
-            st.subheader("Case Description")
-            with st.expander(f"{case_text_aux}"):
-                st.markdown(
-                    f"<div style='text-align: justify; padding-right: 2rem; padding-left: 3rem; padding-bottom: 2rem;'>{rest_text}</div>",
-                    unsafe_allow_html=True
-                )
-            with st.container(border=False):
-                st.write(f"**Citation**: *{article_citation}*")
+        st.subheader("Case Description")
+        with st.expander(f"{case_text_aux}"):
+            st.markdown(
+                f"<div style='text-align: justify; padding-right: 2rem; padding-left: 3rem; padding-bottom: 2rem;'>{rest_text}</div>",
+                unsafe_allow_html=True
+            )
+
+        st.write(f"**Citation**: *{article_citation}*")
 
 
 def display_image(cch, index):
