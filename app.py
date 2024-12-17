@@ -207,7 +207,7 @@ st.markdown(
 
 
 if st.session_state.get('switch_button', False):
-    st.session_state['menu_option'] = (st.session_state.get('menu_option', 0) + 1) % 4
+    st.session_state['menu_option'] = 1
     manual_select = st.session_state['menu_option']
 else:
     manual_select = None
