@@ -427,7 +427,7 @@ def display_case_text(cch, index):
     article_title = cch.metadata_df[cch.metadata_df.article_id == article_id].title.iloc[0]
 
     with st.container(border=True):
-        with st.container(border=True):
+        with st.container(border=False):
             st.subheader("Title Here")
             col1, col2, col3 = st.columns([1, 1, 1])
             with col1:
@@ -444,14 +444,16 @@ def display_case_text(cch, index):
             case_text_aux += case_text[max_characters:max_characters + match.start() + 1]
 
         rest_text = case_text[len(case_text_aux):]
-        with st.container(border=True):
+        with st.container(border=False):
+            
             st.subheader("Case Description")
             with st.expander(f"{case_text_aux}"):
                 st.markdown(
                     f"<div style='text-align: justify; padding-right: 2rem; padding-left: 3rem; padding-bottom: 2rem;'>{rest_text}</div>",
                     unsafe_allow_html=True
                 )
-            st.write(f"**Citation**: *{article_citation}*")
+            with st.container(border=False):
+                st.write(f"**Citation**: *{article_citation}*")
 
 
 def display_image(cch, index):
