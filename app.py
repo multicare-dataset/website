@@ -250,6 +250,7 @@ def main():
         start_button = st.button("Start your search  →")
         if start_button:
             st.session_state["selected"] = "Search"
+            st.rerun()
             
 
     elif st.session_state["selected"] == "Search":
