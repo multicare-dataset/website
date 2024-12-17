@@ -234,6 +234,10 @@ st.markdown(
         margin: 1rem;
     }
 
+    .stExpander .st-emotion-cache-1wmy9hl .e1f1d6gn1 {
+        margin: 0rem;
+    }
+
     .stMainBlockContainer div[data-testid="stVerticalBlockBorderWrapper"] .st-emotion-cache-1wmy9hl .e1f1d6gn .stVerticalBlock {
         gap: 1rem;
     }
@@ -456,7 +460,7 @@ def display_case_text(cch, index):
         st.subheader("Case Description")
         with st.expander(f"{case_text_aux}"):
             st.markdown(
-                f"<div style='text-align: justify; padding-right: 2rem; padding-left: 3rem; padding-bottom: 2rem;'>{rest_text}</div>",
+                f"<div style='text-align: justify; padding-right: 1rem; padding-left: 2rem; padding-bottom: 1rem;'>{rest_text}</div>",
                 unsafe_allow_html=True
             )
 
