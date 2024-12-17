@@ -163,11 +163,12 @@ st.markdown(
     }
         
     h3 {
-        padding-top: 1rem;
+        padding: 1rem;
+        padding-bottom: 0rem;
     }
 
     .stForm {
-        padding: 2rem 3rem;
+        padding: 2rem;
         margin-top: 1rem;
     }
 
