@@ -165,19 +165,14 @@ st.markdown(
     h3 {
         padding-top: 1rem;
     }
-    .stForm {
-        margin-top: 1rem;
-    }
 
     .stForm {
-        padding: 2rem;
+        padding: 2rem 3rem;
+        margin-top: 1rem;
     }
 
     .stVerticalBlock {
         gap: 1rem;
-    }
-    
-    .stMainBlockContainer .stVerticalBlock div[data-testid="stVerticalBlockBorderWrapper"] {
     }
     
     p {
@@ -244,6 +239,10 @@ st.markdown(
 
     .stMainBlockContainer  div[data-testid="stVerticalBlockBorderWrapper"] .st-emotion-cache-1wmy9hl .e1f1d6gn1 {
         margin: 1rem;
+    }
+
+    stForm .stMainBlockContainer  div[data-testid="stVerticalBlockBorderWrapper"] .st-emotion-cache-1wmy9hl .e1f1d6gn1 {
+        margin: 0rem;
     }
 
     .stExpander .st-emotion-cache-1wmy9hl .e1f1d6gn1 {
