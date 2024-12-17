@@ -204,6 +204,10 @@ st.markdown(
         margin-bottom: 0.9rem;
     }
 
+    .stExpander details {
+        padding-bottom: 2.5rem;
+    }
+
     .stExpander details summary {
         padding-bottom: 0rem;
     }
@@ -211,7 +215,7 @@ st.markdown(
     .stExpander details summary span {
         padding-right: 2rem;
         padding-left: 3rem;
-        padding-top: 2rem;
+        padding-top: 3rem;
     }
 
     div[data-testid="stExpanderDetails"] {
@@ -431,7 +435,6 @@ def display_case_text(cch, index):
             st.write(f"Gender: **{patient_gender}**")
         with col3:  
             st.write(f"Age: **{patient_age}**")
-        st.write(f"**Citation**: *{article_citation}*")
         
         max_characters = 250
         case_text_aux = case_text[:max_characters]  
@@ -447,7 +450,7 @@ def display_case_text(cch, index):
                 f"<div style='text-align: justify; padding-right: 2rem; padding-left: 3rem; padding-bottom: 2rem;'>{rest_text}</div>",
                 unsafe_allow_html=True
             )
-
+        st.write(f"**Citation**: *{article_citation}*")
 
 
 def display_image(cch, index):
