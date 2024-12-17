@@ -159,7 +159,7 @@ st.markdown(
     <style>
 
     div.stExpander + div.stElementContainer {
-        padding: 2rem;
+        margin: 2rem;
     }
         
     h3 {
