@@ -9,6 +9,12 @@ import psutil
 # Streamlit page configuration
 st.set_page_config(page_title="Clinical Case Hub", page_icon=":stethoscope:", layout="wide")
 
+if "selected" not in st.session_state:
+    st.session_state["selected"] = "Home"
+
+if "selected" in st.session_state:
+    st.session_state.selected = st.session_state.selected
+
 label_dict = {
     'ct': 'CT scan',
      'mri': 'MRI',
@@ -211,7 +217,7 @@ st.markdown(
 def main():
     with st.sidebar:
         st.logo("multicare-logo.webp", size="large")
-        selected = option_menu(
+        st.session_state["selected"] = option_menu(
             menu_title=None,
             options=["Home", "Search", "About"],
             icons=["house", "search", "info-circle"],
@@ -230,7 +236,7 @@ def main():
         st.write(f"CPU Usage: {psutil.cpu_percent(interval=1)}%")
 
 
-    if selected == "Home":
+    if st.session_state["selected"] == "Home":
         st.title("The Clinical Case Hub")
         st.write(
             """
@@ -243,10 +249,10 @@ def main():
         
         start_button = st.button("Start your search  →")
         if start_button:
-            selected = "Search"
+            st.session_state["selected"] = "Search"
             
 
-    elif selected == "Search":
+    elif st.session_state["selected"] == "Search":
         st.title("The Clinical Case Hub")
         st.write(
             """
@@ -348,7 +354,7 @@ def main():
                     st.session_state.page_number += 1
 
     
-    elif selected == "About":
+    elif st.session_state["selected"] == "About":
         st.title("About the MultiCaRe Dataset")
         st.write(
             """
