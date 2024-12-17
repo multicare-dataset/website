@@ -469,7 +469,7 @@ def display_case_text(cch, index):
 
         rest_text = case_text[len(case_text_aux):]
             
-        st.subheader("Case Description")
+        st.subheader("_Case Description_")
         with st.expander(f"{case_text_aux}"):
             st.markdown(
                 f"<div style='text-align: justify; padding-right: 1rem; padding-left: 2rem; padding-bottom: 1rem;'>{rest_text}</div>",
