@@ -506,21 +506,6 @@ elif selected == "Search":
                         st.rerun()
 
 
-
-        for case_ in outcome:
-            row = cases[cases.case_id == case_['case_id']].iloc[0]
-            print('title:', row['title'])
-            print('case_id:', row['case_id'])
-            print('age:', row['age'])
-            print('gender:', row['gender'])
-            print('case_text:', row['case_text'])
-            print('cite:', row['citation'])
-            print()
-            for key in case_['images'].keys():
-              print('image_path:', os.path.join('img', key))
-              print('caption:', case_['images'][key])
-              print()
-
        if st.session_state.filter_dict['resource_type'] == 'both':
             for case_id in outcome:
                 row = st.session_state.cases_df[st.session_state.cases_df.case_id == case_id].iloc[0]   
