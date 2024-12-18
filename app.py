@@ -187,9 +187,6 @@ def full_word_match(text, word):
 
 # ---------- STREAMLIT CODE --------------
 
-
-
-
 with st.sidebar:
     st.logo("multicare-logo.webp", size="large")
     selected = option_menu(
@@ -303,13 +300,19 @@ elif selected == "Search":
     
             for case_id in outcome:
                 row = cases_df[cases_df.case_id == case_id].iloc[0]      
-                with st.expander(f"**{row['title']}** \n\n Case ID: **{row['case_id']}**  Gender: **{row['gender']}**  Age: **{row['age']}**"):
+                with st.expander(
+                    f"""
+                    ### {row['title']}  
+                    **Case ID:** {row['case_id']}  |  **Gender:** {row['gender']}  |  **Age:** {row['age']}
+                    """
+                ):
                     st.markdown(
-                        f"<div style='text-align: justify; padding-right: 1rem; padding-left: 2rem; padding-bottom: 1rem;'>{row['case_text']}\n\n Source:{row['citation']}</div>",
+                        f"<div style='text-align: justify; padding-right: 2rem; padding-left: 3rem; padding-bottom: 1rem;'>{row['case_text']}</div>",
                         unsafe_allow_html=True
-                    )        
+                    )  
+                    st.write(f"**Source**:{row['citation']}")
               
-            col1, col2, col3 = st.columns([1, 16, 1])
+            col1, col2, col3 = st.columns([1, 10, 1])
             with col1:
                 if st.session_state.page_number > 1:
                     if st.button("⏮  Previous"):
@@ -318,6 +321,23 @@ elif selected == "Search":
                 if page_status == "more_pages_left":
                     if st.button("Next  ⏭"):
                         st.session_state.page_number += 1
+                        page_number = st.session_state.page_number
+                        elements_per_page = 10
+                        outcome, page_status = apply_filters(cases_df, image_metadata_df, filter_dict, page_number, elements_per_page)
+                        for case_id in outcome:
+                            row = cases_df[cases_df.case_id == case_id].iloc[0]      
+                            with st.expander(
+                                f"""
+                                ### {row['title']}  
+                                **Case ID:** {row['case_id']}  |  **Gender:** {row['gender']}  |  **Age:** {row['age']}
+                                """
+                            ):
+                                st.markdown(
+                                    f"<div style='text-align: justify; padding-right: 1rem; padding-left: 2rem; padding-bottom: 1rem;'>{row['case_text']}\n\n Source:{row['citation']}</div>",
+                                    unsafe_allow_html=True
+                                )        
+              
+                        
 
 
 elif selected == "About":
