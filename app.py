@@ -508,7 +508,6 @@ elif selected == "Search":
 
         if st.session_state.filter_dict['resource_type'] == 'both':
             for case_id in outcome:
-
                 row = st.session_state.cases_df[st.session_state.cases_df.case_id == case_id['case_id']].iloc[0]
                 with st.expander(f"**{row['title']}** \n\n **_Case ID:_ {row['case_id']}** **_Gender:_ {row['gender']}** **_Age:_ {int(row['age'])}**"):
                     st.divider()
@@ -517,7 +516,7 @@ elif selected == "Search":
                     st.markdown("#### Images")
                     
                     for key in case_id['images'].keys():
-                        st.image(f"img/{key}", caption=f"{case_['images'][key]}")
+                        st.image(f"img/{key}", caption=f"{case_id['images'][key]}")
 
                     st.divider()
                     st.write(f"**Source**: _{row['citation']}_")
