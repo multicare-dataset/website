@@ -33,6 +33,10 @@ st.markdown(
     p {
         text-align: justify; 
     }
+
+    .stMainBlockContainer img {
+        border-radius: 0.875rem
+    }
     
     .stMainBlockContainer {
         padding-top: 3rem;
@@ -475,8 +479,19 @@ elif selected == "Search":
                         st.markdown("#### Case Description")
                         st.write(f"{row['case_text']}")
                         st.markdown("#### Images")
-                        for key in case_['images'].keys():
-                            st.image(f"img/{key}", caption=case_['images'][key])
+                        
+                        images_list = list(case_['images'].items())
+                        for i in range(0, len(images_list), 2):
+                            pair = images_list[i:i+2]
+                            cols = st.columns(2)
+                            for idx, (file_name, caption) in enumerate(pair):
+                                with cols[idx]:
+                                    st.image(f"img/{file_name}", caption=caption)
+                                    
+                        
+                        # for key in case_['images'].keys():
+                        #     st.image(f"img/{key}", caption=case_['images'][key])
+                            
                         st.divider()
                         st.write(f"**Source**: _{row['citation']}_")
     
