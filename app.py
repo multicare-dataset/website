@@ -196,6 +196,9 @@ if 'filter_dict' not in st.session_state:
         'resource_type': 'text',
     }
 
+if "filter_dict" in st.session_state:
+    st.session_state.filter_dict = st.session_state.filter_dict
+
 label_dict = {
     'ct': 'CT scan',
      'mri': 'MRI',
