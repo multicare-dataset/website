@@ -439,7 +439,6 @@ elif selected == "Search":
     
         if filter_dict['resource_type'] == 'text':
             outcome, page_status = apply_filters(cases_df, image_metadata_df, filter_dict, page_number, elements_per_page)
-    
             for case_id in outcome:
                 row = cases_df[cases_df.case_id == case_id].iloc[0]      
                 with st.expander(f"**{row['title']}** \n\n _Case ID:_ **{row['case_id']}** _Gender:_ **{row['gender']}** _Age:_ **{int(row['age'])}**"):
@@ -457,22 +456,13 @@ elif selected == "Search":
                     if st.button("Next  ⏭"):
                         st.session_state.page_number += 1
                         page_number = st.session_state.page_number
-                        elements_per_page = 10
                         outcome, page_status = apply_filters(cases_df, image_metadata_df, filter_dict, page_number, elements_per_page)
                         for case_id in outcome:
                             row = cases_df[cases_df.case_id == case_id].iloc[0]      
-                            with st.expander(
-                                f"""
-                                ###{row['title']}  
-                                **Case ID:** {row['case_id']}  |  **Gender:** {row['gender']}  |  **Age:** {row['age']}
-                                """
-                            ):
-                                st.markdown(
-                                    f"<div style='text-align: justify; padding-right: 1rem; padding-left: 2rem; padding-bottom: 1rem;'>{row['case_text']}\n\n Source:{row['citation']}</div>",
-                                    unsafe_allow_html=True
-                                )        
-              
-                        
+                            with st.expander(f"**{row['title']}** \n\n _Case ID:_ **{row['case_id']}** _Gender:_ **{row['gender']}** _Age:_ **{int(row['age'])}**"):
+                                st.write(f"{row['case_text']}")
+                                st.divider()
+                                st.write(f"**Source**: _{row['citation']}_")    
 
 
 elif selected == "About":
@@ -485,7 +475,7 @@ elif selected == "About":
         is designed for healthcare professionals, medical students, and data scientists.
         """
     )
-    col1, col2 = st.columns(2)
+    col1, col2 = st.columns(3,2)
     with col1:
         st.subheader("Useful Links")
         st.write(
