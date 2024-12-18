@@ -283,32 +283,32 @@ elif selected == "Search":
         image_metadata_df = load_image_metadata('.')
         cases_df = load_cases('.')
 
-    if not image_metadata_df.empty and not cases_df.empty:
-        page_number = st.session_state.page_number
-        elements_per_page = 10
-        st.session_state.filter_dict = filter_dict
-
-
-    if filter_dict['resource_type'] == 'text':
-        outcome, page_status = apply_filters(cases_df, image_metadata_df, filter_dict, page_number, elements_per_page)
-
-        for case_id in outcome:
-            row = cases[cases.case_id == case_id].iloc[0]      
-            with st.expander(f"**{row['title']}** \n\n Case ID: **{row['case_id']}**  Gender: **{row['gender']}**  Age: **{row['age']}**"):
-                st.markdown(
-                    f"<div style='text-align: justify; padding-right: 1rem; padding-left: 2rem; padding-bottom: 1rem;'>{row['case_text']}\n\n Source:{row['citation']}</div>",
-                    unsafe_allow_html=True
-                )        
-          
-        col1, col2, col3 = st.columns([1, 16, 1])
-        with col1:
-            if st.session_state.page_number > 1:
-                if st.button("⏮  Previous"):
-                    st.session_state.page_number -= 1
-        with col3:
-            if page_status == "more_pages_left":
-                if st.button("Next  ⏭"):
-                    st.session_state.page_number += 1
+        if not image_metadata_df.empty and not cases_df.empty:
+            page_number = st.session_state.page_number
+            elements_per_page = 10
+            st.session_state.filter_dict = filter_dict
+    
+    
+        if filter_dict['resource_type'] == 'text':
+            outcome, page_status = apply_filters(cases_df, image_metadata_df, filter_dict, page_number, elements_per_page)
+    
+            for case_id in outcome:
+                row = cases[cases.case_id == case_id].iloc[0]      
+                with st.expander(f"**{row['title']}** \n\n Case ID: **{row['case_id']}**  Gender: **{row['gender']}**  Age: **{row['age']}**"):
+                    st.markdown(
+                        f"<div style='text-align: justify; padding-right: 1rem; padding-left: 2rem; padding-bottom: 1rem;'>{row['case_text']}\n\n Source:{row['citation']}</div>",
+                        unsafe_allow_html=True
+                    )        
+              
+            col1, col2, col3 = st.columns([1, 16, 1])
+            with col1:
+                if st.session_state.page_number > 1:
+                    if st.button("⏮  Previous"):
+                        st.session_state.page_number -= 1
+            with col3:
+                if page_status == "more_pages_left":
+                    if st.button("Next  ⏭"):
+                        st.session_state.page_number += 1
 
 
 elif selected == "About":
