@@ -448,14 +448,13 @@ elif selected == "Search":
 
         image_metadata_df = load_image_metadata('.')
         cases_df = load_cases('.')
-        page_number = st.session_state.page_number
         elements_per_page = 10
 
         outcome, page_status = apply_filters(
             cases_df, 
             image_metadata_df, 
             st.session_state.filter_dict, 
-            page_number, 
+            st.session_state.page_number, 
             elements_per_page
         )
 
