@@ -429,6 +429,7 @@ elif selected == "Search":
             
         submitted = st.form_submit_button("Search")
 
+        
     if submitted: 
         st.subheader("Seach Results")
         filter_dict = {
@@ -444,43 +445,39 @@ elif selected == "Search":
             'license': license,
             'resource_type': resource
         }
+        
 
-        # Load data
         image_metadata_df = load_image_metadata('.')
         cases_df = load_cases('.')
-        
         if not image_metadata_df.empty and not cases_df.empty:
             st.session_state.df_loaded = True
-            st.session_state.image_metadata_df = image_metadata_df
-            st.session_state.cases_df = cases_df
             st.session_state.filter_dict = filter_dict
         else:
             st.session_state.df_loaded = False
 
-        if st.session_state.df_loaded:
-            page_number = st.session_state.page_number
-            elements_per_page = 10
-    
-            if page_number not in st.session_state.cached_results:
-                # If not cached, apply filters for the given page
-                outcome, page_status = apply_filters(
-                    st.session_state.cases_df, 
-                    st.session_state.image_metadata_df, 
-                    st.session_state.filter_dict, 
-                    page_number, 
-                    elements_per_page
-                )
-                st.session_state.cached_results[page_number] = outcome
-                st.session_state.cached_page_status[page_number] = page_status
-            else:
-                # If cached, retrieve from session_state
-                outcome = st.session_state.cached_results[page_number]
-                page_status = st.session_state.cached_page_status[page_number]
+        page_number = st.session_state.page_number
+        elements_per_page = 10
+       
+    if st.session_state.df_loaded:
+        if page_number not in st.session_state.cached_results:
+            outcome, page_status = apply_filters(
+                cases_df, 
+                image_metadata_df, 
+                st.session_state.filter_dict, 
+                page_number, 
+                elements_per_page
+            )
+            st.session_state.cached_results[page_number] = outcome
+            st.session_state.cached_page_status[page_number] = page_status
+        else:
+            # If cached, retrieve from session_state
+            outcome = st.session_state.cached_results[page_number]
+            page_status = st.session_state.cached_page_status[page_number]
 
     if outcome:
         if st.session_state.filter_dict['resource_type'] == 'text':
             for case_id in outcome:
-                row = st.session_state.cases_df[st.session_state.cases_df.case_id == case_id].iloc[0]   
+                row = cases_df[cases_df.case_id == case_id].iloc[0]   
                 with st.expander(f"**{row['title']}** \n\n **_Case ID:_ {row['case_id']}** **_Gender:_ {row['gender']}** **_Age:_ {int(row['age'])}**"):
                     st.divider()
                     st.markdown("#### Case Description", unsafe_allow_html=True)
@@ -508,7 +505,7 @@ elif selected == "Search":
 
         if st.session_state.filter_dict['resource_type'] == 'both':
             for case in outcome:
-                row = st.session_state.cases_df[st.session_state.cases_df.case_id == case['case_id']].iloc[0]
+                row = cases_df[cases_df.case_id == case['case_id']].iloc[0]
                 with st.expander(f"**{row['title']}** \n\n **_Case ID:_ {row['case_id']}** **_Gender:_ {row['gender']}** **_Age:_ {int(row['age'])}**"):
                     st.divider()
                     st.markdown("#### Case Description")
