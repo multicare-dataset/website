@@ -5,6 +5,120 @@ import re
 from streamlit_option_menu import option_menu
 import psutil
 
+# Global CSS 
+st.markdown(
+    """
+    <style>
+
+    div.stExpander + div.stElementContainer .stMarkdown {
+        padding: 1rem;
+    }
+        
+    h3 {
+        padding: 1rem;
+        padding-bottom: 0rem;
+    }
+
+    .stForm {
+        padding: 1rem;
+        margin-top: 1rem;
+    }
+
+    .stVerticalBlock {
+        gap: 1rem;
+    }
+    
+    p {
+        text-align: justify; 
+    }
+    
+    .stMainBlockContainer {
+        padding-top: 3rem;
+    }
+
+    .stLogo {
+        margin: auto;
+        height: 45px;
+    }
+
+    .stFormSubmitButton, .stButton, .stDownloadButton {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+    }
+    
+    .centered-image {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 50%;
+    }
+
+    div[role="radiogroup"][aria-label="License"] {
+        margin-bottom: 0.9rem;
+    }
+
+    .stExpander{
+        margin: 0 1rem;
+    }
+
+    .stExpander details {
+        padding-bottom: 2rem;
+    }
+
+    .stExpander details summary {
+        padding-bottom: 0rem;
+    }
+
+    .stExpander details summary span {
+        padding-right: 1rem;
+        padding-left: 2rem;
+        padding-top: 2rem;
+    }
+
+    div[data-testid="stExpanderDetails"] {
+        padding-right: 1rem;
+        padding-left: 0rem;
+        padding-top: 0rem;
+    }
+
+    details summary span p {
+        font-size: 16px !important;
+        color: rgb(49, 51, 63);
+        text-align: justify; 
+    }    
+
+    .stMainBlockContainer  div[data-testid="stVerticalBlockBorderWrapper"] .st-emotion-cache-1wmy9hl .e1f1d6gn1 {
+        margin: 1rem;
+    }
+
+    stForm .stMainBlockContainer  div[data-testid="stVerticalBlockBorderWrapper"] .st-emotion-cache-1wmy9hl .e1f1d6gn1 {
+        margin: 0rem;
+    }
+
+    .stExpander .st-emotion-cache-1wmy9hl .e1f1d6gn1 {
+        margin: 0rem;
+    }
+
+    .stMainBlockContainer div[data-testid="stVerticalBlockBorderWrapper"] .st-emotion-cache-1wmy9hl .e1f1d6gn .stVerticalBlock {
+        gap: 1rem;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+
+
+
+
+
+
+
+
 # Streamlit page configuration
 st.set_page_config(page_title="Clinical Case Hub", page_icon=":stethoscope:", layout="wide")
 
@@ -511,108 +625,4 @@ def display_case_both(cch, index):
         st.write(f"Citation: {article_citation}")
 
 
-# Global CSS 
-st.markdown(
-    """
-    <style>
-
-    div.stExpander + div.stElementContainer .stMarkdown {
-        padding: 1rem;
-    }
-        
-    h3 {
-        padding: 1rem;
-        padding-bottom: 0rem;
-    }
-
-    .stForm {
-        padding: 1rem;
-        margin-top: 1rem;
-    }
-
-    .stVerticalBlock {
-        gap: 1rem;
-    }
-    
-    p {
-        text-align: justify; 
-    }
-    
-    .stMainBlockContainer {
-        padding-top: 3rem;
-    }
-
-    .stLogo {
-        margin: auto;
-        height: 45px;
-    }
-
-    .stFormSubmitButton, .stButton, .stDownloadButton {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-top: 2rem;
-        margin-bottom: 1rem;
-    }
-    
-    .centered-image {
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-        width: 50%;
-    }
-
-    div[role="radiogroup"][aria-label="License"] {
-        margin-bottom: 0.9rem;
-    }
-
-    .stExpander{
-        margin: 0 1rem;
-    }
-
-    .stExpander details {
-        padding-bottom: 2rem;
-    }
-
-    .stExpander details summary {
-        padding-bottom: 0rem;
-    }
-
-    .stExpander details summary span {
-        padding-right: 1rem;
-        padding-left: 2rem;
-        padding-top: 2rem;
-    }
-
-    div[data-testid="stExpanderDetails"] {
-        padding-right: 1rem;
-        padding-left: 0rem;
-        padding-top: 0rem;
-    }
-
-    details summary span p {
-        font-size: 16px !important;
-        color: rgb(49, 51, 63);
-        text-align: justify; 
-    }    
-
-    .stMainBlockContainer  div[data-testid="stVerticalBlockBorderWrapper"] .st-emotion-cache-1wmy9hl .e1f1d6gn1 {
-        margin: 1rem;
-    }
-
-    stForm .stMainBlockContainer  div[data-testid="stVerticalBlockBorderWrapper"] .st-emotion-cache-1wmy9hl .e1f1d6gn1 {
-        margin: 0rem;
-    }
-
-    .stExpander .st-emotion-cache-1wmy9hl .e1f1d6gn1 {
-        margin: 0rem;
-    }
-
-    .stMainBlockContainer div[data-testid="stVerticalBlockBorderWrapper"] .st-emotion-cache-1wmy9hl .e1f1d6gn .stVerticalBlock {
-        gap: 1rem;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
 
