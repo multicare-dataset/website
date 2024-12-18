@@ -58,8 +58,10 @@ st.markdown(
     }
 
     .stFormSubmitButton button:hover, .stFormSubmitButton button:active, 
-    .stButton button:hover, .stButton button:active,
-    .stDownloadButton button:hover, .stDownloadButton button:active {
+    .stFormSubmitButton button:focus, .stButton button:hover, 
+    .stButton button:active, .stButton button:focus,
+    .stDownloadButton button:hover, .stDownloadButton button:active,
+    .stDownloadButton button:focus {
         padding: 0.5rem 1rem;
         background: rgba(18, 88, 142, 0.6);
         color: #fff;
