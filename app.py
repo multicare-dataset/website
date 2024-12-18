@@ -127,7 +127,23 @@ st.markdown(
         text-align: left;
     }
 
-    details summary span [data-testid="stMarkdownContainer"] p:nth-of-type(2) strong {
+    details summary span [data-testid="stMarkdownContainer"] p:nth-of-type(2) em:nth-child(1),
+    details summary span [data-testid="stMarkdownContainer"] p:nth-of-type(2) strong:nth-child(1) {
+        grid-column: 1; 
+    }
+    
+    details summary span [data-testid="stMarkdownContainer"] p:nth-of-type(2) em:nth-child(2),
+    details summary span [data-testid="stMarkdownContainer"] p:nth-of-type(2) strong:nth-child(2) {
+        grid-column: 2; 
+    }
+    
+    details summary span [data-testid="stMarkdownContainer"] p:nth-of-type(2) em:nth-child(3),
+    details summary span [data-testid="stMarkdownContainer"] p:nth-of-type(2) strong:nth-child(3) {
+        grid-column: 3;
+    }
+
+    details summary span [data-testid="stMarkdownContainer"] p:nth-of-type(2) strong,
+    details summary span [data-testid="stMarkdownContainer"] p:nth-of-type(2) em {
         display: inline;
     }
 
