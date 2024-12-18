@@ -3,7 +3,7 @@ import pandas as pd
 import os
 import re
 from streamlit_option_menu import option_menu
-import psutil
+
 
 # Streamlit page configuration
 st.set_page_config(page_title="Clinical Case Hub", page_icon=":stethoscope:", layout="wide")
@@ -378,9 +378,6 @@ with st.sidebar:
             "nav-link-selected": {"background-color": "#12588ECC", "font-weight": 700},
         },
     )
-    st.header("Resource Usage")
-    st.write(f"Memory Usage: {psutil.Process().memory_info().rss / (1024 ** 2):.2f} MB")
-
 
 if selected == "Home":
     st.title("The Clinical Case Hub")
