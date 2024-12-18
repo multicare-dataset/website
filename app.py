@@ -301,8 +301,8 @@ elif selected == "Search":
             for case_id in outcome:
                 row = cases_df[cases_df.case_id == case_id].iloc[0]      
                 with st.expander(
-                    st.markdown(f"""
-                    ### {row['title']}  
+                    (f"""
+                    **###{row['title']}**  \n\n
                     **Case ID:** {row['case_id']}  |  **Gender:** {row['gender']}  |  **Age:** {row['age']}
                     """)
                 ):
@@ -328,7 +328,7 @@ elif selected == "Search":
                             row = cases_df[cases_df.case_id == case_id].iloc[0]      
                             with st.expander(
                                 f"""
-                                ### {row['title']}  
+                                {row['title']}  
                                 **Case ID:** {row['case_id']}  |  **Gender:** {row['gender']}  |  **Age:** {row['age']}
                                 """
                             ):
