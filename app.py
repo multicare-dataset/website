@@ -40,7 +40,7 @@ st.markdown(
 
     .stLogo {
         margin: 1rem auto;
-        height: 34px;
+        height: 30px;
     }
 
     .stFormSubmitButton, .stButton, .stDownloadButton {
@@ -54,7 +54,7 @@ st.markdown(
     .stFormSubmitButton button, .stButton button, .stDownloadButton button {
         padding: 0.5rem 1rem;
         background: rgba(18, 88, 142, 0.8);
-        color: #fff;
+        color: #fff !important;
     }
     
     .stFormSubmitButton button:hover, 
@@ -68,7 +68,7 @@ st.markdown(
     .stDownloadButton button:focus {
         padding: 0.5rem 1rem;
         background: rgba(18, 88, 142, 0.6);
-        color: #fff;
+        color: #fff !important;
     }
     
     .centered-image {
@@ -463,7 +463,7 @@ elif selected == "Search":
             outcome, page_status = apply_filters(cases_df, image_metadata_df, filter_dict, page_number, elements_per_page)
             for case_id in outcome:
                 row = cases_df[cases_df.case_id == case_id].iloc[0]      
-                with st.expander(f"**{row['title']}** \n\n _Case ID:_ **{row['case_id']}** _Gender:_ **{row['gender']}** _Age:_ **{int(row['age'])}**"):
+                with st.expander(f"**{row['title']}** \n\n **_Case ID:_ {row['case_id']}** **_Gender:_ {row['gender']}** **_Age:_ {int(row['age'])}**"):
                     st.write(f"{row['case_text']}")
                     st.divider()
                     st.write(f"**Source**: _{row['citation']}_")   
