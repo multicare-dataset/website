@@ -131,24 +131,8 @@ st.markdown(
         text-align: left;
     }
 
-    details summary span [data-testid="stMarkdownContainer"] p:nth-of-type(2) em:nth-child(1),
-    details summary span [data-testid="stMarkdownContainer"] p:nth-of-type(2) strong:nth-child(1) {
-        grid-column: 1; 
-    }
-    
-    details summary span [data-testid="stMarkdownContainer"] p:nth-of-type(2) em:nth-child(2),
-    details summary span [data-testid="stMarkdownContainer"] p:nth-of-type(2) strong:nth-child(2) {
-        grid-column: 2; 
-    }
-    
-    details summary span [data-testid="stMarkdownContainer"] p:nth-of-type(2) em:nth-child(3),
-    details summary span [data-testid="stMarkdownContainer"] p:nth-of-type(2) strong:nth-child(3) {
-        grid-column: 3;
-    }
-
-    details summary span [data-testid="stMarkdownContainer"] p:nth-of-type(2) strong,
     details summary span [data-testid="stMarkdownContainer"] p:nth-of-type(2) em {
-        display: inline;
+        font-weight: 400; 
     }
 
     .stMainBlockContainer  div[data-testid="stVerticalBlockBorderWrapper"] .st-emotion-cache-1wmy9hl .e1f1d6gn1 {
@@ -464,6 +448,7 @@ elif selected == "Search":
             for case_id in outcome:
                 row = cases_df[cases_df.case_id == case_id].iloc[0]      
                 with st.expander(f"**{row['title']}** \n\n **_Case ID:_ {row['case_id']}** **_Gender:_ {row['gender']}** **_Age:_ {int(row['age'])}**"):
+                    st.markdown(f"####Case Description", unsafe_allow_html=True )
                     st.write(f"{row['case_text']}")
                     st.divider()
                     st.write(f"**Source**: _{row['citation']}_")   
