@@ -478,14 +478,14 @@ elif selected == "Search":
                     # If 'Previous' is clicked, decrement the page number
                     if st.button("⏮  Previous"):
                         st.session_state.page_number -= 1
-                        st.experimental_rerun()
+                        st.rerun()
 
             with col3:
                 # Show 'Next' button only if there are more pages left
                 if page_status == "more_pages_left":
                     if st.button("Next  ⏭"):
                         st.session_state.page_number += 1
-                        st.experimental_rerun()
+                        st.rerun()
 
 
 
