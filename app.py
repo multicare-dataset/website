@@ -505,13 +505,13 @@ elif selected == "Search":
         top_col1, top_col2, top_col3 = st.columns([1, 3, 1])
         with top_col1:
             if page_number > 1:
-                if st.button("⏮ Previous (Top)"):
+                if st.button("⏮ Previous)"):
                     st.session_state.page_number = page_number - 1
                     st.rerun()
     
         with top_col3:
             if page_status == "more_pages_left":
-                if st.button("Next ⏭ (Top)"):
+                if st.button("Next ⏭"):
                     st.session_state.page_number = page_number + 1
                     st.rerun()
         
