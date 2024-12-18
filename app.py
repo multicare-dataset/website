@@ -100,9 +100,9 @@ st.markdown(
     }
 
     div[data-testid="stExpanderDetails"] {
-        padding-right: 1rem;
-        padding-left: 0rem;
-        padding-top: 0rem;
+        padding-right: 3rem;
+        padding-left: 3rem;
+        padding-top: 1rem;
     }
 
     details summary span [data-testid="stMarkdownContainer"] {
@@ -444,7 +444,8 @@ elif selected == "Search":
                 row = cases_df[cases_df.case_id == case_id].iloc[0]      
                 with st.expander(f"**{row['title']}** \n\n _Case ID:_ **{row['case_id']}** _Gender:_ **{row['gender']}** _Age:_ **{int(row['age'])}**"):
                     st.write(f"{row['case_text']}")
-                    st.write(f"**Source**:{row['citation']}")   
+                    st.divider()
+                    st.write(f"**Source**: _{row['citation']}_")   
               
             col1, col2, col3 = st.columns([1, 5, 1])
             with col1:
