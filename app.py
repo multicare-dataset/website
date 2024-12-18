@@ -174,15 +174,7 @@ else:
 if "page_number" not in st.session_state:
     st.session_state.page_number = 1
 
-if "df_loaded" not in st.session_state:
-    st.session_state.df_loaded = False
-    st.session_state.image_metadata_df = None
-    st.session_state.cases_df = None
     
-if "cached_results" not in st.session_state:
-    st.session_state.cached_results = {}
-if "cached_page_status" not in st.session_state:
-    st.session_state.cached_page_status = {}
 
 label_dict = {
     'ct': 'CT scan',
@@ -429,9 +421,8 @@ elif selected == "Search":
             
         submitted = st.form_submit_button("Search")
 
-        
+  
     if submitted: 
-        st.subheader("Seach Results")
         filter_dict = {
             'min_age': min_age,
             'max_age': max_age,
@@ -448,71 +439,69 @@ elif selected == "Search":
 
         image_metadata_df = load_image_metadata('.')
         cases_df = load_cases('.')
+        st.session_state.page_number = 1
         elements_per_page = 10
-
+        
+    if "filter_dict" in st.session_state: 
+        st.subheader("Seach Results")
+        page_number = st.session_state.page_number
+        elements_per_page = 10
+        
         outcome, page_status = apply_filters(
             cases_df, 
             image_metadata_df, 
             st.session_state.filter_dict, 
-            st.session_state.page_number, 
+            page_number, 
             elements_per_page
         )
 
-    if outcome:
-        if st.session_state.filter_dict['resource_type'] == 'text':
-            for case_id in outcome:
-                row = cases_df[cases_df.case_id == case_id].iloc[0]   
-                with st.expander(f"**{row['title']}** \n\n **_Case ID:_ {row['case_id']}** **_Gender:_ {row['gender']}** **_Age:_ {int(row['age'])}**"):
-                    st.divider()
-                    st.markdown("#### Case Description", unsafe_allow_html=True)
-                    st.write(f"{row['case_text']}")
-                    st.divider()
-                    st.write(f"**Source**: _{row['citation']}_")
+
+        if outcome:
+            if st.session_state.filter_dict['resource_type'] == 'text':
+                for case_id in outcome:
+                    row = cases_df[cases_df.case_id == case_id].iloc[0]   
+                    with st.expander(f"**{row['title']}** \n\n **_Case ID:_ {row['case_id']}** **_Gender:_ {row['gender']}** **_Age:_ {int(row['age'])}**"):
+                        st.divider()
+                        st.markdown("#### Case Description", unsafe_allow_html=True)
+                        st.write(f"{row['case_text']}")
+                        st.divider()
+                        st.write(f"**Source**: _{row['citation']}_")
+
+            elif st.session_state.filter_dict['resource_type'] == 'both':
+                for case_ in outcome:
+                    row = cases_df[cases_df.case_id == case_['case_id']].iloc[0]
+                    with st.expander(f"**{row['title']}** \n\n **_Case ID:_ {row['case_id']}** **_Gender:_ {row['gender']}** **_Age:_ {int(row['age'])}**"):
+                        st.divider()
+                        st.markdown("#### Case Description")
+                        st.write(f"{row['case_text']}")
+                        st.markdown("#### Images")
+                        for key in case_['images'].keys():
+                            st.image(f"img/{key}", caption=case_['images'][key])
+                        st.divider()
+                        st.write(f"**Source**: _{row['citation']}_")
     
-            col1, col2, col3 = st.columns([1, 4, 1])
+            elif st.session_state.filter_dict['resource_type'] == 'image':
+                # Mostrar resultados para tipo imagen si fuera necesario
+                # Similar a text y both, adaptándolo a la estructura de 'outcome'
+                pass
+    
+            col1, col2, col3 = st.columns([1, 3, 1])
             with col1:
-                if st.session_state.page_number > 1:
-                    if st.button("⏮  Previous"):
-                        st.session_state.page_number -= 1
+                if page_number > 1:
+                    if st.button("⏮ Previous"):
+                        st.session_state.page_number = page_number - 1
                         st.rerun()
     
             with col3:
                 if page_status == "more_pages_left":
-                    if st.button("Next  ⏭"):
-                        st.session_state.page_number += 1
+                    if st.button("Next ⏭"):
+                        st.session_state.page_number = page_number + 1
                         st.rerun()
-
-
-        if st.session_state.filter_dict['resource_type'] == 'both':
-            for case_ in outcome:
-                row = cases_df[cases_df.case_id == case_['case_id']].iloc[0]
-                with st.expander(f"**{row['title']}** \n\n **_Case ID:_ {row['case_id']}** **_Gender:_ {row['gender']}** **_Age:_ {int(row['age'])}**"):
-                    st.divider()
-                    st.markdown("#### Case Description")
-                    st.write(f"{row['case_text']}")
-                    st.markdown("#### Images")
-                    
-                    for key in case['images'].keys():
-                        st.write({key})
-                        st.write({case_['images'][key]})
-                        #st.image(f"img/{key}", caption=f"{case_['images'][key]}")
-
-                    st.divider()
-                    st.write(f"**Source**: _{row['citation']}_")
+        else:
+            st.write("No results found for the current filters.")
+    else:
+        st.write("Please fill out the filters and press 'Search'.")
     
-            col1, col2, col3 = st.columns([1, 4, 1])
-            with col1:
-                if st.session_state.page_number > 1:
-                    if st.button("⏮  Previous"):
-                        st.session_state.page_number -= 1
-                        st.rerun()
-    
-            with col3:
-                if page_status == "more_pages_left":
-                    if st.button("Next  ⏭"):
-                        st.session_state.page_number += 1
-                        st.rerun()
-
 
 elif selected == "About":
     st.title("About the MultiCaRe Dataset")
