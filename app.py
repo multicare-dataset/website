@@ -57,7 +57,9 @@ st.markdown(
         color: #fff;
     }
 
-    .stFormSubmitButton button:hover, .stButton button:hover, .stDownloadButton button:hover {
+    .stFormSubmitButton button:hover, .stFormSubmitButton button:active, 
+    .stButton button:hover, .stButton button:active,
+    .stDownloadButton button:hover, .stDownloadButton button:active {
         padding: 0.5rem 1rem;
         background: rgba(18, 88, 142, 0.6);
         color: #fff;
@@ -440,7 +442,7 @@ elif selected == "Search":
     
             for case_id in outcome:
                 row = cases_df[cases_df.case_id == case_id].iloc[0]      
-                with st.expander(f"**{row['title']}** \n\n **Case ID:** {row['case_id']}        **Gender:** {row['gender']}        **Age:** {int(row['age'])}"):
+                with st.expander(f"**{row['title']}** \n\n _Case ID:_ **{row['case_id']}** _Gender:_ **{row['gender']}** _Age:_ **{int(row['age'])}**"):
                     st.write(f"{row['case_text']}")
                     st.write(f"**Source**:{row['citation']}")   
               
@@ -504,7 +506,7 @@ elif selected == "About":
             """
         )
     with col2:
-        st.image('medical-doctor-desktop.webp')
+        st.image('medical_doctor_desktop.webp')
 
 def display_case_text(cch, index):
     patient_age = int(cch.cases_df.age.iloc[index])
