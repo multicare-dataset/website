@@ -91,10 +91,6 @@ st.markdown(
         margin-bottom: 0.9rem;
     }
 
-    .stExpander{
-        margin: 0 1rem;
-    }
-
     .stExpander details {
         padding-bottom: 2.5rem;
     }
