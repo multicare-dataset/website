@@ -300,7 +300,7 @@ elif selected == "Search":
             outcome, page_status = apply_filters(cases_df, image_metadata_df, filter_dict, page_number, elements_per_page)
     
             for case_id in outcome:
-                row = cases[cases.case_id == case_id].iloc[0]      
+                row = cases_df[cases_df.case_id == case_id].iloc[0]      
                 with st.expander(f"**{row['title']}** \n\n Case ID: **{row['case_id']}**  Gender: **{row['gender']}**  Age: **{row['age']}**"):
                     st.markdown(
                         f"<div style='text-align: justify; padding-right: 1rem; padding-left: 2rem; padding-bottom: 1rem;'>{row['case_text']}\n\n Source:{row['citation']}</div>",
