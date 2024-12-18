@@ -94,8 +94,8 @@ st.markdown(
     }
 
     .stExpander details summary span {
-        padding-right: 1rem;
-        padding-left: 2rem;
+        padding-right: 2rem;
+        padding-left: 3rem;
         padding-top: 2rem;
     }
 
