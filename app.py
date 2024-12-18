@@ -457,25 +457,25 @@ elif selected == "Search":
         else:
             st.session_state.df_loaded = False
 
-    if st.session_state.df_loaded:
-        page_number = st.session_state.page_number
-        elements_per_page = 10
-
-        if page_number not in st.session_state.cached_results:
-            # If not cached, apply filters for the given page
-            outcome, page_status = apply_filters(
-                st.session_state.cases_df, 
-                st.session_state.image_metadata_df, 
-                st.session_state.filter_dict, 
-                page_number, 
-                elements_per_page
-            )
-            st.session_state.cached_results[page_number] = outcome
-            st.session_state.cached_page_status[page_number] = page_status
-        else:
-            # If cached, retrieve from session_state
-            outcome = st.session_state.cached_results[page_number]
-            page_status = st.session_state.cached_page_status[page_number]
+        if st.session_state.df_loaded:
+            page_number = st.session_state.page_number
+            elements_per_page = 10
+    
+            if page_number not in st.session_state.cached_results:
+                # If not cached, apply filters for the given page
+                outcome, page_status = apply_filters(
+                    st.session_state.cases_df, 
+                    st.session_state.image_metadata_df, 
+                    st.session_state.filter_dict, 
+                    page_number, 
+                    elements_per_page
+                )
+                st.session_state.cached_results[page_number] = outcome
+                st.session_state.cached_page_status[page_number] = page_status
+            else:
+                # If cached, retrieve from session_state
+                outcome = st.session_state.cached_results[page_number]
+                page_status = st.session_state.cached_page_status[page_number]
 
     if outcome:
         if st.session_state.filter_dict['resource_type'] == 'text':
