@@ -220,7 +220,9 @@ if selected == "Home":
         clinical decision-making, and critical thinking skills.
         """
     )
-    st.image('medical_doctor_desktop.webp')
+    col1, col2, col3 = st.columns(3)
+    with col2:
+        st.image('medical_doctor_desktop.webp')
     st.button(f"Start your search  →", key='switch_button')
 
         
