@@ -539,15 +539,9 @@ elif selected == "Search":
                     for idx, image_dict in enumerate(pair):
                         row = cases_df[cases_df.case_id == image_dict['case_id']].iloc[0]
                         with cols[idx]: 
-                            with st.container():
-                                col1, col2, col3 = st.columns(3)
-                                with col1:
-                                    st.write(f"**_Case ID:_ {row['case_id']}**")
-                                with col2:
-                                    st.write(f"**_Gender:_ {row['gender']}**")
-                                with col3:
-                                    st.write(f"**_Age:_ {int(row['age'])}**")
+                            with st.container(border=True):
                                 st.image(f"img/{image_dict['file']}", caption=image_dict['caption'])
+                                st.write(f"_Case ID:_ **{row['case_id']}** | _Gender:_ **{row['gender']}**  | _Age:_ **{int(row['age'])}**")
                                 st.divider()
                                 st.write(f"**Source**: _{row['citation']}_")
     
