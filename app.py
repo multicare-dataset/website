@@ -443,7 +443,7 @@ elif selected == "Search":
         image_metadata_df = load_image_metadata('.')
         cases_df = load_cases('.')
 
-    if image_metadata_df is not None and cases_df is not None:
+    if image_metadata_df and cases_df:
         st.session_state.filter_dict = filter_dict
         page_number = st.session_state.page_number
         elements_per_page = 10
