@@ -103,11 +103,25 @@ st.markdown(
         padding-top: 0rem;
     }
 
-    details summary span p {
-        font-size: 20px !important;
+    details summary span [data-testid="stMarkdownContainer"] {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    details summary span [data-testid="stMarkdownContainer"] p:first-of-type {
+        grid-column: span 3; 
+        font-size: 20px; 
+        padding-bottom: 1rem; 
         color: rgb(49, 51, 63);
         text-align: justify; 
-    }    
+    }
+    
+    details summary span [data-testid="stMarkdownContainer"] p:nth-of-type(2) {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem; 
+        font-size: 16px;
+    }
 
     .stMainBlockContainer  div[data-testid="stVerticalBlockBorderWrapper"] .st-emotion-cache-1wmy9hl .e1f1d6gn1 {
         margin: 1rem;
