@@ -91,6 +91,12 @@ st.markdown(
         margin-bottom: 0.9rem;
     }
 
+    div[data-testid="stImageCaption"] {
+        color: #000;
+        font-size: 16px;
+        
+    }
+
     .stExpander details {
         padding-bottom: 3rem;
     }
@@ -415,11 +421,11 @@ elif selected == "Search":
                 options=['text', 'image', 'both'], 
                 index=['text', 'image', 'both'].index(st.session_state['filter_dict']['resource_type'])
             )
+            image_type_index = ([None] + list(label_dict.values())).index(st.session_state['filter_dict']['image_type_label']) if st.session_state['filter_dict']['image_type_label'] in label_dict.values() else 0
             image_type_label = st.selectbox(
                 "Image Type Label", 
                 options=[None] + list(label_dict.values()),
-                index=([None] + list(label_dict.values())).index(st.session_state['filter_dict']['image_type_label'])
-                if st.session_state['filter_dict']['image_type_label'] in label_dict.values() else 0
+                index=image_type_index
             )
             if image_type_label is not None:
                 image_type_label = next((key for key, value in label_dict.items() if value == image_type_label), None)
@@ -436,12 +442,14 @@ elif selected == "Search":
                 options=['Any', 'Female', 'Male'], 
                 index=['Any', 'Female', 'Male'].index(st.session_state['filter_dict']['gender'])
             )
+            anatomical_region_index = (
+                [None] + list(anatomical_label_dict.values())
+            ).index(st.session_state['filter_dict']['anatomical_region_label']) \
+                if st.session_state['filter_dict']['anatomical_region_label'] in anatomical_label_dict.values() else 0
             anatomical_region_label = st.selectbox(
                 "Anatomical Region Label", 
                 options=[None] + list(anatomical_label_dict.values()),
-                index=([None] + list(anatomical_label_dict.values())).index(
-                st.session_state['filter_dict']['anatomical_region_label']
-                ) if st.session_state['filter_dict']['anatomical_region_label'] in anatomical_label_dict.values() else 0,
+                index=anatomical_region_index,
                 help="This filter can only be combined with specific image types: 'CT scan,' 'MRI,' 'X-ray,' 'Ultrasound,' 'Angiography,' and 'Nuclear Medicine'."
             )
             if anatomical_region_label is not None:
@@ -519,7 +527,8 @@ elif selected == "Search":
             if st.session_state.filter_dict['resource_type'] == 'text':
                 for case_id in outcome:
                     row = cases_df[cases_df.case_id == case_id].iloc[0]   
-                    with st.expander(f"**{row['title']}** \n\n **_Case ID:_ {row['case_id']}** **_Gender:_ {row['gender']}** **_Age:_ {int(row['age'])}**"):
+                    age = int(row['age']) if not pd.isna(row['age']) else "Unknown"
+                    with st.expander(f"**{row['title']}** \n\n **_Case ID:_ {row['case_id']}** **_Gender:_ {row['gender']}** **_Age:_ {age}**"):
                         st.divider()
                         st.markdown("#### Case Description", unsafe_allow_html=True)
                         st.write(f"{row['case_text']}")
@@ -529,7 +538,8 @@ elif selected == "Search":
             elif st.session_state.filter_dict['resource_type'] == 'both':
                 for case_ in outcome:
                     row = cases_df[cases_df.case_id == case_['case_id']].iloc[0]
-                    with st.expander(f"**{row['title']}** \n\n **_Case ID:_ {row['case_id']}** **_Gender:_ {row['gender']}** **_Age:_ {int(row['age'])}**"):
+                    age = int(row['age']) if not pd.isna(row['age']) else "Unknown"
+                    with st.expander(f"**{row['title']}** \n\n **_Case ID:_ {row['case_id']}** **_Gender:_ {row['gender']}** **_Age:_ {int(age}**"):
                         st.divider()
                         st.markdown("#### Case Description")
                         st.write(f"{row['case_text']}")
@@ -552,10 +562,11 @@ elif selected == "Search":
                     cols = st.columns(2)  # Crear dos columnas
                     for idx, image_dict in enumerate(pair):
                         row = cases_df[cases_df.case_id == image_dict['case_id']].iloc[0]
+                        age = int(row['age']) if not pd.isna(row['age']) else "Unknown"
                         with cols[idx]: 
                             with st.container(border=True):
                                 st.image(f"img/{image_dict['file']}", caption=image_dict['caption'])
-                                st.write(f"_Case ID:_ **{row['case_id']}** | _Gender:_ **{row['gender']}**  | _Age:_ **{int(row['age'])}**")
+                                st.write(f"_Case ID:_ **{row['case_id']}** | _Gender:_ **{row['gender']}**  | _Age:_ **{age}**")
 
                                 st.write(f"**Source**: _{row['citation']}_")
     
