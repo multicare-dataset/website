@@ -156,7 +156,8 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-
+if 'search_executed' not in st.session_state:
+    st.session_state['search_executed'] = False
 
 if "selected" not in st.session_state:
     st.session_state.selected = "Home"
@@ -483,11 +484,11 @@ elif selected == "Search":
             'resource_type': resource
         }
         st.session_state.filter_dict = filter_dict
-
+        st.session_state.search_executed = True
         st.session_state.page_number = 1
         elements_per_page = 10
         
-    if "filter_dict" in st.session_state: 
+    if "filter_dict" in st.session_state and st.session_state.search_executed: 
         st.subheader("Seach Results")
         page_number = st.session_state.page_number
         elements_per_page = 10
@@ -499,7 +500,6 @@ elif selected == "Search":
             page_number, 
             elements_per_page
         )
-
 
         if outcome:
             if st.session_state.filter_dict['resource_type'] == 'text':
@@ -554,9 +554,9 @@ elif selected == "Search":
                         st.session_state.page_number = page_number + 1
                         st.rerun()
         else:
-            st.write("No results found for the current filters.")
+            st.warning("No results found for the current filters.")
     else:
-        st.write("Please fill out the filters and press 'Search'.")
+        st.info("Please fill out the filters start your search.")
     
 
 elif selected == "About":
