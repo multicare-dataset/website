@@ -528,18 +528,24 @@ elif selected == "Search":
                             for idx, (file_name, caption) in enumerate(pair):
                                 with cols[idx]:
                                     st.image(f"img/{file_name}", caption=caption)
-                                    
-                        
-                        # for key in case_['images'].keys():
-                        #     st.image(f"img/{key}", caption=case_['images'][key])
                             
                         st.divider()
                         st.write(f"**Source**: _{row['citation']}_")
-    
+            
             elif st.session_state.filter_dict['resource_type'] == 'image':
-                # Mostrar resultados para tipo imagen si fuera necesario
-                # Similar a text y both, adaptándolo a la estructura de 'outcome'
-                pass
+                  for image_dict in outcome:
+                    row = cases_df[cases_df.case_id == image_dict['case_id']].iloc[0]
+                    with st.container(border=True)               
+                        st.image(f"img/{image_dict['file']}", caption=image_dict['caption'])
+                        col1, col2, col3 = st.columns(3)
+                        with col1:
+                            st.write(f"**_Case ID:_ {row['case_id']}**")
+                        with col2:
+                            st.write(f"**_Gender:_ {row['gender']}**")
+                        with col3:
+                            st.write(f"**_Age:_ {int(row['age'])}**")
+                        st.divider()
+                        st.write(f"**Source**: _{row['citation']}_")
     
             col1, col2, col3 = st.columns([1, 3, 1])
             with col1:
@@ -553,6 +559,10 @@ elif selected == "Search":
                     if st.button("Next ⏭"):
                         st.session_state.page_number = page_number + 1
                         st.rerun()
+
+        
+        
+        
         else:
             st.warning("No results found for the current filters.")
     else:
@@ -633,59 +643,7 @@ def convert_image_to_base64(image_path):
     with open(image_path, "rb") as img_file:
         return b64encode(img_file.read()).decode("utf-8")
 
-def display_case_both(cch, index):
-    # Get data
-    patient_age = cch.cases_df.age.iloc[index]
-    patient_gender = cch.cases_df.gender.iloc[index]
-    case_id = cch.cases_df.case_id.iloc[index]
-    case_text = cch.cases_df.case_text.iloc[index]
-    article_id = cch.cases_df.article_id.iloc[index]
-    image_labels = cch.image_metadata_df.labels.iloc[index]
-    article_citation = cch.metadata_df[cch.metadata_df.article_id == article_id].citation.iloc[0]
-    article_link = cch.metadata_df[cch.metadata_df.article_id == article_id].link.iloc[0]
 
-    with st.container(border=True):
-        st.subheader(f"Case ID: {case_id}")
-        st.write(f"Gender: {patient_gender}")
-        st.write(f"Age: {patient_age}")
-        # Limitar la cantidad de caracteres iniciales
-        max_characters = 350
-        case_text_aux = case_text[:max_characters]
-        
-        # Buscar el primer punto (.) después de los caracteres iniciales
-        match = re.search(r'\.', case_text[max_characters:])
-        if match:
-            # Extender el texto hasta el primer punto encontrado
-            case_text_aux += case_text[max_characters:max_characters + match.start() + 1]
-        
-        with st.expander("Case Description"):
-            st.markdown(
-                f"<div style='text-align: justify; padding:2rem;'>{case_text_aux}</div>",
-                unsafe_allow_html=True
-            )
-
-        # Display images associated with this case
-        images = cch.image_metadata_df[cch.image_metadata_df.case_id == case_id]
-        if not images.empty:
-            for idx in images.index:
-                image_file = images.at[idx, 'file']
-                image_path = os.path.join(cch.image_folder, image_file)
-                image_caption = images.at[idx, 'caption']
-                #st.image(Image.open(image_path), caption=image_caption)
-                # Center and display the image with adjusted size
-                st.markdown(
-                    f"""
-                    <div style='text-align: center;'>
-                        <img src='data:image/jpeg;base64,{convert_image_to_base64(image_path)}' alt='{image_caption}' style="width: 35%; border-radius: 8px;'>
-                        <p><em>{image_caption}</em></p>
-                    </div>
-                    """,
-                    unsafe_allow_html=True,
-                )
-                
-        st.write(f"Image Labels: {', '.join(image_labels)}")
-        # st.write(f"Article Link: [Link]({article_link})")
-        st.write(f"Citation: {article_citation}")
 
 
 
