@@ -121,6 +121,11 @@ st.markdown(
         grid-template-columns: repeat(3, 1fr);
         gap: 1rem; 
         font-size: 16px;
+        text-align: left;
+    }
+
+    details summary span [data-testid="stMarkdownContainer"] p:nth-of-type(2) strong {
+        display: inline;
     }
 
     .stMainBlockContainer  div[data-testid="stVerticalBlockBorderWrapper"] .st-emotion-cache-1wmy9hl .e1f1d6gn1 {
@@ -437,14 +442,8 @@ elif selected == "Search":
             for case_id in outcome:
                 row = cases_df[cases_df.case_id == case_id].iloc[0]      
                 with st.expander(f"**{row['title']}** \n\n **Case ID:** {row['case_id']}        **Gender:** {row['gender']}        **Age:** {int(row['age'])}"):
-                    st.markdown(
-                        f"<div style='text-align: justify; padding-right: 2rem; padding-left: 3rem; padding-bottom: 1rem;'>{row['case_text']}</div>",
-                        unsafe_allow_html=True
-                    )  
-                    st.markdown(
-                        f"<div style='text-align: justify; padding-right: 2rem; padding-left: 3rem; padding-bottom: 1rem;'>**Source**:{row['citation']}</div>",
-                        unsafe_allow_html=True
-                    )   
+                    st.write(f"{row['case_text']}")
+                    st.write(f"**Source**:{row['citation']}")   
               
             col1, col2, col3 = st.columns([1, 5, 1])
             with col1:
