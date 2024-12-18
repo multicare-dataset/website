@@ -348,7 +348,7 @@ with st.sidebar:
 if selected == "Home":
     st.title("The Clinical Case Hub")
     st.markdown(
-        """
+        f"""
         ####Welcome to The Clinical Case Hub, a platform designed to empower healthcare professionals and medical 
         students with real-world clinical cases. Our mission is to provide you with a diverse collection of 
         cases and images sourced from PubMed Central case reports, enabling you to enhance your diagnostic, 
