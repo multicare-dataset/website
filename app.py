@@ -40,7 +40,7 @@ st.markdown(
 
     .stLogo {
         margin: 1rem auto;
-        height: 30px;
+        height: 28px;
     }
 
     .stFormSubmitButton, .stButton, .stDownloadButton {
@@ -173,6 +173,12 @@ else:
 
 if "page_number" not in st.session_state:
     st.session_state.page_number = 1
+
+
+if "cached_results" not in st.session_state:
+    st.session_state.cached_results = {}
+if "cached_page_status" not in st.session_state:
+    st.session_state.cached_page_status = {}
 
 label_dict = {
     'ct': 'CT scan',
@@ -418,7 +424,6 @@ elif selected == "Search":
         submitted = st.form_submit_button("Search")
 
     if submitted: 
-        st.markdown("####")
         st.subheader("Seach Results")
         filter_dict = {
             'min_age': min_age,
@@ -439,38 +444,49 @@ elif selected == "Search":
         cases_df = load_cases('.')
 
         if not image_metadata_df.empty and not cases_df.empty:
+            st.session_state.filter_dict = filter_dict
             page_number = st.session_state.page_number
             elements_per_page = 10
-            st.session_state.filter_dict = filter_dict
-    
-    
-        if filter_dict['resource_type'] == 'text':
+
+        # Check if we have cached results for the current page
+        if page_number not in st.session_state.cached_results:
+            # If not cached, apply filters for the given page
             outcome, page_status = apply_filters(cases_df, image_metadata_df, filter_dict, page_number, elements_per_page)
+            st.session_state.cached_results[page_number] = outcome
+            st.session_state.cached_page_status[page_number] = page_status
+        else:
+            # If cached, retrieve from session_state
+            outcome = st.session_state.cached_results[page_number]
+            page_status = st.session_state.cached_page_status[page_number]
+
+        
+        if filter_dict['resource_type'] == 'text':
             for case_id in outcome:
                 row = cases_df[cases_df.case_id == case_id].iloc[0]      
                 with st.expander(f"**{row['title']}** \n\n **_Case ID:_ {row['case_id']}** **_Gender:_ {row['gender']}** **_Age:_ {int(row['age'])}**"):
-                    st.markdown(f"####Case Description", unsafe_allow_html=True )
+                    st.divider()
+                    st.markdown("#### Case Description", unsafe_allow_html=True)
                     st.write(f"{row['case_text']}")
                     st.divider()
-                    st.write(f"**Source**: _{row['citation']}_")   
-              
-            col1, col2, col3 = st.columns([1, 5, 1])
+                    st.write(f"**Source**: _{row['citation']}_")
+
+            # Pagination buttons
+            col1, col2, col3 = st.columns([1, 4, 1])
             with col1:
+                # Show 'Previous' button if we are not on the first page
                 if st.session_state.page_number > 1:
+                    # If 'Previous' is clicked, decrement the page number
                     if st.button("⏮  Previous"):
                         st.session_state.page_number -= 1
+                        st.experimental_rerun()
+
             with col3:
+                # Show 'Next' button only if there are more pages left
                 if page_status == "more_pages_left":
                     if st.button("Next  ⏭"):
                         st.session_state.page_number += 1
-                        page_number = st.session_state.page_number
-                        outcome, page_status = apply_filters(cases_df, image_metadata_df, filter_dict, page_number, elements_per_page)
-                        for case_id in outcome:
-                            row = cases_df[cases_df.case_id == case_id].iloc[0]      
-                            with st.expander(f"**{row['title']}** \n\n _Case ID:_ **{row['case_id']}** _Gender:_ **{row['gender']}** _Age:_ **{int(row['age'])}**"):
-                                st.write(f"{row['case_text']}")
-                                st.divider()
-                                st.write(f"**Source**: _{row['citation']}_")    
+                        st.experimental_rerun()
+
 
 
 elif selected == "About":
