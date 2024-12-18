@@ -484,25 +484,29 @@ elif selected == "About":
         is designed for healthcare professionals, medical students, and data scientists.
         """
     )
-    st.subheader("Useful Links")
-    st.write(
-        """
-        - GitHub Repository: (...) [link]
-        - Zenodo Data Repository: (...) [link]
-        - Image Classification Model: [https://huggingface.co/mauro-nievoff/MultiCaReClassifier]
-        - Taxonomy Documentation: (...) [link]
-        """
-    )
-    st.subheader("Our Team")
-    st.write(
-        """
-        - Mauro Nievas Offidani, MD, MSc (https://www.linkedin.com/in/mauronievasoffidani/): Data Curation
-        - María Carolina González Galtier, MD, MA (https://www.linkedin.com/in/carogaltier/): Web Development
-        - Miguel Massiris (...): Web Development
-        - Facundo Roffet (...): ML Model Development
-        - Claudio Delrieux, PhD (...): Project Direction
-        """
-    )
+    col1, col2 = st.columns(2)
+    with col1:
+        st.subheader("Useful Links")
+        st.write(
+            """
+            - GitHub Repository: (...) [link]
+            - Zenodo Data Repository: (...) [link]
+            - Image Classification Model: [https://huggingface.co/mauro-nievoff/MultiCaReClassifier]
+            - Taxonomy Documentation: (...) [link]
+            """
+        )
+        st.subheader("Our Team")
+        st.write(
+            """
+            - Mauro Nievas Offidani, MD, MSc (https://www.linkedin.com/in/mauronievasoffidani/): Data Curation
+            - María Carolina González Galtier, MD, MA (https://www.linkedin.com/in/carogaltier/): Web Development
+            - Miguel Massiris (...): Web Development
+            - Facundo Roffet (...): ML Model Development
+            - Claudio Delrieux, PhD (...): Project Direction
+            """
+        )
+    with col2:
+        st.image('medical-doctor-website.webp')
 
 def display_case_text(cch, index):
     patient_age = int(cch.cases_df.age.iloc[index])
