@@ -501,43 +501,6 @@ elif selected == "About":
     with col2:
         st.image('medical_doctor_desktop.webp')
 
-def display_case_text(cch, index):
-    patient_age = int(cch.cases_df.age.iloc[index])
-    patient_gender = cch.cases_df.gender.iloc[index]
-    case_id = cch.cases_df.case_id.iloc[index]
-    case_text = cch.cases_df.case_text.iloc[index]
-    article_id = cch.cases_df.article_id.iloc[index]
-    article_citation = cch.metadata_df[cch.metadata_df.article_id == article_id].citation.iloc[0]
-    article_title = cch.metadata_df[cch.metadata_df.article_id == article_id].title.iloc[0]
-
-    with st.container(border=True):
-
-        st.subheader("Title Here")
-        col1, col2, col3 = st.columns([1, 1, 1])
-        with col1:
-            st.write(f"Case ID: **{case_id}**")
-        with col2:  
-            st.write(f"Gender: **{patient_gender}**")
-        with col3:  
-            st.write(f"Age: **{patient_age}**")
-        
-        max_characters = 250
-        case_text_aux = case_text[:max_characters]  
-        match = re.search(r'\.', case_text[max_characters:])
-        if match:
-            case_text_aux += case_text[max_characters:max_characters + match.start() + 1]
-
-        rest_text = case_text[len(case_text_aux):]
-            
-        st.subheader("_Case Description_")
-        with st.expander(f"{case_text_aux}"):
-            st.markdown(
-                f"<div style='text-align: justify; padding-right: 1rem; padding-left: 2rem; padding-bottom: 1rem;'>{rest_text}</div>",
-                unsafe_allow_html=True
-            )
-
-        st.write(f"**Citation**: *{article_citation}*")
-
 
 def display_image(cch, index):
     """
@@ -564,8 +527,8 @@ def display_image(cch, index):
         # Center and display the image with adjusted size
         st.markdown(
             f"""
-            <div style="text-align: center;">
-                <img src="data:image/jpeg;base64,{convert_image_to_base64(image_path)}" alt="{image_caption}" style="width: 35%; border-radius: 8px;">
+            <div style='text-align: center;'>
+                <img src='data:image/jpeg;base64,{convert_image_to_base64(image_path)}' alt='{image_caption}' style="width: 35%; border-radius: 8px;'>
                 <p><em>{image_caption}</em></p>
             </div>
             """,
@@ -577,17 +540,11 @@ def display_image(cch, index):
         st.write(f"Citation: {article_citation}")
 
 def convert_image_to_base64(image_path):
-    """
-    Convert an image file to a base64 encoded string for HTML rendering.
-    """
     from base64 import b64encode
     with open(image_path, "rb") as img_file:
         return b64encode(img_file.read()).decode("utf-8")
 
 def display_case_both(cch, index):
-    """
-    Display both text and images for a case.
-    """
     # Get data
     patient_age = cch.cases_df.age.iloc[index]
     patient_gender = cch.cases_df.gender.iloc[index]
@@ -629,8 +586,8 @@ def display_case_both(cch, index):
                 # Center and display the image with adjusted size
                 st.markdown(
                     f"""
-                    <div style="text-align: center;">
-                        <img src="data:image/jpeg;base64,{convert_image_to_base64(image_path)}" alt="{image_caption}" style="width: 35%; border-radius: 8px;">
+                    <div style='text-align: center;'>
+                        <img src='data:image/jpeg;base64,{convert_image_to_base64(image_path)}' alt='{image_caption}' style="width: 35%; border-radius: 8px;'>
                         <p><em>{image_caption}</em></p>
                     </div>
                     """,
