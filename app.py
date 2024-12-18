@@ -504,7 +504,7 @@ elif selected == "About":
             """
         )
     with col2:
-        st.image('medical-doctor-website.webp')
+        st.image('medical-doctor-desktop.webp')
 
 def display_case_text(cch, index):
     patient_age = int(cch.cases_df.age.iloc[index])
