@@ -507,9 +507,7 @@ elif selected == "Search":
 
 
 
-
-        
-          for case_ in outcome:
+        for case_ in outcome:
             row = cases[cases.case_id == case_['case_id']].iloc[0]
             print('title:', row['title'])
             print('case_id:', row['case_id'])
