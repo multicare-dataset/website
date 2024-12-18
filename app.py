@@ -535,7 +535,7 @@ elif selected == "Search":
             elif st.session_state.filter_dict['resource_type'] == 'image':
                   for image_dict in outcome:
                     row = cases_df[cases_df.case_id == image_dict['case_id']].iloc[0]
-                    with st.container(border=True)               
+                    with st.container(border=True):               
                         st.image(f"img/{image_dict['file']}", caption=image_dict['caption'])
                         col1, col2, col3 = st.columns(3)
                         with col1:
