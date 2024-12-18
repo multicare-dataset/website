@@ -273,10 +273,17 @@ elif selected == "Search":
         st.markdown("####")
         st.subheader("Seach Results")
         filter_dict = {
-            'min_age': min_age, 'max_age': max_age, 'gender': gender, 'case_search': case_search,
-            'image_type_label': image_type_label, 'anatomical_region_label': anatomical_region_label,
-            'caption_search': caption_search, 'min_year': min_year, 'max_year': max_year,
-            'resource': resource, 'license': license
+            'min_age': min_age,
+            'max_age': max_age,
+            'gender': gender,
+            'case_search': case_search,
+            'image_type_label': image_type_label,
+            'anatomical_region_label': anatomical_region_label,
+            'caption_search': caption_search,
+            'min_year': min_year,
+            'max_year': max_year,
+            'license': license,
+            'resource_type': resource
         }
 
         # Load data
