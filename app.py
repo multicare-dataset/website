@@ -56,6 +56,12 @@ st.markdown(
         background: rgba(18, 88, 142, 0.8);
         color: #fff;
     }
+
+    .stFormSubmitButton button:hover, .stButton button:hover, .stDownloadButton button:hover {
+        padding: 0.5rem 1rem;
+        background: rgba(18, 88, 142, 0.6);
+        color: #fff;
+    }
     
     .centered-image {
         display: block;
