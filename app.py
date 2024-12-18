@@ -304,7 +304,7 @@ def full_word_match(text, word):
 # ---------- STREAMLIT CODE --------------
 
 with st.sidebar:
-    st.logo("multicare-logo.webp", size="large")
+    st.logo("multicare-logo2.webp", size="large")
     selected = option_menu(
         menu_title=None,
         options=["Home", "Search", "About"],
@@ -333,9 +333,7 @@ if selected == "Home":
         clinical decision-making, and critical thinking skills.
         """
     )
-    col1, col2, col3 = st.columns(3)
-    with col2:
-        st.image('medical_doctor_desktop.webp')
+    st.image('clinical-hub.webp')
     st.button(f"Start your search  →", key='switch_button')
 
         
