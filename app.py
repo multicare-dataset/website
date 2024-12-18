@@ -294,9 +294,9 @@ elif selected == "Search":
 
         for case_id in outcome:
             row = cases[cases.case_id == case_id].iloc[0]      
-            with st.expander(f"{**row['title']**} \n\n Case ID: **{row['case_id']}**  Gender: **{row['gender']}**  Age: **{row['age']}**"):
+            with st.expander(f"**{row['title']}** \n\n Case ID: **{row['case_id']}**  Gender: **{row['gender']}**  Age: **{row['age']}**"):
                 st.markdown(
-                    f"<div style='text-align: justify; padding-right: 1rem; padding-left: 2rem; padding-bottom: 1rem;'>{row['case_text']}\n\n {row['citation']}</div>",
+                    f"<div style='text-align: justify; padding-right: 1rem; padding-left: 2rem; padding-bottom: 1rem;'>{row['case_text']}\n\n Source:{row['citation']}</div>",
                     unsafe_allow_html=True
                 )        
           
