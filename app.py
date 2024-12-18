@@ -40,7 +40,7 @@ st.markdown(
 
     .stLogo {
         margin: 1rem auto;
-        height: 36px;
+        height: 34px;
     }
 
     .stFormSubmitButton, .stButton, .stDownloadButton {
