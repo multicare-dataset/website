@@ -347,7 +347,6 @@ def full_word_match(text, word):
 
 
 # ---------- STREAMLIT CODE --------------
-
 with st.sidebar:
     st.logo("multicare-logo2.webp", size="large")
     selected = option_menu(
@@ -378,7 +377,10 @@ if selected == "Home":
         clinical decision-making, and critical thinking skills.
         """
     )
-    st.image('clinical-hub.webp')
+    col1, col2, col3 = st.columns(3)
+    with col2:
+        st.image('medical_doctor_desktop.webp')
+
     st.button(f"Start your search‎ ‎ ‎→", key='switch_button')
 
         
@@ -505,6 +507,55 @@ elif selected == "Search":
 
 
 
+
+        
+          for case_ in outcome:
+            row = cases[cases.case_id == case_['case_id']].iloc[0]
+            print('title:', row['title'])
+            print('case_id:', row['case_id'])
+            print('age:', row['age'])
+            print('gender:', row['gender'])
+            print('case_text:', row['case_text'])
+            print('cite:', row['citation'])
+            print()
+            for key in case_['images'].keys():
+              print('image_path:', os.path.join('img', key))
+              print('caption:', case_['images'][key])
+              print()
+
+       if st.session_state.filter_dict['resource_type'] == 'both':
+            for case_id in outcome:
+                row = st.session_state.cases_df[st.session_state.cases_df.case_id == case_id].iloc[0]   
+                with st.expander(f"**{row['title']}** \n\n **_Case ID:_ {row['case_id']}** **_Gender:_ {row['gender']}** **_Age:_ {int(row['age'])}**"):
+                    st.divider()
+                    st.markdown("#### Case Description")
+                    st.write(f"{row['case_text']}")
+                    st.markdown("#### Images")
+                    
+                    for key in case_id['images'].keys():
+                        st.image(f"img/{key}", caption=f"{case_['images'][key]}")
+
+                    st.divider()
+                    st.write(f"**Source**: _{row['citation']}_")
+    
+            # Pagination buttons
+            col1, col2, col3 = st.columns([1, 4, 1])
+            with col1:
+                # Show 'Previous' button if we are not on the first page
+                if st.session_state.page_number > 1:
+                    # If 'Previous' is clicked, decrement the page number
+                    if st.button("⏮  Previous"):
+                        st.session_state.page_number -= 1
+                        st.rerun()
+    
+            with col3:
+                # Show 'Next' button only if there are more pages left
+                if page_status == "more_pages_left":
+                    if st.button("Next  ⏭"):
+                        st.session_state.page_number += 1
+                        st.rerun()
+
+
 elif selected == "About":
     st.title("About the MultiCaRe Dataset")
     st.write(
@@ -515,29 +566,26 @@ elif selected == "About":
         is designed for healthcare professionals, medical students, and data scientists.
         """
     )
-    col1, col2 = st.columns([3,2])
-    with col1:
-        st.subheader("Useful Links")
-        st.write(
-            """
-            - GitHub Repository: (...) [link]
-            - Zenodo Data Repository: (...) [link]
-            - Image Classification Model: [https://huggingface.co/mauro-nievoff/MultiCaReClassifier]
-            - Taxonomy Documentation: (...) [link]
-            """
-        )
-        st.subheader("Our Team")
-        st.write(
-            """
-            - Mauro Nievas Offidani, MD, MSc (https://www.linkedin.com/in/mauronievasoffidani/): Data Curation
-            - María Carolina González Galtier, MD, MA (https://www.linkedin.com/in/carogaltier/): Web Development
-            - Miguel Massiris (...): Web Development
-            - Facundo Roffet (...): ML Model Development
-            - Claudio Delrieux, PhD (...): Project Direction
-            """
-        )
-        with col2:
-            st.image('medical_doctor_desktop.webp')
+
+    st.subheader("Useful Links")
+    st.write(
+        """
+        - GitHub Repository: (...) [link]
+        - Zenodo Data Repository: (...) [link]
+        - Image Classification Model: [https://huggingface.co/mauro-nievoff/MultiCaReClassifier]
+        - Taxonomy Documentation: (...) [link]
+        """
+    )
+    st.subheader("Our Team")
+    st.write(
+        """
+        - Mauro Nievas Offidani, MD, MSc (https://www.linkedin.com/in/mauronievasoffidani/): Data Curation
+        - María Carolina González Galtier, MD, MA (https://www.linkedin.com/in/carogaltier/): Web Development
+        - Miguel Massiris (...): Web Development
+        - Facundo Roffet (...): ML Model Development
+        - Claudio Delrieux, PhD (...): Project Direction
+        """
+    )
 
 
 def display_image(cch, index):
