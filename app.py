@@ -35,7 +35,7 @@ st.markdown(
     }
 
     .stMainBlockContainer img {
-        border-radius: 0.875rem
+        border-radius: 10px;
     }
     
     .stMainBlockContainer {
