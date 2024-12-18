@@ -481,10 +481,6 @@ def display_case_both(cch, index):
         # st.write(f"Article Link: [Link]({article_link})")
         st.write(f"Citation: {article_citation}")
 
-if __name__ == '__main__':
-    main()
-
-
 
 # Global CSS 
 st.markdown(
