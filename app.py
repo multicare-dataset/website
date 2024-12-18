@@ -92,7 +92,7 @@ st.markdown(
     }
 
     .stExpander details {
-        padding-bottom: 2.5rem;
+        padding-bottom: 3rem;
     }
 
     .stExpander details summary {
