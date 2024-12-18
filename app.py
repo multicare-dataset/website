@@ -40,8 +40,8 @@ st.markdown(
     }
 
     .stLogo {
-        margin: auto;
-        height: 45px;
+        margin: 1rem auto;
+        height: 36px;
     }
 
     .stFormSubmitButton, .stButton, .stDownloadButton {
@@ -51,6 +51,12 @@ st.markdown(
         margin-top: 2rem;
         margin-bottom: 1rem;
     }
+
+    .stFormSubmitButton button, .stButton button, .stDownloadButton button {
+        padding: 0.5rem 1rem;
+        background: rgba(18, 88, 142, 0.8);
+        color: #fff;
+    }
     
     .centered-image {
         display: block;
@@ -59,6 +65,11 @@ st.markdown(
         width: 50%;
     }
 
+    .stElementContainer:has(img) {
+        display: flex;
+        justify-content: center;
+    }
+    
     div[role="radiogroup"][aria-label="License"] {
         margin-bottom: 0.9rem;
     }
