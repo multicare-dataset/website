@@ -112,7 +112,6 @@ st.markdown(
         grid-column: span 3; 
         font-size: 20px; 
         padding-bottom: 1rem; 
-        color: rgb(49, 51, 63);
         text-align: justify; 
     }
     
