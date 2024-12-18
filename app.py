@@ -539,7 +539,7 @@ elif selected == "Search":
                 for case_ in outcome:
                     row = cases_df[cases_df.case_id == case_['case_id']].iloc[0]
                     age = int(row['age']) if not pd.isna(row['age']) else "Unknown"
-                    with st.expander(f"**{row['title']}** \n\n **_Case ID:_ {row['case_id']}** **_Gender:_ {row['gender']}** **_Age:_ {int(age}**"):
+                    with st.expander(f"**{row['title']}** \n\n **_Case ID:_ {row['case_id']}** **_Gender:_ {row['gender']}** **_Age:_ {age}**"):
                         st.divider()
                         st.markdown("#### Case Description")
                         st.write(f"{row['case_text']}")
