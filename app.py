@@ -475,33 +475,33 @@ elif selected == "Search":
             outcome = st.session_state.cached_results[page_number]
             page_status = st.session_state.cached_page_status[page_number]
 
+    if outcome:
+        if st.session_state.filter_dict['resource_type'] == 'text':
+            for case_id in outcome:
+                row = st.session_state.cases_df[st.session_state.cases_df.case_id == case_id].iloc[0]   
+                with st.expander(f"**{row['title']}** \n\n **_Case ID:_ {row['case_id']}** **_Gender:_ {row['gender']}** **_Age:_ {int(row['age'])}**"):
+                    st.divider()
+                    st.markdown("#### Case Description", unsafe_allow_html=True)
+                    st.write(f"{row['case_text']}")
+                    st.divider()
+                    st.write(f"**Source**: _{row['citation']}_")
     
-    if st.session_state.filter_dict['resource_type'] == 'text':
-        for case_id in outcome:
-            row = st.session_state.cases_df[st.session_state.cases_df.case_id == case_id].iloc[0]   
-            with st.expander(f"**{row['title']}** \n\n **_Case ID:_ {row['case_id']}** **_Gender:_ {row['gender']}** **_Age:_ {int(row['age'])}**"):
-                st.divider()
-                st.markdown("#### Case Description", unsafe_allow_html=True)
-                st.write(f"{row['case_text']}")
-                st.divider()
-                st.write(f"**Source**: _{row['citation']}_")
-
-        # Pagination buttons
-        col1, col2, col3 = st.columns([1, 4, 1])
-        with col1:
-            # Show 'Previous' button if we are not on the first page
-            if st.session_state.page_number > 1:
-                # If 'Previous' is clicked, decrement the page number
-                if st.button("⏮  Previous"):
-                    st.session_state.page_number -= 1
-                    st.rerun()
-
-        with col3:
-            # Show 'Next' button only if there are more pages left
-            if page_status == "more_pages_left":
-                if st.button("Next  ⏭"):
-                    st.session_state.page_number += 1
-                    st.rerun()
+            # Pagination buttons
+            col1, col2, col3 = st.columns([1, 4, 1])
+            with col1:
+                # Show 'Previous' button if we are not on the first page
+                if st.session_state.page_number > 1:
+                    # If 'Previous' is clicked, decrement the page number
+                    if st.button("⏮  Previous"):
+                        st.session_state.page_number -= 1
+                        st.rerun()
+    
+            with col3:
+                # Show 'Next' button only if there are more pages left
+                if page_status == "more_pages_left":
+                    if st.button("Next  ⏭"):
+                        st.session_state.page_number += 1
+                        st.rerun()
 
 
 
