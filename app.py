@@ -436,7 +436,7 @@ elif selected == "Search":
             'license': license,
             'resource_type': resource
         }
-
+        st.session_state.filter_dict = filter_dict
         image_metadata_df = load_image_metadata('.')
         cases_df = load_cases('.')
         st.session_state.page_number = 1
