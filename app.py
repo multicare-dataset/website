@@ -161,7 +161,6 @@ st.markdown(
 )
 
 
-outcome = [] 
 
 if "selected" not in st.session_state:
     st.session_state.selected = "Home"
@@ -178,7 +177,21 @@ else:
 if "page_number" not in st.session_state:
     st.session_state.page_number = 1
 
-    
+
+if 'filter_dict' not in st.session_state:
+    st.session_state['filter_dict'] = {
+        'min_age': 18,
+        'max_age': 65,
+        'gender': 'Any',
+        'case_search': '',
+        'image_type_label': None,
+        'anatomical_region_label': None,
+        'caption_search': '',
+        'min_year': 2014,
+        'max_year': 2024,
+        'license': 'all',
+        'resource_type': 'text',
+    }
 
 label_dict = {
     'ct': 'CT scan',
@@ -394,32 +407,64 @@ elif selected == "Search":
         col1, col2, col3 = st.columns(3)
         
         with col1:
-            min_year, max_year = st.slider("Year", 1990, 2024, (2014, 2024))
-            resource = st.selectbox("Resource Type", options=['text', 'image', 'both'], index=0)
-            image_type_label = st.selectbox("Image Type Label", options=[None] + list(label_dict.values()))
+            min_year, max_year = st.slider(
+                "Year", 
+                1990, 
+                2024, 
+                (st.session_state['filter_dict']['min_year'], st.session_state['filter_dict']['max_year'])
+            )
+            resource = st.selectbox(
+                "Resource Type", 
+                options=['text', 'image', 'both'], 
+                index=['text', 'image', 'both'].index(st.session_state['filter_dict']['resource_type'])
+            )
+            image_type_label = st.selectbox(
+                "Image Type Label", 
+                options=[None] + list(label_dict.values()),
+                index=([None] + list(label_dict.values())).index(st.session_state['filter_dict']['image_type_label'])
+                if st.session_state['filter_dict']['image_type_label'] in label_dict.values() else 0
+            )
             if image_type_label is not None:
                 image_type_label = next((key for key, value in label_dict.items() if value == image_type_label), None)
         
         with col2:
-            min_age, max_age = st.slider("Age", 0, 100, (18, 65))
-            gender = st.selectbox("Gender", options=['Any', 'Female', 'Male'], index=0)
+            min_age, max_age = st.slider(
+                "Age", 
+                0, 
+                100, 
+                (st.session_state['filter_dict']['min_age'], st.session_state['filter_dict']['max_age'])
+            )
+            gender = st.selectbox(
+                "Gender", 
+                options=['Any', 'Female', 'Male'], 
+                index=['Any', 'Female', 'Male'].index(st.session_state['filter_dict']['gender'])
+            )
             anatomical_region_label = st.selectbox(
                 "Anatomical Region Label", 
                 options=[None] + list(anatomical_label_dict.values()),
+                index=([None] + list(anatomical_label_dict.values())).index(
+                st.session_state['filter_dict']['anatomical_region_label']
+                ) if st.session_state['filter_dict']['anatomical_region_label'] in anatomical_label_dict.values() else 0,
                 help="This filter can only be combined with specific image types: 'CT scan,' 'MRI,' 'X-ray,' 'Ultrasound,' 'Angiography,' and 'Nuclear Medicine'."
             )
             if anatomical_region_label is not None:
                 anatomical_region_label = next((key for key, value in anatomical_label_dict.items() if value == anatomical_region_label), None)
 
         with col3:
-            license = st.radio("License", options=['all', 'commercial'], horizontal=True, index=0)
+            license = st.radio(
+                "License", 
+                options=['all', 'commercial'], 
+                horizontal=True, 
+                index=['all', 'commercial'].index(st.session_state['filter_dict']['license'])
+            )
             case_search = st.text_input(
                 "Case Text Search", 
-                value='', 
+                value=st.session_state['filter_dict']['case_search'],
                 help="Search operators: 'OR', 'AND', 'NOT'. Groups of terms that refer to the same concept should be concatenated using 'OR'. Use 'AND' to include a new term or group of terms, and use 'NOT' to exclude them. For example: '(CT OR tomography) AND (chest OR thorax) NOT abdomen' will return chest CT scans with no mentions of the word 'abdomen'."
             )
             caption_search = st.text_input(
-                "Caption Text Search", value='', 
+                "Caption Text Search", 
+                value=st.session_state['filter_dict']['caption_search'],
                 help="Search operators: 'OR', 'AND', 'NOT'. Groups of terms that refer to the same concept should be concatenated using 'OR'. Use 'AND' to include a new term or group of terms, and use 'NOT' to exclude them. For example: '(CT OR tomography) AND (chest OR thorax) NOT abdomen' will return chest CT scans with no mentions of the word 'abdomen'."
             )
             
