@@ -99,7 +99,7 @@ st.markdown(
     }
 
     details summary span p {
-        font-size: 16px !important;
+        font-size: 20px !important;
         color: rgb(49, 51, 63);
         text-align: justify; 
     }    
@@ -417,13 +417,15 @@ elif selected == "Search":
     
             for case_id in outcome:
                 row = cases_df[cases_df.case_id == case_id].iloc[0]      
-                with st.expander(f"**{row['title']}** \n\n"):
-                    st.write(f"**Case ID:** {row['case_id']}  |  **Gender:** {row['gender']}  |  **Age:** {row['age']}")
+                with st.expander(f"**{row['title']}** \n\n **Case ID:** {row['case_id']}        **Gender:** {row['gender']}        **Age:** {int(row['age'])}"):
                     st.markdown(
                         f"<div style='text-align: justify; padding-right: 2rem; padding-left: 3rem; padding-bottom: 1rem;'>{row['case_text']}</div>",
                         unsafe_allow_html=True
                     )  
-                    st.write(f"**Source**:{row['citation']}")
+                    st.markdown(
+                        f"<div style='text-align: justify; padding-right: 2rem; padding-left: 3rem; padding-bottom: 1rem;'>**Source**:{row['citation']}</div>",
+                        unsafe_allow_html=True
+                    )   
               
             col1, col2, col3 = st.columns([1, 5, 1])
             with col1:
