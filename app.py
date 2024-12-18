@@ -506,7 +506,7 @@ elif selected == "Search":
                         st.rerun()
 
 
-       if st.session_state.filter_dict['resource_type'] == 'both':
+        if st.session_state.filter_dict['resource_type'] == 'both':
             for case_id in outcome:
                 row = st.session_state.cases_df[st.session_state.cases_df.case_id == case_id].iloc[0]   
                 with st.expander(f"**{row['title']}** \n\n **_Case ID:_ {row['case_id']}** **_Gender:_ {row['gender']}** **_Age:_ {int(row['age'])}**"):
