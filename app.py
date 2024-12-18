@@ -496,7 +496,7 @@ elif selected == "Search":
                 if page_status == "more_pages_left":
                     if st.button("Next ⏭"):
                         st.session_state.page_number = page_number + 1
-                        #st.rerun()
+                        st.rerun()
         else:
             st.write("No results found for the current filters.")
     else:
