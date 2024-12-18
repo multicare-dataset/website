@@ -505,7 +505,7 @@ elif selected == "Search":
                 if page_number > 1:
                     if st.button("⏮ Previous"):
                         st.session_state.page_number = page_number - 1
-                        #st.rerun()
+                        st.rerun()
     
             with col3:
                 if page_status == "more_pages_left":
