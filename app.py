@@ -114,6 +114,7 @@ st.markdown(
     details summary span [data-testid="stMarkdownContainer"] {
         display: flex;
         flex-direction: column;
+        width: 100%;
     }
     
     details summary span [data-testid="stMarkdownContainer"] p:first-of-type {
