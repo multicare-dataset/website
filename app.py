@@ -533,19 +533,23 @@ elif selected == "Search":
                         st.write(f"**Source**: _{row['citation']}_")
             
             elif st.session_state.filter_dict['resource_type'] == 'image':
-                  for image_dict in outcome:
-                    row = cases_df[cases_df.case_id == image_dict['case_id']].iloc[0]
-                    with st.container(border=True):               
-                        st.image(f"img/{image_dict['file']}", caption=image_dict['caption'])
-                        col1, col2, col3 = st.columns(3)
-                        with col1:
-                            st.write(f"**_Case ID:_ {row['case_id']}**")
-                        with col2:
-                            st.write(f"**_Gender:_ {row['gender']}**")
-                        with col3:
-                            st.write(f"**_Age:_ {int(row['age'])}**")
-                        st.divider()
-                        st.write(f"**Source**: _{row['citation']}_")
+                for i in range(0, len(outcome), 2):
+                    pair = outcome[i:i+2]
+                    cols = st.columns(2)  # Crear dos columnas
+                    for idx, image_dict in enumerate(pair):
+                        row = cases_df[cases_df.case_id == image_dict['case_id']].iloc[0]
+                        with cols[idx]: 
+                            with st.container():
+                                col1, col2, col3 = st.columns(3)
+                                with col1:
+                                    st.write(f"**_Case ID:_ {row['case_id']}**")
+                                with col2:
+                                    st.write(f"**_Gender:_ {row['gender']}**")
+                                with col3:
+                                    st.write(f"**_Age:_ {int(row['age'])}**")
+                                st.image(f"img/{image_dict['file']}", caption=image_dict['caption'])
+                                st.divider()
+                                st.write(f"**Source**: _{row['citation']}_")
     
             col1, col2, col3 = st.columns([1, 3, 1])
             with col1:
