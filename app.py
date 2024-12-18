@@ -56,11 +56,15 @@ st.markdown(
         background: rgba(18, 88, 142, 0.8);
         color: #fff;
     }
-
-    .stFormSubmitButton button:hover, .stFormSubmitButton button:active, 
-    .stFormSubmitButton button:focus, .stButton button:hover, 
-    .stButton button:active, .stButton button:focus,
-    .stDownloadButton button:hover, .stDownloadButton button:active,
+    
+    .stFormSubmitButton button:hover, 
+    .stFormSubmitButton button:active, 
+    .stFormSubmitButton button:focus, 
+    .stButton button:hover, 
+    .stButton button:active, 
+    .stButton button:focus, 
+    .stDownloadButton button:hover, 
+    .stDownloadButton button:active, 
     .stDownloadButton button:focus {
         padding: 0.5rem 1rem;
         background: rgba(18, 88, 142, 0.6);
@@ -493,8 +497,11 @@ elif selected == "About":
         is designed for healthcare professionals, medical students, and data scientists.
         """
     )
-    col1, col2 = st.columns([3,2])
+    col1, col2 = st.columns([2,3])
     with col1:
+        st.image('medical_doctor_desktop.webp')
+
+    with col2:
         st.subheader("Useful Links")
         st.write(
             """
@@ -514,8 +521,6 @@ elif selected == "About":
             - Claudio Delrieux, PhD (...): Project Direction
             """
         )
-    with col2:
-        st.image('medical_doctor_desktop.webp')
 
 
 def display_image(cch, index):
