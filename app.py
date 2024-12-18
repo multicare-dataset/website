@@ -5,6 +5,9 @@ import re
 from streamlit_option_menu import option_menu
 import psutil
 
+# Streamlit page configuration
+st.set_page_config(page_title="Clinical Case Hub", page_icon=":stethoscope:", layout="wide")
+
 # Global CSS 
 st.markdown(
     """
@@ -119,8 +122,7 @@ st.markdown(
 
 
 
-# Streamlit page configuration
-st.set_page_config(page_title="Clinical Case Hub", page_icon=":stethoscope:", layout="wide")
+
 
 if "selected" not in st.session_state:
     st.session_state.selected = "Home"
