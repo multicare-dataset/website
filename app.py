@@ -312,7 +312,7 @@ elif selected == "Search":
                     )  
                     st.write(f"**Source**:{row['citation']}")
               
-            col1, col2, col3 = st.columns([1, 10, 1])
+            col1, col2, col3 = st.columns([1, 5, 1])
             with col1:
                 if st.session_state.page_number > 1:
                     if st.button("⏮  Previous"):
