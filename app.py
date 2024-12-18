@@ -421,7 +421,8 @@ elif selected == "Search":
             
         submitted = st.form_submit_button("Search")
 
-  
+    image_metadata_df = load_image_metadata('.')
+    cases_df = load_cases('.')
     if submitted: 
         filter_dict = {
             'min_age': min_age,
@@ -437,8 +438,7 @@ elif selected == "Search":
             'resource_type': resource
         }
         st.session_state.filter_dict = filter_dict
-        image_metadata_df = load_image_metadata('.')
-        cases_df = load_cases('.')
+
         st.session_state.page_number = 1
         elements_per_page = 10
         
