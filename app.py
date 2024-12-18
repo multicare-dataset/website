@@ -19,7 +19,6 @@ st.markdown(
         
     h3 {
         padding: 1rem;
-        padding-bottom: 0rem;
     }
 
     .stForm {
