@@ -501,6 +501,20 @@ elif selected == "Search":
             elements_per_page
         )
 
+
+        top_col1, top_col2, top_col3 = st.columns([1, 3, 1])
+        with top_col1:
+            if page_number > 1:
+                if st.button("⏮ Previous (Top)"):
+                    st.session_state.page_number = page_number - 1
+                    st.rerun()
+    
+        with top_col3:
+            if page_status == "more_pages_left":
+                if st.button("Next ⏭ (Top)"):
+                    st.session_state.page_number = page_number + 1
+                    st.rerun()
+        
         if outcome:
             if st.session_state.filter_dict['resource_type'] == 'text':
                 for case_id in outcome:
@@ -557,14 +571,9 @@ elif selected == "Search":
                     if st.button("Next ⏭"):
                         st.session_state.page_number = page_number + 1
                         st.rerun()
-
-        
-        
         
         else:
             st.warning("No results found for the current filters.")
-    else:
-        st.info("Please fill out the filters start your search.")
     
 
 elif selected == "About":
