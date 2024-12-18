@@ -416,7 +416,7 @@ elif selected == "Search":
                 row = cases_df[cases_df.case_id == case_id].iloc[0]      
                 with st.expander(
                     f"""
-                    ###{row['title']}  
+                    **{row['title']}** \n\n  
                     **Case ID:** {row['case_id']}  |  **Gender:** {row['gender']}  |  **Age:** {row['age']}
                     """
                 ):
