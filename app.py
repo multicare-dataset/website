@@ -356,7 +356,7 @@ if selected == "Home":
         """
     )
     st.image('clinical-hub.webp')
-    st.button(f"Start your search  →", key='switch_button')
+    st.button(f"Start your search‎ ‎ ‎→", key='switch_button')
 
         
 elif selected == "Search":
