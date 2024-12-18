@@ -174,7 +174,11 @@ else:
 if "page_number" not in st.session_state:
     st.session_state.page_number = 1
 
-
+if "df_loaded" not in st.session_state:
+    st.session_state.df_loaded = False
+    st.session_state.image_metadata_df = None
+    st.session_state.cases_df = None
+    
 if "cached_results" not in st.session_state:
     st.session_state.cached_results = {}
 if "cached_page_status" not in st.session_state:
@@ -442,27 +446,39 @@ elif selected == "Search":
         # Load data
         image_metadata_df = load_image_metadata('.')
         cases_df = load_cases('.')
+        
+        if not image_metadata_df.empty and not cases_df.empty:
+            st.session_state.df_loaded = True
+            st.session_state.image_metadata_df = image_metadata_df
+            st.session_state.cases_df = cases_df
+            st.session_state.filter_dict = filter_dict
+        else:
+            st.session_state.df_loaded = False
 
-    if image_metadata_df and cases_df:
-        st.session_state.filter_dict = filter_dict
+    if st.session_state.df_loaded:
         page_number = st.session_state.page_number
         elements_per_page = 10
 
-    # Check if we have cached results for the current page
-    if page_number not in st.session_state.cached_results:
-        # If not cached, apply filters for the given page
-        outcome, page_status = apply_filters(cases_df, image_metadata_df, filter_dict, page_number, elements_per_page)
-        st.session_state.cached_results[page_number] = outcome
-        st.session_state.cached_page_status[page_number] = page_status
-    else:
-        # If cached, retrieve from session_state
-        outcome = st.session_state.cached_results[page_number]
-        page_status = st.session_state.cached_page_status[page_number]
+        if page_number not in st.session_state.cached_results:
+            # If not cached, apply filters for the given page
+            outcome, page_status = apply_filters(
+                st.session_state.cases_df, 
+                st.session_state.image_metadata_df, 
+                st.session_state.filter_dict, 
+                page_number, 
+                elements_per_page
+            )
+            st.session_state.cached_results[page_number] = outcome
+            st.session_state.cached_page_status[page_number] = page_status
+        else:
+            # If cached, retrieve from session_state
+            outcome = st.session_state.cached_results[page_number]
+            page_status = st.session_state.cached_page_status[page_number]
 
     
-    if filter_dict['resource_type'] == 'text':
+    if st.session_state.filter_dict['resource_type'] == 'text':
         for case_id in outcome:
-            row = cases_df[cases_df.case_id == case_id].iloc[0]      
+            row = st.session_state.cases_df[st.session_state.cases_df.case_id == case_id].iloc[0]   
             with st.expander(f"**{row['title']}** \n\n **_Case ID:_ {row['case_id']}** **_Gender:_ {row['gender']}** **_Age:_ {int(row['age'])}**"):
                 st.divider()
                 st.markdown("#### Case Description", unsafe_allow_html=True)
