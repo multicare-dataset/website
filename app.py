@@ -242,16 +242,7 @@ def full_word_match(text, word):
     return re.search(rf'\b{re.escape(word.lower())}\b', text) is not None
 
 def highlight_text(text, query, highlight_class='case-highlight'):
-    """
-    Devuelve el texto con las palabras de la query resaltadas.
-    Se resaltan solo las condiciones AND (o por defecto), no las NOT.
-    """
-    parsed_list = parse_search_string(query)
-    # Para simplificar, se resalta todo lo que no esté bajo NOT.
-    # Las condiciones "AND" las tratamos resaltando cada término.
-    # Cada condición puede tener varios términos separados por OR.
-    # Se resaltarán todos esos términos.
-    
+    parsed_list = parse_search_string(query)    
     for condition in parsed_list:
         if condition['operator'] == "AND":
             for sub in condition['substring']:
@@ -259,7 +250,6 @@ def highlight_text(text, query, highlight_class='case-highlight'):
                 pattern = rf'(?i)\b({re.escape(sub)})\b'
                 replacement = f"<mark class='{highlight_class}'>\\1</mark>"
                 text = re.sub(pattern, replacement, text, flags=re.IGNORECASE)
-        # NOT: No se resaltan, simplemente no se hace nada.
     return text
 
 
