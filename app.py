@@ -396,6 +396,7 @@ elif selected == "Search":
         }
         if filter_dict != st.session_state.filter_dict:
             st.session_state.filter_dict = filter_dict
+        st.rerun()
         st.session_state.search_executed = True
         st.session_state.page_number = 1
         elements_per_page = 10
@@ -445,10 +446,12 @@ elif selected == "Search":
                 for case_ in outcome:
                     row = cases_df[cases_df.case_id == case_['case_id']].iloc[0]
                     age = int(row['age']) if not pd.isna(row['age']) else "Unknown"
+                    highlighted_case_text = highlight_text(row['case_text'], st.session_state.filter_dict['case_search'], highlight_class='case-highlight')
                     with st.expander(f"**{row['title']}** \n\n **_Case ID:_ {row['case_id']}** **_Gender:_ {row['gender']}** **_Age:_ {age}**"):
                         st.divider()
                         st.markdown("#### Case Description")
-                        st.write(f"{row['case_text']}")
+                        st.markdown(highlighted_case_text, unsafe_allow_html=True)
+                        #st.write(f"{row['case_text']}")
                         st.markdown("#### Images")
                         
                         images_list = list(case_['images'].items())
@@ -457,7 +460,10 @@ elif selected == "Search":
                             cols = st.columns(2)
                             for idx, (file_name, caption) in enumerate(pair):
                                 with cols[idx]:
-                                    st.image(f"img/{file_name}", caption=caption)
+                                    highlighted_caption = highlight_text(caption, st.session_state.filter_dict['caption_search'], highlight_class='caption-highlight')
+                                    #st.image(f"img/{file_name}", caption=caption)
+                                    st.image(f"img/{file_name}")
+                                    st.markdown(highlighted_caption, unsafe_allow_html=True)
                             
                         st.divider()
                         st.write(f"**Source**: _{row['citation']}_")
@@ -684,11 +690,11 @@ st.markdown(
 
 
     .case-highlight {
-        background-color: yellow;
+        background-color: #FFF6A7;
         color: black;
     }
     .caption-highlight {
-        background-color: lightblue;
+        background-color: #bfe6ff;
         color: black;
     }
 
