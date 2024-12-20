@@ -97,20 +97,20 @@ team_members = [
     {
         "name": "Miguel Massiris",
         "title": "Role Description",
-        "linkedin": "#",
-        "image": "team/team-user.png",
+        "linkedin": "Electronic Engineer, AI Researcher",
+        "image": "team/miguel-massiris.png",
     },
     {
         "name": "Facundo Roffet",
         "title": "Role Description",
-        "linkedin": "#",
-        "image": "team/team-user.png",
+        "linkedin": "Electronic Engineer",
+        "image": "team/facundo-roffet.png",
     },
     {
         "name": "Claudio Delrieux",
-        "title": "Role Description",
-        "linkedin": "#",
-        "image": "team/team-user.png",
+        "title": "PhD, Electronic Engineer, Professor, Researcher",
+        "linkedin": "https://www.linkedin.com/in/claudio-delrieux-3308091/",
+        "image": "team/claudio-delrieux.png",
     },
 ]
 
