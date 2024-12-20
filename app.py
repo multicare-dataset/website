@@ -477,8 +477,6 @@ elif selected == "Search":
                         highlighted_caption = highlight_text(image_dict['caption'], st.session_state.filter_dict['caption_search'], highlight_class='caption-highlight')
                         with cols[idx]: 
                             with st.container(border=True):
-                                
-                                #st.image(f"img/{image_dict['file']}", caption=image_dict['caption'])
                                 st.image(f"img/{image_dict['file']}")
                                 st.markdown(f"<p style='text-align: center; font-weight: 600;'>{highlighted_caption}</p>", unsafe_allow_html=True)
                                 st.write(f"_Case ID:_ **{row['case_id']}** | _Gender:_ **{row['gender']}**  | _Age:_ **{age}**")
