@@ -8,159 +8,6 @@ from streamlit_option_menu import option_menu
 # Streamlit page configuration
 st.set_page_config(page_title="Clinical Case Hub", page_icon=":stethoscope:", layout="wide")
 
-# Global CSS 
-st.markdown(
-    """
-    <style>
-
-    div.stExpander + div.stElementContainer .stMarkdown {
-        padding: 1rem;
-    }
-        
-    h3 {
-        padding: 1rem;
-    }
-
-    .stForm {
-        padding: 1rem;
-        margin-top: 1rem;
-    }
-
-    .stVerticalBlock {
-        gap: 1rem;
-    }
-    
-    p {
-        text-align: justify; 
-    }
-
-    .stMainBlockContainer img {
-        border-radius: 10px;
-    }
-    
-    .stMainBlockContainer {
-        padding-top: 3rem;
-    }
-
-    .stLogo {
-        margin: 1rem auto;
-        height: 28px;
-    }
-
-    .stFormSubmitButton, .stButton, .stDownloadButton {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-top: 2rem;
-        margin-bottom: 1rem;
-    }
-
-    .stFormSubmitButton button, .stButton button, .stDownloadButton button {
-        padding: 0.5rem 1rem;
-        background: rgba(18, 88, 142, 0.8);
-        color: #fff !important;
-    }
-    
-    .stFormSubmitButton button:hover, 
-    .stFormSubmitButton button:active, 
-    .stFormSubmitButton button:focus, 
-    .stButton button:hover, 
-    .stButton button:active, 
-    .stButton button:focus, 
-    .stDownloadButton button:hover, 
-    .stDownloadButton button:active, 
-    .stDownloadButton button:focus {
-        padding: 0.5rem 1rem;
-        background: rgba(18, 88, 142, 0.6);
-        color: #fff !important;
-    }
-    
-    .centered-image {
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-        width: 50%;
-    }
-
-    .stElementContainer:has(img) {
-        display: flex;
-        justify-content: center;
-    }
-    
-    div[role="radiogroup"][aria-label="License"] {
-        margin-bottom: 0.9rem;
-    }
-
-    div[data-testid="stImageCaption"] {
-        color: #000;
-        font-size: 16px;
-        
-    }
-
-    .stExpander details {
-        padding-bottom: 3rem;
-    }
-
-    .stExpander details summary {
-        padding-bottom: 0rem;
-    }
-
-    .stExpander details summary span {
-        padding-right: 2rem;
-        padding-left: 3rem;
-        padding-top: 2rem;
-    }
-
-    div[data-testid="stExpanderDetails"] {
-        padding-right: 3rem;
-        padding-left: 3rem;
-        padding-top: 1rem;
-    }
-
-    details summary span [data-testid="stMarkdownContainer"] {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-    }
-    
-    details summary span [data-testid="stMarkdownContainer"] p:first-of-type {
-        grid-column: span 3; 
-        font-size: 20px; 
-        padding-bottom: 1rem; 
-        text-align: justify; 
-    }
-    
-    details summary span [data-testid="stMarkdownContainer"] p:nth-of-type(2) {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 1rem; 
-        font-size: 16px;
-        text-align: left;
-    }
-
-    details summary span [data-testid="stMarkdownContainer"] p:nth-of-type(2) em {
-        font-weight: 400; 
-    }
-
-    .stMainBlockContainer  div[data-testid="stVerticalBlockBorderWrapper"] .st-emotion-cache-1wmy9hl .e1f1d6gn1 {
-        margin: 1rem;
-    }
-
-    stForm .stMainBlockContainer  div[data-testid="stVerticalBlockBorderWrapper"] .st-emotion-cache-1wmy9hl .e1f1d6gn1 {
-        margin: 0rem;
-    }
-
-    .stExpander .st-emotion-cache-1wmy9hl .e1f1d6gn1 {
-        margin: 0rem;
-    }
-
-    .stMainBlockContainer div[data-testid="stVerticalBlockBorderWrapper"] .st-emotion-cache-1wmy9hl .e1f1d6gn .stVerticalBlock {
-        gap: 1rem;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
 
 if 'search_executed' not in st.session_state:
     st.session_state['search_executed'] = False
@@ -232,6 +79,40 @@ anatomical_label_dict = {
      'upper_limb': 'Upper Limb',
      'lower_limb': 'Lower Limb'
 }
+
+
+team_members = [
+    {
+        "name": "Mauro Nievas Offidani",
+        "title": "MD, MSc, Data Scientist",
+        "linkedin": "https://www.linkedin.com/in/mauronievasoffidani/",
+        "image": "team/mauro-nievas-offidani.png",
+    },
+    {
+        "name": "María Carolina González Galtier",
+        "title": "MD, MA, Data Analyst",
+        "linkedin": "https://www.linkedin.com/in/carogaltier/",
+        "image": "team/carolina-gonzalez-galtier.png",
+    },
+    {
+        "name": "Miguel Massiris",
+        "title": "Role Description",
+        "linkedin": "#",
+        "image": "team/team-user.png",
+    },
+    {
+        "name": "Facundo Roffet",
+        "title": "Role Description",
+        "linkedin": "#",
+        "image": "team/team-user.png",
+    },
+    {
+        "name": "Claudio Delrieux",
+        "title": "Role Description",
+        "linkedin": "#",
+        "image": "team/team-user.png",
+    },
+]
 
 @st.cache_data
 def load_image_metadata(file_folder):
@@ -608,12 +489,170 @@ elif selected == "About":
         """
     )
     st.subheader("Our Team")
-    st.write(
-        """
-        - Mauro Nievas Offidani, MD, MSc (https://www.linkedin.com/in/mauronievasoffidani/): Data Curation
-        - María Carolina González Galtier, MD, MA (https://www.linkedin.com/in/carogaltier/): Web Development
-        - Miguel Massiris (...): Web Development
-        - Facundo Roffet (...): ML Model Development
-        - Claudio Delrieux, PhD (...): Project Direction
-        """
-    )
+    row1, row2 = st.columns([3, 2])
+    with row1:
+        for member in team_members[:3]:
+            st.image(member["image"], width=150, caption=member["name"])
+            st.markdown(f"[**{member['name']}**]({member['linkedin']})", unsafe_allow_html=True)
+            st.caption(member["title"])
+
+    with row2:
+        for member in team_members[3:]:
+            st.image(member["image"], width=150, caption=member["name"])
+            st.markdown(f"[**{member['name']}**]({member['linkedin']})", unsafe_allow_html=True)
+            st.caption(member["title"])
+
+
+# Global CSS 
+st.markdown(
+    """
+    <style>
+
+    div.stExpander + div.stElementContainer .stMarkdown {
+        padding: 1rem;
+    }
+        
+    h3 {
+        padding: 1rem;
+    }
+
+    .stForm {
+        padding: 1rem;
+        margin-top: 1rem;
+    }
+
+    .stVerticalBlock {
+        gap: 1rem;
+    }
+    
+    p {
+        text-align: justify; 
+    }
+
+    .stMainBlockContainer img {
+        border-radius: 10px;
+    }
+    
+    .stMainBlockContainer {
+        padding-top: 3rem;
+    }
+
+    .stLogo {
+        margin: 1rem auto;
+        height: 28px;
+    }
+
+    .stFormSubmitButton, .stButton, .stDownloadButton {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    .stFormSubmitButton button, .stButton button, .stDownloadButton button {
+        padding: 0.5rem 1rem;
+        background: rgba(18, 88, 142, 0.8);
+        color: #fff !important;
+    }
+    
+    .stFormSubmitButton button:hover, 
+    .stFormSubmitButton button:active, 
+    .stFormSubmitButton button:focus, 
+    .stButton button:hover, 
+    .stButton button:active, 
+    .stButton button:focus, 
+    .stDownloadButton button:hover, 
+    .stDownloadButton button:active, 
+    .stDownloadButton button:focus {
+        padding: 0.5rem 1rem;
+        background: rgba(18, 88, 142, 0.6);
+        color: #fff !important;
+    }
+    
+    .centered-image {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 50%;
+    }
+
+    .stElementContainer:has(img) {
+        display: flex;
+        justify-content: center;
+    }
+    
+    div[role="radiogroup"][aria-label="License"] {
+        margin-bottom: 0.9rem;
+    }
+
+    div[data-testid="stImageCaption"] {
+        color: #000;
+        font-size: 16px;
+        
+    }
+
+    .stExpander details {
+        padding-bottom: 3rem;
+    }
+
+    .stExpander details summary {
+        padding-bottom: 0rem;
+    }
+
+    .stExpander details summary span {
+        padding-right: 2rem;
+        padding-left: 3rem;
+        padding-top: 2rem;
+    }
+
+    div[data-testid="stExpanderDetails"] {
+        padding-right: 3rem;
+        padding-left: 3rem;
+        padding-top: 1rem;
+    }
+
+    details summary span [data-testid="stMarkdownContainer"] {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    details summary span [data-testid="stMarkdownContainer"] p:first-of-type {
+        grid-column: span 3; 
+        font-size: 20px; 
+        padding-bottom: 1rem; 
+        text-align: justify; 
+    }
+    
+    details summary span [data-testid="stMarkdownContainer"] p:nth-of-type(2) {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem; 
+        font-size: 16px;
+        text-align: left;
+    }
+
+    details summary span [data-testid="stMarkdownContainer"] p:nth-of-type(2) em {
+        font-weight: 400; 
+    }
+
+    .stMainBlockContainer  div[data-testid="stVerticalBlockBorderWrapper"] .st-emotion-cache-1wmy9hl .e1f1d6gn1 {
+        margin: 1rem;
+    }
+
+    stForm .stMainBlockContainer  div[data-testid="stVerticalBlockBorderWrapper"] .st-emotion-cache-1wmy9hl .e1f1d6gn1 {
+        margin: 0rem;
+    }
+
+    .stExpander .st-emotion-cache-1wmy9hl .e1f1d6gn1 {
+        margin: 0rem;
+    }
+
+    .stMainBlockContainer div[data-testid="stVerticalBlockBorderWrapper"] .st-emotion-cache-1wmy9hl .e1f1d6gn .stVerticalBlock {
+        gap: 1rem;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
