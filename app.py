@@ -489,18 +489,23 @@ elif selected == "About":
         """
     )
     st.subheader("Our Team")
-    row1, row2 = st.columns([3, 2])
-    with row1:
-        for member in team_members[:3]:
-            st.image(member["image"], width=150, caption=member["name"])
+    columns = st.columns([1, 3, 1, 3, 1, 3, 1])
+    
+    for i, member in enumerate(team_members[:3]):
+        with columns[i * 2 + 1]:
+            st.image(member["image"])
+            st.markdown(f"[**{member['name']}**]({member['linkedin']})", unsafe_allow_html=True)
+            st.caption(member["title"])
+    
+    # Segunda fila para los últimos dos miembros
+    columns = st.columns([1, 3, 1, 3, 1])
+    
+    for i, member in enumerate(team_members[3:]):
+        with columns[i * 2 + 1]:
+            st.image(member["image"])
             st.markdown(f"[**{member['name']}**]({member['linkedin']})", unsafe_allow_html=True)
             st.caption(member["title"])
 
-    with row2:
-        for member in team_members[3:]:
-            st.image(member["image"], width=150, caption=member["name"])
-            st.markdown(f"[**{member['name']}**]({member['linkedin']})", unsafe_allow_html=True)
-            st.caption(member["title"])
 
 
 # Global CSS 
