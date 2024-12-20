@@ -86,13 +86,13 @@ team_members = [
         "name": "Mauro Nievas Offidani",
         "title": "MD, MSc, Data Scientist",
         "linkedin": "https://www.linkedin.com/in/mauronievasoffidani/",
-        "image": "team/mauro-nievas-offidani.PNG",
+        "image": "/team/mauro-nievas-offidani.png",
     },
     {
         "name": "María Carolina González Galtier",
         "title": "MD, MA, Data Analyst",
         "linkedin": "https://www.linkedin.com/in/carogaltier/",
-        "image": "/team/carolina-gonzalez-galtier.PNG",
+        "image": "/team/carolina-gonzalez-galtier.png",
     },
     {
         "name": "Miguel Massiris",
