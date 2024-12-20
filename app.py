@@ -494,8 +494,8 @@ elif selected == "About":
     for i, member in enumerate(team_members[:3]):
         with columns[i * 2 + 1]:
             st.image(member["image"])
-            st.markdown(f"[**{member['name']}**]({member['linkedin']})", unsafe_allow_html=True)
-            st.caption(member["title"])
+            st.markdown(f"<div style='text-align: center;'>[**{member['name']}**]({member['linkedin']})</div>", unsafe_allow_html=True)
+            st.markdown(f"<div style='text-align: center;'>{member['title']}</div>", unsafe_allow_html=True)
     
     # Segunda fila para los últimos dos miembros
     columns = st.columns([3, 3, 1, 3, 3])
@@ -503,9 +503,8 @@ elif selected == "About":
     for i, member in enumerate(team_members[3:]):
         with columns[i * 2 + 1]:
             st.image(member["image"])
-            st.markdown(f"[**{member['name']}**]({member['linkedin']})", unsafe_allow_html=True)
-            st.caption(member["title"])
-
+            st.markdown(f"<div style='text-align: center;'>[**{member['name']}**]({member['linkedin']})</div>", unsafe_allow_html=True)
+            st.markdown(f"<div style='text-align: center; color=rgba(49, 51, 63, 0.6); font-size=14px;>{member['title']}</div>", unsafe_allow_html=True)
 
 
 # Global CSS 
