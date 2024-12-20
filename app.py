@@ -96,14 +96,14 @@ team_members = [
     },
     {
         "name": "Miguel Massiris",
-        "title": "Role Description",
-        "linkedin": "Electronic Engineer, AI Researcher",
+        "title": "Electronic Engineer, AI Researcher",
+        "linkedin": "https://www.linkedin.com/in/miguel-massiris/",
         "image": "team/miguel-massiris.png",
     },
     {
         "name": "Facundo Roffet",
-        "title": "Role Description",
-        "linkedin": "Electronic Engineer",
+        "title": "Electronic Engineer",
+        "linkedin": "https://www.linkedin.com/in/facu-roffet/",
         "image": "team/facundo-roffet.png",
     },
     {
