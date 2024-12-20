@@ -86,31 +86,31 @@ team_members = [
         "name": "Mauro Nievas Offidani",
         "title": "MD, MSc, Data Scientist",
         "linkedin": "https://www.linkedin.com/in/mauronievasoffidani/",
-        "image": "team/mauro-nievas-offidani.png",
+        "image": "team/mauro-nievas-offidani.PNG",
     },
     {
         "name": "María Carolina González Galtier",
         "title": "MD, MA, Data Analyst",
         "linkedin": "https://www.linkedin.com/in/carogaltier/",
-        "image": "team/carolina-gonzalez-galtier.png",
+        "image": "/team/carolina-gonzalez-galtier.PNG",
     },
     {
         "name": "Miguel Massiris",
         "title": "Role Description",
         "linkedin": "#",
-        "image": "team/team-user.png",
+        "image": "/team/team-user.png",
     },
     {
         "name": "Facundo Roffet",
         "title": "Role Description",
         "linkedin": "#",
-        "image": "team/team-user.png",
+        "image": "/team/team-user.png",
     },
     {
         "name": "Claudio Delrieux",
         "title": "Role Description",
         "linkedin": "#",
-        "image": "team/team-user.png",
+        "image": "/team/team-user.png",
     },
 ]
 
