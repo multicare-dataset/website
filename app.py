@@ -241,6 +241,28 @@ def full_word_match(text, word):
     # Use regex with word boundaries for full-word match
     return re.search(rf'\b{re.escape(word.lower())}\b', text) is not None
 
+def highlight_text(text, query, highlight_class='case-highlight'):
+    """
+    Devuelve el texto con las palabras de la query resaltadas.
+    Se resaltan solo las condiciones AND (o por defecto), no las NOT.
+    """
+    parsed_list = parse_search_string(query)
+    # Para simplificar, se resalta todo lo que no esté bajo NOT.
+    # Las condiciones "AND" las tratamos resaltando cada término.
+    # Cada condición puede tener varios términos separados por OR.
+    # Se resaltarán todos esos términos.
+    
+    for condition in parsed_list:
+        if condition['operator'] == "AND":
+            for sub in condition['substring']:
+                # Resaltar usando regex full-word, case-insensitive
+                pattern = rf'(?i)\b({re.escape(sub)})\b'
+                replacement = f"<mark class='{highlight_class}'>\\1</mark>"
+                text = re.sub(pattern, replacement, text, flags=re.IGNORECASE)
+        # NOT: No se resaltan, simplemente no se hace nada.
+    return text
+
+
 
 # ---------- STREAMLIT CODE --------------
 with st.sidebar:
@@ -413,7 +435,9 @@ elif selected == "Search":
                     with st.expander(f"**{row['title']}** \n\n **_Case ID:_ {row['case_id']}** **_Gender:_ {row['gender']}** **_Age:_ {age}**"):
                         st.divider()
                         st.markdown("#### Case Description", unsafe_allow_html=True)
-                        st.write(f"{row['case_text']}")
+                        highlighted_text = highlight_text(row['case_text'], st.session_state.filter_dict['case_search'], highlight_class='case-highlight')
+                        st.markdown(highlighted_text, unsafe_allow_html=True)
+                        #st.write(f"{row['case_text']}")
                         st.divider()
                         st.write(f"**Source**: _{row['citation']}_")
 
@@ -657,6 +681,18 @@ st.markdown(
     .stMainBlockContainer div[data-testid="stVerticalBlockBorderWrapper"] .st-emotion-cache-1wmy9hl .e1f1d6gn .stVerticalBlock {
         gap: 1rem;
     }
+
+
+    .case-highlight {
+        background-color: yellow;
+        color: black;
+    }
+    .caption-highlight {
+        background-color: lightblue;
+        color: black;
+    }
+
+    
     </style>
     """,
     unsafe_allow_html=True,
