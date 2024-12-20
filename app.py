@@ -452,7 +452,6 @@ elif selected == "Search":
                         st.divider()
                         st.markdown("#### Case Description")
                         st.markdown(highlighted_case_text, unsafe_allow_html=True)
-                        #st.write(f"{row['case_text']}")
                         st.markdown("#### Images")
                         
                         images_list = list(case_['images'].items())
@@ -462,7 +461,6 @@ elif selected == "Search":
                             for idx, (file_name, caption) in enumerate(pair):
                                 with cols[idx]:
                                     highlighted_caption = highlight_text(caption, st.session_state.filter_dict['caption_search'], highlight_class='caption-highlight')
-                                    #st.image(f"img/{file_name}", caption=caption)
                                     st.image(f"img/{file_name}")
                                     st.markdown(f"<p style='text-align: center; font-weight: 600;'>{highlighted_caption}</p>", unsafe_allow_html=True)
                             
@@ -476,11 +474,14 @@ elif selected == "Search":
                     for idx, image_dict in enumerate(pair):
                         row = cases_df[cases_df.case_id == image_dict['case_id']].iloc[0]
                         age = int(row['age']) if not pd.isna(row['age']) else "Unknown"
+                        highlighted_caption = highlight_text(image_dict['caption'], st.session_state.filter_dict['caption_search'], highlight_class='caption-highlight')
                         with cols[idx]: 
                             with st.container(border=True):
-                                st.image(f"img/{image_dict['file']}", caption=image_dict['caption'])
+                                
+                                #st.image(f"img/{image_dict['file']}", caption=image_dict['caption'])
+                                st.image(f"img/{image_dict['file']}")
+                                st.markdown(f"<p style='text-align: center; font-weight: 600;'>{highlighted_caption}</p>", unsafe_allow_html=True)
                                 st.write(f"_Case ID:_ **{row['case_id']}** | _Gender:_ **{row['gender']}**  | _Age:_ **{age}**")
-
                                 st.write(f"**Source**: _{row['citation']}_")
     
             col1, col2, col3 = st.columns([1, 3, 1])
