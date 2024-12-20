@@ -492,7 +492,7 @@ elif selected == "About":
     row1, row2 = st.columns([3, 2])
     with row1:
         for member in team_members[:3]:
-            st.image(member["image"], width=150, caption=member["name"])
+            st.image('team/team-user.png', width=150, caption=member["name"])
             st.markdown(f"[**{member['name']}**]({member['linkedin']})", unsafe_allow_html=True)
             st.caption(member["title"])
 
