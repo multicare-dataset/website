@@ -86,31 +86,31 @@ team_members = [
         "name": "Mauro Nievas Offidani",
         "title": "MD, MSc, Data Scientist",
         "linkedin": "https://www.linkedin.com/in/mauronievasoffidani/",
-        "image": "/team/mauro-nievas-offidani.png",
+        "image": "team/mauro-nievas-offidani.png",
     },
     {
         "name": "María Carolina González Galtier",
         "title": "MD, MA, Data Analyst",
         "linkedin": "https://www.linkedin.com/in/carogaltier/",
-        "image": "/team/carolina-gonzalez-galtier.png",
+        "image": "team/carolina-gonzalez-galtier.png",
     },
     {
         "name": "Miguel Massiris",
         "title": "Role Description",
         "linkedin": "#",
-        "image": "/team/team-user.png",
+        "image": "team/team-user.png",
     },
     {
         "name": "Facundo Roffet",
         "title": "Role Description",
         "linkedin": "#",
-        "image": "/team/team-user.png",
+        "image": "team/team-user.png",
     },
     {
         "name": "Claudio Delrieux",
         "title": "Role Description",
         "linkedin": "#",
-        "image": "/team/team-user.png",
+        "image": "team/team-user.png",
     },
 ]
 
@@ -492,7 +492,7 @@ elif selected == "About":
     row1, row2 = st.columns([3, 2])
     with row1:
         for member in team_members[:3]:
-            st.image('team/team-user.png', width=150, caption=member["name"])
+            st.image(member["image"], width=150, caption=member["name"])
             st.markdown(f"[**{member['name']}**]({member['linkedin']})", unsafe_allow_html=True)
             st.caption(member["title"])
 
