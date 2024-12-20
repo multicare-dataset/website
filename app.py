@@ -396,7 +396,8 @@ elif selected == "Search":
         }
         if filter_dict != st.session_state.filter_dict:
             st.session_state.filter_dict = filter_dict
-        st.rerun()
+        if st.session_state.filter_dict != st.session_state.filter_dict:
+            st.session_state.filter_dict = st.session_state.filter_dict
         st.session_state.search_executed = True
         st.session_state.page_number = 1
         elements_per_page = 10
