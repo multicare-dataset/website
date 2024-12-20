@@ -494,8 +494,8 @@ elif selected == "About":
     for i, member in enumerate(team_members[:3]):
         with columns[i * 2 + 1]:
             st.image(member["image"])
-            st.markdown(f"<div style='text-align: center;'>[**{member['name']}**]({member['linkedin']})</div>", unsafe_allow_html=True)
-            st.markdown(f"<div style='text-align: center;'>{member['title']}</div>", unsafe_allow_html=True)
+            st.markdown(f"<p style='text-align: center;'><a href='{member['linkedin']}' target='_blank'><strong>{member['name']}</strong></a></p>", unsafe_allow_html=True)
+            st.markdown(f"<p style='text-align: center;'>{member['title']}</p>", unsafe_allow_html=True)
     
     # Segunda fila para los últimos dos miembros
     columns = st.columns([3, 3, 1, 3, 3])
