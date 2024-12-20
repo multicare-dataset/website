@@ -498,7 +498,7 @@ elif selected == "About":
             st.caption(member["title"])
     
     # Segunda fila para los últimos dos miembros
-    columns = st.columns([1, 3, 1, 3, 1])
+    columns = st.columns([3, 3, 1, 3, 3])
     
     for i, member in enumerate(team_members[3:]):
         with columns[i * 2 + 1]:
