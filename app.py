@@ -494,7 +494,7 @@ elif selected == "About":
     for i, member in enumerate(team_members[:3]):
         with columns[i * 2 + 1]:
             st.image(member["image"])
-            st.markdown(f"<p style='text-align: center; text-decoration: none;'><a href='{member['linkedin']}' target='_blank' style='text-decoration: none; color: inherit;'>{member['name']}</a></p>", unsafe_allow_html=True)
+            st.markdown(f"<p style='text-align: center; text-decoration: none; color: rgb(0, 104, 201);'><a href='{member['linkedin']}' target='_blank' style='text-decoration: none; color: inherit;'>{member['name']}</a></p>", unsafe_allow_html=True)
             st.markdown(f"<p style='text-align: center; color: rgba(49, 51, 63, 0.6); font-size: 14px;'>{member['title']}</p>", unsafe_allow_html=True)
     
     # Segunda fila para los últimos dos miembros
@@ -503,7 +503,7 @@ elif selected == "About":
     for i, member in enumerate(team_members[3:]):
         with columns[i * 2 + 1]:
             st.image(member["image"])
-            st.markdown(f"<p style='text-align: center; text-decoration: none;'><a href='{member['linkedin']}' target='_blank' style='text-decoration: none; color: inherit;'>{member['name']}</a></p>", unsafe_allow_html=True)
+            st.markdown(f"<p style='text-align: center; text-decoration: none; color: rgb(0, 104, 201);'><a href='{member['linkedin']}' target='_blank' style='text-decoration: none; color: inherit;'>{member['name']}</a></p>", unsafe_allow_html=True)
             st.markdown(f"<p style='text-align: center; color: rgba(49, 51, 63, 0.6); font-size: 14px;'>{member['title']}</p>", unsafe_allow_html=True)
 
 
