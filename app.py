@@ -43,8 +43,8 @@ if 'filter_dict' not in st.session_state:
         'resource_type': 'text',
     }
 
-if "filter_dict" in st.session_state:
-    st.session_state.filter_dict = st.session_state.filter_dict
+# if "filter_dict" in st.session_state:
+#     st.session_state.filter_dict = st.session_state.filter_dict
 
 label_dict = {
     'ct': 'CT scan',
@@ -464,6 +464,7 @@ elif selected == "Search":
                                     highlighted_caption = highlight_text(caption, st.session_state.filter_dict['caption_search'], highlight_class='caption-highlight')
                                     #st.image(f"img/{file_name}", caption=caption)
                                     st.image(f"img/{file_name}")
+                                    highlighted_caption = f"<p style='text-align: center; font-weight: 600;'>{highlight_text(caption, query, 'caption-highlight')}</p>"
                                     st.markdown(highlighted_caption, unsafe_allow_html=True)
                             
                         st.divider()
@@ -624,8 +625,7 @@ st.markdown(
 
     div[data-testid="stImageCaption"] {
         color: #000;
-        font-size: 16px;
-        
+        font-size: 16px;     
     }
 
     .stExpander details {
