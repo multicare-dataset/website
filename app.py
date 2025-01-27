@@ -503,10 +503,9 @@ elif selected == "About":
     st.subheader("Useful Links")
     st.write(
         """
-        - GitHub Repository: (...) [link]
-        - Zenodo Data Repository: (...) [link]
-        - Image Classification Model: [https://huggingface.co/mauro-nievoff/MultiCaReClassifier]
-        - Taxonomy Documentation: (...) [link]
+        - [GitHub Repository](https://github.com/mauro-nievoff/MultiCaRe_Dataset)
+        - [Zenodo Data Repository](https://zenodo.org/records/13936721)
+        - [Image Classification Model](https://huggingface.co/mauro-nievoff/MultiCaReClassifier)
         """
     )
     st.subheader("Our Team")
