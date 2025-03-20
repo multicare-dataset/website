@@ -38,7 +38,7 @@ if 'filter_dict' not in st.session_state:
         'anatomical_region_label': None,
         'caption_search': '',
         'min_year': 2014,
-        'max_year': 2024,
+        'max_year': 2025,
         'license': 'all',
         'resource_type': 'text',
     }
