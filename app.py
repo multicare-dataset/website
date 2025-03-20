@@ -306,7 +306,7 @@ elif selected == "Search":
             min_year, max_year = st.slider(
                 "Year", 
                 1990, 
-                2024, 
+                2025, 
                 (st.session_state['filter_dict']['min_year'], st.session_state['filter_dict']['max_year'])
             )
             resource = st.selectbox(
