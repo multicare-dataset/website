@@ -494,9 +494,9 @@ elif selected == "About":
     st.write(
         """
         MultiCaRe is a dataset containing clinical cases, labeled images, and captions, 
-        all extracted from open-access case reports in PubMed Central. It is derived from over 85,000 
-        case report articles, involving more than 320,000 authors and 110,000 patients. The dataset 
-        is designed for healthcare professionals, medical students, and data scientists.
+        all extracted from open-access case reports in PubMed Central. It is derived from 
+        over 72,000 case report articles, involving more than 280,000 authors and 93,000 patients. 
+        The dataset is designed for healthcare professionals, medical students, and data scientists.
         """
     )
 
@@ -504,7 +504,7 @@ elif selected == "About":
     st.write(
         """
         - [GitHub Repository](https://github.com/mauro-nievoff/MultiCaRe_Dataset)
-        - [Zenodo Data Repository](https://zenodo.org/records/13936721)
+        - [Zenodo Data Repository](https://zenodo.org/records/14994046)
         - [Image Classification Model](https://huggingface.co/mauro-nievoff/MultiCaReClassifier)
         """
     )
