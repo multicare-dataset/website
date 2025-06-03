@@ -531,7 +531,7 @@ elif selected == "About":
 st.markdown(
     """
     <style>
-    .stTextInput div[data-baseweb="input"] div[data-testid="stMarkdownContainer"] {
+    div[data-testid="InputInstructions"] {
         display: none !important;
     }
     
