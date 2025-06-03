@@ -531,13 +531,8 @@ elif selected == "About":
 st.markdown(
     """
     <style>
-    div[role="form"] p,
-    div[role="form"] label,
-    div[role="form"] .stMarkdown {
-        display: none !important;
-    }
-    div[role="form"] [data-testid="stMarkdownContainer"] {
-        display: none !important;
+    .stButton button[kind="formSubmit"] {
+        width: 100%;
     }
     
     div.stExpander + div.stElementContainer .stMarkdown {
