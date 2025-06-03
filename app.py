@@ -531,7 +531,9 @@ elif selected == "About":
 st.markdown(
     """
     <style>
-
+    .css-pxxe24 {
+    visibility: hidden;
+    }
     div.stExpander + div.stElementContainer .stMarkdown {
         padding: 1rem;
     }
