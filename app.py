@@ -7,6 +7,7 @@ from streamlit_option_menu import option_menu
 
 # Streamlit page configuration
 st.set_page_config(page_title="Clinical Case Hub", page_icon=":stethoscope:", layout="wide")
+
 # Global CSS 
 st.markdown(
     """
