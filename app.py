@@ -7,7 +7,173 @@ from streamlit_option_menu import option_menu
 
 # Streamlit page configuration
 st.set_page_config(page_title="Clinical Case Hub", page_icon=":stethoscope:", layout="wide")
+# Global CSS 
+st.markdown(
+    """
+    <style>
+    div[data-testid="InputInstructions"] {
+        display: none !important;
+    }
+    
+    div.stExpander + div.stElementContainer .stMarkdown {
+        padding: 1rem;
+    }
+        
+    h3 {
+        padding: 1rem;
+    }
 
+    .stForm {
+        padding: 1rem;
+        margin-top: 1rem;
+    }
+
+    .stVerticalBlock {
+        gap: 1rem;
+    }
+    
+    p {
+        text-align: justify; 
+    }
+
+    .stMainBlockContainer img {
+        border-radius: 10px;
+    }
+    
+    .stMainBlockContainer {
+        padding-top: 3rem;
+    }
+
+    .stLogo {
+        margin: 1rem auto;
+        height: 28px;
+    }
+
+    .stFormSubmitButton, .stButton, .stDownloadButton {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    .stFormSubmitButton button, .stButton button, .stDownloadButton button {
+        padding: 0.5rem 1rem;
+        background: rgba(18, 88, 142, 0.8);
+        color: #fff !important;
+    }
+    
+    .stFormSubmitButton button:hover, 
+    .stFormSubmitButton button:active, 
+    .stFormSubmitButton button:focus, 
+    .stButton button:hover, 
+    .stButton button:active, 
+    .stButton button:focus, 
+    .stDownloadButton button:hover, 
+    .stDownloadButton button:active, 
+    .stDownloadButton button:focus {
+        padding: 0.5rem 1rem;
+        background: rgba(18, 88, 142, 0.6);
+        color: #fff !important;
+    }
+    
+    .centered-image {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 50%;
+    }
+
+    .stElementContainer:has(img) {
+        display: flex;
+        justify-content: center;
+    }
+    
+    div[role="radiogroup"][aria-label="License"] {
+        margin-bottom: 0.9rem;
+    }
+
+    div[data-testid="stImageCaption"] {
+        color: #000;
+        font-size: 16px;     
+    }
+
+    .stExpander details {
+        padding-bottom: 3rem;
+    }
+
+    .stExpander details summary {
+        padding-bottom: 0rem;
+    }
+
+    .stExpander details summary span {
+        padding-right: 2rem;
+        padding-left: 3rem;
+        padding-top: 2rem;
+    }
+
+    div[data-testid="stExpanderDetails"] {
+        padding-right: 3rem;
+        padding-left: 3rem;
+        padding-top: 1rem;
+    }
+
+    details summary span [data-testid="stMarkdownContainer"] {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    details summary span [data-testid="stMarkdownContainer"] p:first-of-type {
+        grid-column: span 3; 
+        font-size: 20px; 
+        padding-bottom: 1rem; 
+        text-align: justify; 
+    }
+    
+    details summary span [data-testid="stMarkdownContainer"] p:nth-of-type(2) {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem; 
+        font-size: 16px;
+        text-align: left;
+    }
+
+    details summary span [data-testid="stMarkdownContainer"] p:nth-of-type(2) em {
+        font-weight: 400; 
+    }
+
+    .stMainBlockContainer  div[data-testid="stVerticalBlockBorderWrapper"] .st-emotion-cache-1wmy9hl .e1f1d6gn1 {
+        margin: 1rem;
+    }
+
+    stForm .stMainBlockContainer  div[data-testid="stVerticalBlockBorderWrapper"] .st-emotion-cache-1wmy9hl .e1f1d6gn1 {
+        margin: 0rem;
+    }
+
+    .stExpander .st-emotion-cache-1wmy9hl .e1f1d6gn1 {
+        margin: 0rem;
+    }
+
+    .stMainBlockContainer div[data-testid="stVerticalBlockBorderWrapper"] .st-emotion-cache-1wmy9hl .e1f1d6gn .stVerticalBlock {
+        gap: 1rem;
+    }
+
+
+    .case-highlight {
+        background-color: #FFF6A7;
+        color: black;
+    }
+    .caption-highlight {
+        background-color: #bfe6ff;
+        color: black;
+    }
+
+    
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
 
 if 'search_executed' not in st.session_state:
     st.session_state['search_executed'] = False
@@ -528,170 +694,4 @@ elif selected == "About":
             st.markdown(f"<p style='text-align: center; color: rgba(49, 51, 63, 0.6); font-size: 14px;'>{member['title']}</p>", unsafe_allow_html=True)
 
 
-# Global CSS 
-st.markdown(
-    """
-    <style>
-    div[data-testid="InputInstructions"] {
-        display: none !important;
-    }
-    
-    div.stExpander + div.stElementContainer .stMarkdown {
-        padding: 1rem;
-    }
-        
-    h3 {
-        padding: 1rem;
-    }
 
-    .stForm {
-        padding: 1rem;
-        margin-top: 1rem;
-    }
-
-    .stVerticalBlock {
-        gap: 1rem;
-    }
-    
-    p {
-        text-align: justify; 
-    }
-
-    .stMainBlockContainer img {
-        border-radius: 10px;
-    }
-    
-    .stMainBlockContainer {
-        padding-top: 3rem;
-    }
-
-    .stLogo {
-        margin: 1rem auto;
-        height: 28px;
-    }
-
-    .stFormSubmitButton, .stButton, .stDownloadButton {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-top: 2rem;
-        margin-bottom: 1rem;
-    }
-
-    .stFormSubmitButton button, .stButton button, .stDownloadButton button {
-        padding: 0.5rem 1rem;
-        background: rgba(18, 88, 142, 0.8);
-        color: #fff !important;
-    }
-    
-    .stFormSubmitButton button:hover, 
-    .stFormSubmitButton button:active, 
-    .stFormSubmitButton button:focus, 
-    .stButton button:hover, 
-    .stButton button:active, 
-    .stButton button:focus, 
-    .stDownloadButton button:hover, 
-    .stDownloadButton button:active, 
-    .stDownloadButton button:focus {
-        padding: 0.5rem 1rem;
-        background: rgba(18, 88, 142, 0.6);
-        color: #fff !important;
-    }
-    
-    .centered-image {
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-        width: 50%;
-    }
-
-    .stElementContainer:has(img) {
-        display: flex;
-        justify-content: center;
-    }
-    
-    div[role="radiogroup"][aria-label="License"] {
-        margin-bottom: 0.9rem;
-    }
-
-    div[data-testid="stImageCaption"] {
-        color: #000;
-        font-size: 16px;     
-    }
-
-    .stExpander details {
-        padding-bottom: 3rem;
-    }
-
-    .stExpander details summary {
-        padding-bottom: 0rem;
-    }
-
-    .stExpander details summary span {
-        padding-right: 2rem;
-        padding-left: 3rem;
-        padding-top: 2rem;
-    }
-
-    div[data-testid="stExpanderDetails"] {
-        padding-right: 3rem;
-        padding-left: 3rem;
-        padding-top: 1rem;
-    }
-
-    details summary span [data-testid="stMarkdownContainer"] {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-    }
-    
-    details summary span [data-testid="stMarkdownContainer"] p:first-of-type {
-        grid-column: span 3; 
-        font-size: 20px; 
-        padding-bottom: 1rem; 
-        text-align: justify; 
-    }
-    
-    details summary span [data-testid="stMarkdownContainer"] p:nth-of-type(2) {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 1rem; 
-        font-size: 16px;
-        text-align: left;
-    }
-
-    details summary span [data-testid="stMarkdownContainer"] p:nth-of-type(2) em {
-        font-weight: 400; 
-    }
-
-    .stMainBlockContainer  div[data-testid="stVerticalBlockBorderWrapper"] .st-emotion-cache-1wmy9hl .e1f1d6gn1 {
-        margin: 1rem;
-    }
-
-    stForm .stMainBlockContainer  div[data-testid="stVerticalBlockBorderWrapper"] .st-emotion-cache-1wmy9hl .e1f1d6gn1 {
-        margin: 0rem;
-    }
-
-    .stExpander .st-emotion-cache-1wmy9hl .e1f1d6gn1 {
-        margin: 0rem;
-    }
-
-    .stMainBlockContainer div[data-testid="stVerticalBlockBorderWrapper"] .st-emotion-cache-1wmy9hl .e1f1d6gn .stVerticalBlock {
-        gap: 1rem;
-    }
-
-
-    .case-highlight {
-        background-color: #FFF6A7;
-        color: black;
-    }
-    .caption-highlight {
-        background-color: #bfe6ff;
-        color: black;
-    }
-
-    
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
