@@ -392,18 +392,18 @@ elif selected == "Search":
         st.session_state.page_number = 1
         elements_per_page = 10
 
-    filter_dict = st.session_state['filter_dict']
-    min_year = filter_dict['min_year']
-    max_year = filter_dict['max_year']
-    resource = filter_dict['resource_type']
-    min_age = filter_dict['min_age']
-    max_age = filter_dict['max_age']
-    gender = filter_dict['gender']
-    case_search = filter_dict['case_search']
-    caption_search = filter_dict['caption_search']
-    image_type_label = filter_dict['image_type_label']
-    anatomical_region_label = filter_dict['anatomical_region_label']
-    license = filter_dict['license']
+        filter_dict = st.session_state['filter_dict']
+        min_year = filter_dict['min_year']
+        max_year = filter_dict['max_year']
+        resource = filter_dict['resource_type']
+        min_age = filter_dict['min_age']
+        max_age = filter_dict['max_age']
+        gender = filter_dict['gender']
+        case_search = filter_dict['case_search']
+        caption_search = filter_dict['caption_search']
+        image_type_label = filter_dict['image_type_label']
+        anatomical_region_label = filter_dict['anatomical_region_label']
+        license = filter_dict['license']
         
     if "filter_dict" in st.session_state and st.session_state.search_executed: 
         st.subheader("Seach Results")
