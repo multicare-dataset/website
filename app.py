@@ -531,9 +531,15 @@ elif selected == "About":
 st.markdown(
     """
     <style>
-    .css-pxxe24 {
-    visibility: hidden;
+    div[role="form"] p,
+    div[role="form"] label,
+    div[role="form"] .stMarkdown {
+        display: none !important;
     }
+    div[role="form"] [data-testid="stMarkdownContainer"] {
+        display: none !important;
+    }
+    
     div.stExpander + div.stElementContainer .stMarkdown {
         padding: 1rem;
     }
