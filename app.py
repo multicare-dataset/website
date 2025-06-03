@@ -357,7 +357,7 @@ elif selected == "Search":
             )
             case_search = st.text_input(
                 "Case Text Search", 
-                value=st.session_state['filter_dict']['case_search'],
+                key="case_search",
                 help="Search operators: 'OR', 'AND', 'NOT'. Groups of terms that refer to the same concept should be concatenated using 'OR'. Use 'AND' to include a new term or group of terms, and use 'NOT' to exclude them. For example: '(CT OR tomography) AND (chest OR thorax) NOT abdomen' will return chest CT scans with no mentions of the word 'abdomen'."
             )
             caption_search = st.text_input(
@@ -375,7 +375,7 @@ elif selected == "Search":
             'min_age': min_age,
             'max_age': max_age,
             'gender': gender,
-            'case_search': case_search,
+            'case_search': st.session_state.case_search,
             'image_type_label': image_type_label,
             'anatomical_region_label': anatomical_region_label,
             'caption_search': caption_search,
