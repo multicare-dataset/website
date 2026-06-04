@@ -2,6 +2,8 @@
 
 Interactive platform for exploration, filtering, and visualization of real-world clinical case reports and medical images.
 
+![Clinical Case Hub Home](./assets/images/clinical-hub.webp)
+
 ---
 
 ## Overview
@@ -87,12 +89,6 @@ Useful links:
 
 ## Screenshots
 
-### Main Interface
-
-![Clinical Case Hub Home](./assets/images/clinical-hub.webp)
-
----
-
 ### Advanced Clinical Search Interface
 
 ![Clinical Search Dashboard](./assets/images/clinical-cases-dashboard.webp)
@@ -137,24 +133,6 @@ Searches can be applied independently to:
 
 * Clinical case descriptions
 * Medical image captions
-
----
-
-## Repository Structure
-
-```text
-clinical-case-hub/
-├── assets/
-│   └── images/
-├── img/
-├── team/
-├── .github/
-├── .streamlit/
-├── app.py
-├── requirements.txt
-├── README.md
-└── LICENSE
-```
 
 ---
 
