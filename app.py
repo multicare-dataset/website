@@ -210,8 +210,6 @@ if 'filter_dict' not in st.session_state:
         'resource_type': 'text',
     }
 
-# if "filter_dict" in st.session_state:
-#     st.session_state.filter_dict = st.session_state.filter_dict
 
 label_dict = {
     'ct': 'CT scan',
@@ -283,14 +281,14 @@ team_members = [
 
 @st.cache_data
 def load_image_metadata(file_folder):
-    df = pd.read_parquet(os.path.join(file_folder, 'image_metadata_website_version.parquet'))
+    df = pd.read_parquet(os.path.join(file_folder, 'assets/data/image_metadata_website_version.parquet'))
     df.rename({'postprocessed_label_list': 'labels'}, axis = 1, inplace = True)
     return df
 
 @st.cache_data
 def load_cases(file_folder):
     df = pd.DataFrame()
-    for file_ in ['cases_1_website_version.parquet', 'cases_2_website_version.parquet']:
+    for file_ in ['assets/data/cases_1_website_version.parquet', 'assets/data/cases_2_website_version.parquet']:
       df = pd.concat([df, pd.read_parquet(os.path.join(file_folder, file_))], ignore_index=True)
     df = df.astype({'age': 'float', 'year': 'int', 'commercial_use_license': 'bool', 'gender': 'category'})
     return df
@@ -423,7 +421,7 @@ def highlight_text(text, query, highlight_class='case-highlight'):
 
 # ---------- STREAMLIT CODE --------------
 with st.sidebar:
-    st.logo("multicare-logo2.webp", size="large")
+    st.logo("assets/images/multicare-logo2.webp", size="large")
     selected = option_menu(
         menu_title=None,
         options=["Home", "Search", "About"],
@@ -451,7 +449,7 @@ if selected == "Home":
     )
     col1, col2, col3 = st.columns(3)
     with col2:
-        st.image('medical_doctor_desktop.webp')
+        st.image('assets/images/medical_doctor_desktop.webp')
 
     st.button(f"Start your search‎ ‎ ‎→", key='switch_button')
 
@@ -553,8 +551,6 @@ elif selected == "Search":
         }
         if filter_dict != st.session_state.filter_dict:
             st.session_state.filter_dict = filter_dict
-        # if st.session_state.filter_dict != st.session_state.filter_dict:
-        #     st.session_state.filter_dict = st.session_state.filter_dict
         st.session_state.search_executed = True
         st.session_state.page_number = 1
         elements_per_page = 10
@@ -597,7 +593,6 @@ elif selected == "Search":
                         st.markdown("#### Case Description", unsafe_allow_html=True)
                         highlighted_text = highlight_text(row['case_text'], st.session_state.filter_dict['case_search'], highlight_class='case-highlight')
                         st.markdown(highlighted_text, unsafe_allow_html=True)
-                        #st.write(f"{row['case_text']}")
                         st.divider()
                         st.write(f"**Source**: _{row['citation']}_")
 
